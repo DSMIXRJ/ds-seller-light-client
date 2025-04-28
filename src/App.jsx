@@ -1,10 +1,24 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+const baseUrl = import.meta.env.VITE_PUBLIC_URL || window.location.origin;
+
 function App() {
   const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    fetch(`${baseUrl}/api/teste`)
+      .then(res => res.json())
+      .then(data => {
+        console.log("Resposta da API:", data);
+        alert(data.mensagem);
+      })
+      .catch(err => {
+        console.error("Erro ao conectar com o backend:", err);
+      });
+  }, []);
 
   return (
     <>
