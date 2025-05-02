@@ -8,13 +8,16 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('🟡 Enviando login para o backend...');
     try {
       const resposta = await axios.post('https://dsseller-backend.onrender.com/auth/login', {
         email,
         password
       });
+      console.log('🟢 Resposta recebida:', resposta.data);
       setMensagem(resposta.data.message || 'Login bem-sucedido!');
     } catch (erro) {
+      console.log('🔴 Erro recebido:', erro);
       if (erro.response && erro.response.data && erro.response.data.message) {
         setMensagem(erro.response.data.message);
       } else {
@@ -31,7 +34,7 @@ function Login() {
         <input type="password" placeholder="Senha" value={password} onChange={(e) => setPassword(e.target.value)} required /><br />
         <button type="submit">Entrar</button>
       </form>
-      <p>{mensagem}</p>
+      <p style={{ marginTop: 20 }}>{mensagem}</p>
     </div>
   );
 }
