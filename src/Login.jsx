@@ -11,12 +11,15 @@ function Login() {
     try {
       const resposta = await axios.post('https://dsseller-backend.onrender.com/auth/login', {
         email,
-        password,
+        password
       });
-      setMensagem('Login bem-sucedido!');
-      console.log(resposta.data);
+      setMensagem(resposta.data.message || 'Login bem-sucedido!');
     } catch (erro) {
-      setMensagem('Credenciais inválidas ou erro no servidor');
+      if (erro.response && erro.response.data && erro.response.data.message) {
+        setMensagem(erro.response.data.message);
+      } else {
+        setMensagem('Erro de conexão com o servidor.');
+      }
     }
   };
 
