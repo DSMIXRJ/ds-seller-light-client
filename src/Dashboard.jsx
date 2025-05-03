@@ -1,3 +1,4 @@
+// Forçar novo deploy Netlify
 import React from 'react';
 
 const Dashboard = () => {
