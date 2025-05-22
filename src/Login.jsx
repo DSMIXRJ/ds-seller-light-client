@@ -10,7 +10,8 @@ function Login() {
     e.preventDefault();
     console.log('🟡 Enviando login para o backend...');
     try {
-      const resposta = await axios.post('https://dsseller-backend.onrender.com/auth/login', {
+      // Endpoint corrigido para corresponder à configuração do backend
+      const resposta = await axios.post('https://dsseller-backend-final.onrender.com/api/login', {
         email,
         password
       });
