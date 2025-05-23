@@ -1,65 +1,63 @@
-// Forçar novo deploy Netlify
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-  const [authUrl, setAuthUrl] = useState('');
+  const navigate = useNavigate();
+  const [menuAberto, setMenuAberto] = useState(true);
 
-  const anuncios = [
-    {
-      imagem: 'https://via.placeholder.com/50',
-      titulo: 'Plafon de Madeira 35cm',
-      margem: '25%',
-      visitas: 432,
-      vendas: 36,
-      lucroMedio: 'R$ 18,00',
-      lucroTotal: 'R$ 648,00'
-    },
-    {
-      imagem: 'https://via.placeholder.com/50',
-      titulo: 'Luminária Redonda 30cm',
-      margem: '30%',
-      visitas: 318,
-      vendas: 28,
-      lucroMedio: 'R$ 22,50',
-      lucroTotal: 'R$ 630,00'
-    },
-    {
-      imagem: 'https://via.placeholder.com/50',
-      titulo: 'Plafon Quadrado Freijó',
-      margem: '20%',
-      visitas: 210,
-      vendas: 19,
-      lucroMedio: 'R$ 15,00',
-      lucroTotal: 'R$ 285,00'
-    }
-  ];
-
-  useEffect(() => {
-    const fetchAuthUrl = async () => {
-      try {
-        const response = await axios.get(
-          'https://dsseller-backend-final.onrender.com/api/mercadolivre/auth-url'
-        );
-        setAuthUrl(response.data.authUrl);
-      } catch (error) {
-        console.error('Erro ao obter URL de autenticação:', error);
-      }
-    };
-
-    fetchAuthUrl();
-  }, []);
+  const handleNavegar = (rota) => {
+    navigate(rota);
+  };
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 p-8 font-sans">
-      <div className="max-w-7xl mx-auto">
+    <div className="flex h-screen bg-gray-100">
 
-        {/* Botão Conectar com Mercado Livre */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-semibold flex items-center gap-2">
-            <span role="img" aria-label="ícone">📊</span>
-            Na Aba <span className="text-blue-700">Anúncios</span>
-          </h2>
-          <a
-            href={authUrl}
-            class
+      {/* Sidebar */}
+      <div
+        className={`${
+          menuAberto ? 'w-64' : 'w-20'
+        } bg-white border-r transition-all duration-300 flex flex-col`}
+      >
+        <div className="flex items-center justify-between p-4 border-b">
+          <h1 className={`text-xl font-bold ${menuAberto ? 'block' : 'hidden'}`}>
+            DS SELLER
+          </h1>
+          <button
+            onClick={() => setMenuAberto(!menuAberto)}
+            className="text-gray-600"
+          >
+            {menuAberto ? '◀' : '▶'}
+          </button>
+        </div>
+
+        <nav className="flex-1 p-4 space-y-4">
+          <button
+            onClick={() => handleNavegar('/dashboard')}
+            className="w-full flex items-center space-x-2 text-left px-4 py-2 rounded hover:bg-blue-100"
+          >
+            <span>🏠</span>
+            {menuAberto && <span>Dashboard</span>}
+          </button>
+
+          <button
+            onClick={() => handleNavegar('/integracoes')}
+            className="w-full flex items-center space-x-2 text-left px-4 py-2 rounded hover:bg-blue-100"
+          >
+            <span>🔗</span>
+            {menuAberto && <span>Integrações</span>}
+          </button>
+        </nav>
+      </div>
+
+      {/* Conteúdo */}
+      <div className="flex-1 p-8">
+        <h2 className="text-3xl font-bold mb-6">Dashboard</h2>
+        <p className="text-gray-700">
+          Bem-vindo ao seu painel, aqui você verá futuramente os dados dos seus anúncios, desempenho e muito mais.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;
