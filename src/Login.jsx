@@ -17,7 +17,10 @@ function Login() {
         password: senha,
       });
 
-      if (resposta.data.message === 'Login bem-sucedido!') {
+      if (
+        resposta.data.message === 'Login bem-sucedido!' ||
+        resposta.data.message === 'Login successful'
+      ) {
         navigate('/dashboard');
       } else {
         setMensagem(resposta.data.message || 'Erro ao fazer login.');
@@ -54,6 +57,7 @@ function Login() {
             type="button"
             onClick={() => setMostrarSenha(!mostrarSenha)}
             className="absolute right-2 top-2 text-sm text-gray-600"
+            tabIndex={-1}
           >
             {mostrarSenha ? '🙈' : '👁️'}
           </button>
