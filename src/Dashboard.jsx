@@ -1,80 +1,89 @@
 import { useState } from "react";
-import { Menu, Home, BarChart3, Users, LogOut, Bot } from "lucide-react";
+import { Menu, Home, Layers, LogOut, Bot } from "lucide-react";
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [page, setPage] = useState("dashboard");
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-800 text-zinc-50">
       {/* Sidebar */}
       <aside
         className={`transition-all duration-300 ease-in-out ${
-          sidebarOpen ? "w-20" : "w-14"
-        } bg-zinc-900/95 border-r border-zinc-800 flex flex-col items-center py-6`}
+          sidebarOpen ? "w-56" : "w-16"
+        } bg-zinc-900/95 border-r border-zinc-800 flex flex-col py-6 px-2`}
       >
-        {/* Logo ou ícone IA */}
-        <div className="mb-8 flex items-center justify-center">
-          <Bot className="w-8 h-8 text-cyan-400" />
+        {/* Logo IA */}
+        <div className="mb-10 flex items-center justify-center">
+          <Bot className="w-10 h-10 text-cyan-400" />
         </div>
-        {/* Menu Icons */}
-        <nav className="flex flex-col gap-8 flex-1">
-          <button title="Dashboard" className="hover:text-cyan-400 transition">
-            <Home className="w-7 h-7" />
+        {/* Menu Buttons */}
+        <nav className="flex flex-col gap-4 flex-1">
+          <button
+            onClick={() => setPage("dashboard")}
+            className={`flex items-center gap-3 px-3 py-3 rounded-xl text-lg font-medium transition ${
+              page === "dashboard"
+                ? "bg-cyan-900 text-cyan-300"
+                : "hover:bg-zinc-800 text-zinc-200"
+            }`}
+            style={{ borderRadius: "1.25rem" }}
+          >
+            <Home className="w-6 h-6" />
+            {sidebarOpen && <span>Dashboard</span>}
           </button>
-          <button title="Métricas" className="hover:text-cyan-400 transition">
-            <BarChart3 className="w-7 h-7" />
-          </button>
-          <button title="Usuários" className="hover:text-cyan-400 transition">
-            <Users className="w-7 h-7" />
+          <button
+            onClick={() => setPage("integracoes")}
+            className={`flex items-center gap-3 px-3 py-3 rounded-xl text-lg font-medium transition ${
+              page === "integracoes"
+                ? "bg-cyan-900 text-cyan-300"
+                : "hover:bg-zinc-800 text-zinc-200"
+            }`}
+            style={{ borderRadius: "1.25rem" }}
+          >
+            <Layers className="w-6 h-6" />
+            {sidebarOpen && <span>Integrações</span>}
           </button>
         </nav>
         {/* Colapsar Sidebar */}
         <button
           onClick={() => setSidebarOpen((s) => !s)}
-          className="mt-6 p-2 rounded-lg bg-zinc-800 hover:bg-cyan-900 transition"
-          title="Ocultar menu"
+          className="mt-10 mx-auto p-2 rounded-lg bg-zinc-800 hover:bg-cyan-900 transition"
+          title="Expandir/recolher menu"
         >
           <Menu className="w-6 h-6" />
         </button>
         {/* Sair */}
         <button
           title="Sair"
-          className="mt-6 text-red-400 hover:text-red-600 transition"
+          className="mt-8 text-red-400 hover:text-red-600 transition mx-auto"
         >
           <LogOut className="w-6 h-6" />
         </button>
       </aside>
-      {/* Conteúdo principal */}
+      {/* Conteúdo principal dinâmico */}
       <main className="flex-1 flex flex-col p-8 items-center justify-center">
-        {/* Título IA */}
-        <h1 className="text-3xl md:text-4xl font-bold text-cyan-400 mb-8 tracking-widest">
-          DS SELLER LIGHT
-        </h1>
-        {/* Cards métricas */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
-          {/* Card 1 */}
-          <div className="bg-zinc-800/90 rounded-2xl shadow-xl p-8 flex flex-col items-center border border-zinc-700 hover:shadow-cyan-700/20 transition">
-            <BarChart3 className="w-10 h-10 text-cyan-400 mb-4" />
-            <span className="text-2xl font-semibold">R$ 0,00</span>
-            <span className="text-sm text-zinc-400">Faturamento Hoje</span>
+        {page === "dashboard" && (
+          <div className="w-full max-w-6xl">
+            {/* Cards e filtros do dashboard virão aqui nos próximos passos */}
+            <h1 className="text-3xl md:text-4xl font-bold text-cyan-400 mb-10 tracking-widest">
+              Painel de Controle
+            </h1>
+            <div className="text-zinc-300 mb-2">
+              <em>Aqui você verá métricas, vendas e filtros inteligentes.</em>
+            </div>
           </div>
-          {/* Card 2 */}
-          <div className="bg-zinc-800/90 rounded-2xl shadow-xl p-8 flex flex-col items-center border border-zinc-700 hover:shadow-cyan-700/20 transition">
-            <Users className="w-10 h-10 text-cyan-400 mb-4" />
-            <span className="text-2xl font-semibold">0</span>
-            <span className="text-sm text-zinc-400">Novos Clientes</span>
+        )}
+        {page === "integracoes" && (
+          <div className="w-full max-w-3xl flex flex-col items-center">
+            {/* Aqui virá o conteúdo de integrações no próximo passo */}
+            <h1 className="text-3xl font-bold text-cyan-400 mb-10">
+              Integrações de Marketplace
+            </h1>
+            <div className="text-zinc-300 mb-2">
+              <em>Conecte ou gerencie suas integrações Mercado Livre, Shopee, Amazon...</em>
+            </div>
           </div>
-          {/* Card 3 */}
-          <div className="bg-zinc-800/90 rounded-2xl shadow-xl p-8 flex flex-col items-center border border-zinc-700 hover:shadow-cyan-700/20 transition">
-            <Home className="w-10 h-10 text-cyan-400 mb-4" />
-            <span className="text-2xl font-semibold">0</span>
-            <span className="text-sm text-zinc-400">Pedidos Abertos</span>
-          </div>
-        </div>
-        {/* Rodapé */}
-        <footer className="mt-16 text-zinc-500 text-xs opacity-70">
-          © {new Date().getFullYear()} DS SELLER LIGHT · Inteligência Artificial aplicada a vendas
-        </footer>
+        )}
       </main>
     </div>
   );
