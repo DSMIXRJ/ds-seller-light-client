@@ -60,22 +60,4 @@ export default function Dashboard() {
           </div>
           {/* Card 2 */}
           <div className="bg-zinc-800/90 rounded-2xl shadow-xl p-8 flex flex-col items-center border border-zinc-700 hover:shadow-cyan-700/20 transition">
-            <Users className="w-10 h-10 text-cyan-400 mb-4" />
-            <span className="text-2xl font-semibold">0</span>
-            <span className="text-sm text-zinc-400">Novos Clientes</span>
-          </div>
-          {/* Card 3 */}
-          <div className="bg-zinc-800/90 rounded-2xl shadow-xl p-8 flex flex-col items-center border border-zinc-700 hover:shadow-cyan-700/20 transition">
-            <Home className="w-10 h-10 text-cyan-400 mb-4" />
-            <span className="text-2xl font-semibold">0</span>
-            <span className="text-sm text-zinc-400">Pedidos Abertos</span>
-          </div>
-        </div>
-        {/* Rodapé */}
-        <footer className="mt-16 text-zinc-500 text-xs opacity-70">
-          © {new Date().getFullYear()} DS SELLER LIGHT · Inteligência Artificial aplicada a vendas
-        </footer>
-      </main>
-    </div>
-  );
-}
+            <Users className=
