@@ -1,63 +1,103 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { LogOut, Home, Zap, TrendingUp, Link } from 'lucide-react';
 
-const Dashboard = () => {
+const cards = [
+  {
+    title: 'Anúncios Ativos',
+    value: '23',
+    icon: <Zap size={28} />,
+    bg: 'bg-blue-50',
+    border: 'border-blue-200',
+  },
+  {
+    title: 'Vendas Hoje',
+    value: '12',
+    icon: <TrendingUp size={28} />,
+    bg: 'bg-green-50',
+    border: 'border-green-200',
+  },
+  {
+    title: 'Contas Integradas',
+    value: '2',
+    icon: <Link size={28} />,
+    bg: 'bg-purple-50',
+    border: 'border-purple-200',
+  },
+];
+
+export default function Dashboard() {
   const navigate = useNavigate();
   const [menuAberto, setMenuAberto] = useState(true);
 
-  const handleNavegar = (rota) => {
-    navigate(rota);
+  const sair = () => {
+    navigate('/');
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-
+    <div className="flex min-h-screen bg-gradient-to-br from-gray-100 to-blue-50">
       {/* Sidebar */}
-      <div
+      <aside
         className={`${
           menuAberto ? 'w-64' : 'w-20'
-        } bg-white border-r transition-all duration-300 flex flex-col`}
+        } transition-all duration-300 bg-white shadow-lg border-r border-gray-200 flex flex-col`}
       >
-        <div className="flex items-center justify-between p-4 border-b">
-          <h1 className={`text-xl font-bold ${menuAberto ? 'block' : 'hidden'}`}>
-            DS SELLER
-          </h1>
+        <div className="flex items-center justify-between px-4 py-5 border-b">
+          <span className={`font-extrabold text-lg tracking-wider text-blue-700 transition-all duration-300 ${menuAberto ? 'block' : 'hidden'}`}>
+            <span className="text-blue-500">DS</span> SELLER
+          </span>
           <button
             onClick={() => setMenuAberto(!menuAberto)}
-            className="text-gray-600"
+            className="text-gray-400"
+            aria-label="Expandir ou retrair menu"
           >
             {menuAberto ? '◀' : '▶'}
           </button>
         </div>
-
-        <nav className="flex-1 p-4 space-y-4">
+        <nav className="flex-1 p-4 space-y-2">
           <button
-            onClick={() => handleNavegar('/dashboard')}
-            className="w-full flex items-center space-x-2 text-left px-4 py-2 rounded hover:bg-blue-100"
+            onClick={() => navigate('/dashboard')}
+            className="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-blue-100 transition"
           >
-            <span>🏠</span>
-            {menuAberto && <span>Dashboard</span>}
+            <Home size={22} />
+            {menuAberto && <span className="font-medium">Dashboard</span>}
           </button>
-
           <button
-            onClick={() => handleNavegar('/integracoes')}
-            className="w-full flex items-center space-x-2 text-left px-4 py-2 rounded hover:bg-blue-100"
+            onClick={() => navigate('/integracoes')}
+            className="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-blue-100 transition"
           >
-            <span>🔗</span>
-            {menuAberto && <span>Integrações</span>}
+            <Link size={22} />
+            {menuAberto && <span className="font-medium">Integrações</span>}
           </button>
         </nav>
-      </div>
+        <div className="px-4 pb-6">
+          <button
+            onClick={sair}
+            className="flex items-center gap-2 text-red-500 px-3 py-2 w-full rounded-lg hover:bg-red-100 transition"
+          >
+            <LogOut size={20} />
+            {menuAberto && <span>Sair</span>}
+          </button>
+        </div>
+      </aside>
 
-      {/* Conteúdo */}
-      <div className="flex-1 p-8">
-        <h2 className="text-3xl font-bold mb-6">Dashboard</h2>
-        <p className="text-gray-700">
-          Bem-vindo ao seu painel, aqui você verá futuramente os dados dos seus anúncios, desempenho e muito mais.
-        </p>
-      </div>
-    </div>
-  );
-};
+      {/* Conteúdo principal */}
+      <main className="flex-1 px-6 py-8">
+        <div className="mb-6 flex flex-col md:flex-row items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-blue-900 tracking-tight mb-1">
+              Dashboard <span className="text-blue-500">DS SELLER LIGHT</span>
+            </h1>
+            <p className="text-gray-500 text-lg">Bem-vindo de volta! Veja o resumo das suas operações.</p>
+          </div>
+        </div>
 
-export default Dashboard;
+        {/* Cards de métricas */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          {cards.map((card, idx) => (
+            <div
+              key={idx}
+              className={`rounded-2xl shadow ${card.bg} ${card.border} border p-6 flex flex-col items-start transition hover:scale-[1.025]`}
+            >
+              <div className="mb-2 text-blue-500">{card.icon}</div>
+              <div className=
