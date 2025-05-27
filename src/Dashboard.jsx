@@ -1,82 +1,116 @@
-8:52:02 AM: Failed during stage 'building site': Build script returned non-zero exit code: 2 (https://ntl.fyi/exit-code-2)
-8:52:01 AM: Netlify Build                                                 
-8:52:01 AM: ────────────────────────────────────────────────────────────────
-8:52:01 AM: ​
-8:52:01 AM: ❯ Version
-8:52:01 AM:   @netlify/build 33.2.0
-8:52:01 AM: ​
-8:52:01 AM: ❯ Flags
-8:52:01 AM:   accountId: 6807efb607fd5e6f5f16753a
-8:52:01 AM:   baseRelDir: true
-8:52:01 AM:   buildId: 6835a74e9d5b9d9075f54454
-8:52:01 AM:   deployId: 6835a74e9d5b9d9075f54456
-8:52:01 AM: ​
-8:52:01 AM: ❯ Current directory
-8:52:01 AM:   /opt/build/repo
-8:52:01 AM: ​
-8:52:01 AM: ❯ Config file
-8:52:01 AM:   /opt/build/repo/netlify.toml
-8:52:01 AM: ​
-8:52:01 AM: ❯ Context
-8:52:01 AM:   production
-8:52:01 AM: ​
-8:52:01 AM: Build command from Netlify app                                
-8:52:01 AM: ────────────────────────────────────────────────────────────────
-8:52:01 AM: ​
-8:52:01 AM: $ npm run build
-8:52:01 AM: > ds_seller_light@0.0.0 build
-8:52:01 AM: > vite build
-8:52:01 AM: vite v5.4.19 building for production...
-8:52:01 AM: transforming...
-8:52:02 AM: ✓ 13 modules transformed.
-8:52:02 AM: x Build failed in 426ms
-8:52:02 AM: error during build:
-8:52:02 AM: [vite:esbuild] Transform failed with 1 error:
-8:52:02 AM: /opt/build/repo/src/Dashboard.jsx:104:0: ERROR: Expected "{" but found end of file
-8:52:02 AM: file: /opt/build/repo/src/Dashboard.jsx:104:0
-8:52:02 AM: 
-8:52:02 AM: Expected "{" but found end of file
-8:52:02 AM: 102|                <div className="mb-2 text-blue-500">{card.icon}</div>
-8:52:02 AM: 103|                <div className=
-8:52:02 AM: 104|
-8:52:02 AM:    |  ^
-8:52:02 AM: 
-8:52:02 AM:     at failureErrorWithLog (/opt/build/repo/node_modules/esbuild/lib/main.js:1472:15)
-8:52:02 AM:     at /opt/build/repo/node_modules/esbuild/lib/main.js:755:50
-8:52:02 AM:     at responseCallbacks.<computed> (/opt/build/repo/node_modules/esbuild/lib/main.js:622:9)
-8:52:02 AM:     at handleIncomingPacket (/opt/build/repo/node_modules/esbuild/lib/main.js:677:12)
-8:52:02 AM:     at Socket.readFromStdout (/opt/build/repo/node_modules/esbuild/lib/main.js:600:7)
-8:52:02 AM:     at Socket.emit (node:events:518:28)
-8:52:02 AM:     at addChunk (node:internal/streams/readable:561:12)
-8:52:02 AM:     at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
-8:52:02 AM:     at Readable.push (node:internal/streams/readable:392:5)
-8:52:02 AM:     at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
-8:52:02 AM: ​
-8:52:02 AM: "build.command" failed                                        
-8:52:02 AM: ────────────────────────────────────────────────────────────────
-8:52:02 AM: ​
-8:52:02 AM:   Error message
-8:52:02 AM:   Command failed with exit code 1: npm run build (https://ntl.fyi/exit-code-1)
-8:52:02 AM: ​
-8:52:02 AM:   Error location
-8:52:02 AM:   In Build command from Netlify app:
-8:52:02 AM:   npm run build
-8:52:02 AM: ​
-8:52:02 AM:   Resolved config
-8:52:02 AM:   build:
-8:52:02 AM:     command: npm run build
-8:52:02 AM:     commandOrigin: ui
-8:52:02 AM:     publish: /opt/build/repo/dist
-8:52:02 AM:     publishOrigin: ui
-8:52:02 AM:   redirects:
-8:52:02 AM:     - force: true
-8:52:02 AM:       from: /api/*
-      status: 200
-      to: https://dsseller-backend-final.onrender.com/api/:splat
-    - from: /*
-      status: 200
-      to: /index.html
-  redirectsOrigin: config
-8:52:02 AM: Build failed due to a user error: Build script returned non-zero exit code: 2
-8:52:02 AM: Failing build: Failed to build site
-8:52:02 AM: Finished processing build request in 15.418s
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { LogOut, Home, Zap, TrendingUp, Link } from 'lucide-react';
+
+const cards = [
+  {
+    title: 'Anúncios Ativos',
+    value: '23',
+    icon: <Zap size={28} />,
+    bg: 'bg-blue-50',
+    border: 'border-blue-200',
+  },
+  {
+    title: 'Vendas Hoje',
+    value: '12',
+    icon: <TrendingUp size={28} />,
+    bg: 'bg-green-50',
+    border: 'border-green-200',
+  },
+  {
+    title: 'Contas Integradas',
+    value: '2',
+    icon: <Link size={28} />,
+    bg: 'bg-purple-50',
+    border: 'border-purple-200',
+  },
+];
+
+export default function Dashboard() {
+  const navigate = useNavigate();
+  const [menuAberto, setMenuAberto] = useState(true);
+
+  const sair = () => {
+    navigate('/');
+  };
+
+  return (
+    <div className="flex min-h-screen bg-gradient-to-br from-gray-100 to-blue-50">
+      {/* Sidebar */}
+      <aside
+        className={`${
+          menuAberto ? 'w-64' : 'w-20'
+        } transition-all duration-300 bg-white shadow-lg border-r border-gray-200 flex flex-col`}
+      >
+        <div className="flex items-center justify-between px-4 py-5 border-b">
+          <span className={`font-extrabold text-lg tracking-wider text-blue-700 transition-all duration-300 ${menuAberto ? 'block' : 'hidden'}`}>
+            <span className="text-blue-500">DS</span> SELLER
+          </span>
+          <button
+            onClick={() => setMenuAberto(!menuAberto)}
+            className="text-gray-400"
+            aria-label="Expandir ou retrair menu"
+          >
+            {menuAberto ? '◀' : '▶'}
+          </button>
+        </div>
+        <nav className="flex-1 p-4 space-y-2">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-blue-100 transition"
+          >
+            <Home size={22} />
+            {menuAberto && <span className="font-medium">Dashboard</span>}
+          </button>
+          <button
+            onClick={() => navigate('/integracoes')}
+            className="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-blue-100 transition"
+          >
+            <Link size={22} />
+            {menuAberto && <span className="font-medium">Integrações</span>}
+          </button>
+        </nav>
+        <div className="px-4 pb-6">
+          <button
+            onClick={sair}
+            className="flex items-center gap-2 text-red-500 px-3 py-2 w-full rounded-lg hover:bg-red-100 transition"
+          >
+            <LogOut size={20} />
+            {menuAberto && <span>Sair</span>}
+          </button>
+        </div>
+      </aside>
+
+      {/* Conteúdo principal */}
+      <main className="flex-1 px-6 py-8">
+        <div className="mb-6 flex flex-col md:flex-row items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-blue-900 tracking-tight mb-1">
+              Dashboard <span className="text-blue-500">DS SELLER LIGHT</span>
+            </h1>
+            <p className="text-gray-500 text-lg">Bem-vindo de volta! Veja o resumo das suas operações.</p>
+          </div>
+        </div>
+
+        {/* Cards de métricas */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          {cards.map((card, idx) => (
+            <div
+              key={idx}
+              className={`rounded-2xl shadow ${card.bg} ${card.border} border p-6 flex flex-col items-start transition hover:scale-[1.025]`}
+            >
+              <div className="mb-2 text-blue-500">{card.icon}</div>
+              <div className="text-4xl font-extrabold text-gray-800 mb-1">{card.value}</div>
+              <div className="text-lg text-gray-500">{card.title}</div>
+            </div>
+          ))}
+        </section>
+
+        {/* Espaço reservado para novas funcionalidades */}
+        <div className="p-6 bg-white rounded-2xl shadow flex items-center justify-center text-gray-400 text-xl">
+          <span className="animate-pulse">Em breve: Painel com dados reais de anúncios, vendas e integração Mercado Livre.</span>
+        </div>
+      </main>
+    </div>
+  );
+}
