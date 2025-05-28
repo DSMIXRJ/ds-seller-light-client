@@ -1,33 +1,17 @@
 import { useState } from "react";
 import { Menu, Home, Layers, LogOut, Bot } from "lucide-react";
 
-// SVG logos simplificados para IA visual
-const LogoMercadoLivre = () => (
-  <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
-    <ellipse cx="19" cy="19" rx="18" ry="13" fill="#FFE600" stroke="#222" strokeWidth="2"/>
-    <path d="M11 19c2.5 2 6 2 8 0" stroke="#222" strokeWidth="2" fill="none"/>
-    <ellipse cx="19" cy="19" rx="10" ry="5" fill="none" stroke="#222" strokeWidth="1.5"/>
-  </svg>
-);
-const LogoShopee = () => (
-  <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
-    <rect x="6" y="10" width="26" height="20" rx="5" fill="#FF5722"/>
-    <rect x="10" y="6" width="18" height="10" rx="5" fill="#FFF"/>
-    <text x="19" y="22" fontSize="10" fill="#FFF" fontWeight="bold" textAnchor="middle">S</text>
-  </svg>
-);
-const LogoAmazon = () => (
-  <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
-    <ellipse cx="19" cy="20" rx="12" ry="7" fill="#FF9900"/>
-    <text x="19" y="25" fontSize="10" fill="#222" fontWeight="bold" textAnchor="middle">a</text>
-    <path d="M12 25 Q19 32 26 25" stroke="#222" strokeWidth="2" fill="none"/>
-  </svg>
-);
+// Importe as logos reais
+import logoMercadoLivre from "./assets/mercado-livre.png";
+import logoShopee from "./assets/shopee.png";
+import logoAmazon from "./assets/amazon.png";
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [page, setPage] = useState("dashboard");
   const [filtro, setFiltro] = useState("Hoje");
+  // Estado visual para simular integração Mercado Livre
+  const [mlIntegrado, setMlIntegrado] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-800 text-zinc-50">
@@ -147,17 +131,30 @@ export default function Dashboard() {
               {/* Mercado Livre */}
               <div className="flex flex-col items-center gap-2 p-6 rounded-3xl bg-zinc-900 border-2 border-cyan-400 shadow-cyan-400/50 shadow-xl"
                    style={{ boxShadow: "0 0 24px 4px #ffe60066, 0 0 8px 1px #06b6d4aa" }}>
-                <LogoMercadoLivre />
+                <img src={logoMercadoLivre} alt="Mercado Livre" className="w-16 h-16 object-contain mb-2" />
                 <span className="text-sm text-zinc-300 font-bold">Mercado Livre</span>
-                <button className="mt-2 px-4 py-1 rounded-xl bg-cyan-500 text-white shadow-cyan-400/70 shadow-lg font-bold hover:bg-cyan-700 transition text-sm"
-                  style={{ borderRadius: "1.25rem", boxShadow: "0 0 12px #06b6d4cc" }}>
-                  Integrar
-                </button>
+                {!mlIntegrado ? (
+                  <button
+                    className="mt-2 px-4 py-1 rounded-xl bg-red-500 text-white shadow-red-400/70 shadow-lg font-bold hover:bg-red-700 transition text-sm"
+                    style={{ borderRadius: "1.25rem", boxShadow: "0 0 12px #e63946cc" }}
+                    onClick={() => setMlIntegrado(true)}
+                  >
+                    Integrar
+                  </button>
+                ) : (
+                  <button
+                    className="mt-2 px-4 py-1 rounded-xl bg-green-500 text-white shadow-green-400/70 shadow-lg font-bold cursor-default text-sm"
+                    style={{ borderRadius: "1.25rem", boxShadow: "0 0 12px #38b000cc" }}
+                    disabled
+                  >
+                    Integrado
+                  </button>
+                )}
               </div>
               {/* Shopee */}
               <div className="flex flex-col items-center gap-2 p-6 rounded-3xl bg-zinc-900 border-2 border-orange-400 shadow-orange-400/50 shadow-xl opacity-70"
                    style={{ boxShadow: "0 0 18px 2px #ff572266, 0 0 6px 1px #ff9800aa" }}>
-                <LogoShopee />
+                <img src={logoShopee} alt="Shopee" className="w-16 h-16 object-contain mb-2" />
                 <span className="text-sm text-zinc-300 font-bold">Shopee</span>
                 <button disabled className="mt-2 px-4 py-1 rounded-xl bg-orange-400/60 text-white font-bold opacity-60 cursor-not-allowed text-sm"
                   style={{ borderRadius: "1.25rem" }}>
@@ -167,7 +164,7 @@ export default function Dashboard() {
               {/* Amazon */}
               <div className="flex flex-col items-center gap-2 p-6 rounded-3xl bg-zinc-900 border-2 border-yellow-400 shadow-yellow-400/40 shadow-xl opacity-70"
                    style={{ boxShadow: "0 0 14px 2px #ffb30066, 0 0 6px 1px #ffeb3baa" }}>
-                <LogoAmazon />
+                <img src={logoAmazon} alt="Amazon" className="w-16 h-16 object-contain mb-2" />
                 <span className="text-sm text-zinc-300 font-bold">Amazon</span>
                 <button disabled className="mt-2 px-4 py-1 rounded-xl bg-yellow-400/60 text-white font-bold opacity-60 cursor-not-allowed text-sm"
                   style={{ borderRadius: "1.25rem" }}>
