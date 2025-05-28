@@ -133,23 +133,15 @@ export default function Dashboard() {
                    style={{ boxShadow: "0 0 24px 4px #ffe60066, 0 0 8px 1px #06b6d4aa" }}>
                 <img src={logoMercadoLivre} alt="Mercado Livre" className="w-16 h-16 object-contain mb-2" />
                 <span className="text-sm text-zinc-300 font-bold">Mercado Livre</span>
-                {!mlIntegrado ? (
-                  <button
-                    className="mt-2 px-4 py-1 rounded-xl bg-red-500 text-white shadow-red-400/70 shadow-lg font-bold hover:bg-red-700 transition text-sm"
-                    style={{ borderRadius: "1.25rem", boxShadow: "0 0 12px #e63946cc" }}
-                    onClick={() => setMlIntegrado(true)}
-                  >
-                    Integrar
-                  </button>
-                ) : (
-                  <button
-                    className="mt-2 px-4 py-1 rounded-xl bg-green-500 text-white shadow-green-400/70 shadow-lg font-bold cursor-default text-sm"
-                    style={{ borderRadius: "1.25rem", boxShadow: "0 0 12px #38b000cc" }}
-                    disabled
-                  >
-                    Integrado
-                  </button>
-                )}
+                <button
+                  className="mt-2 px-4 py-1 rounded-xl bg-red-500 text-white shadow-red-400/70 shadow-lg font-bold hover:bg-red-700 transition text-sm"
+                  style={{ borderRadius: "1.25rem", boxShadow: "0 0 12px #e63946cc" }}
+                  onClick={() => {
+                    window.location.href = "https://SEU_BACKEND_RENDER_URL/auth/meli";
+                  }}
+                >
+                  Integrar
+                </button>
               </div>
               {/* Shopee */}
               <div className="flex flex-col items-center gap-2 p-6 rounded-3xl bg-zinc-900 border-2 border-orange-400 shadow-orange-400/50 shadow-xl opacity-70"
