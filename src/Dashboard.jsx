@@ -137,7 +137,7 @@ export default function Dashboard() {
                   className="mt-2 px-4 py-1 rounded-xl bg-red-500 text-white shadow-red-400/70 shadow-lg font-bold hover:bg-red-700 transition text-sm"
                   style={{ borderRadius: "1.25rem", boxShadow: "0 0 12px #e63946cc" }}
                   onClick={() => {
-                    window.location.href = "https://ds-seller-light-backend.onrender.com/auth/meli";
+                    window.location.href = "https://dsseller-backend-final.onrender.com/auth/meli";
                   }}
                 >
                   Integrar
