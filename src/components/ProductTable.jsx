@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { Tooltip } from "@mui/material";
 import { FiFilter, FiEdit2 } from "react-icons/fi";
-import { MdOutlineInventory2 } from "react-icons/md";
 
 const sampleProducts = [
   {
@@ -23,6 +21,7 @@ const sampleProducts = [
 
 export default function ProductTable() {
   const [products, setProducts] = useState(sampleProducts);
+  const [hoveredStock, setHoveredStock] = useState(null);
 
   // Função para editar preço de venda/custo inline
   const handleEdit = (id, field, value) => {
@@ -72,12 +71,20 @@ export default function ProductTable() {
                     className="rounded-lg w-12 h-12 object-cover border border-[#23243a]"
                   />
                 </td>
-                <td className="px-3 py-2">
-                  <Tooltip title={`Estoque: ${prod.estoque}`}>
-                    <span className="font-bold text-green-400 cursor-pointer">
-                      {prod.estoque}
-                    </span>
-                  </Tooltip>
+                <td
+                  className="px-3 py-2 relative"
+                  onMouseEnter={() => setHoveredStock(prod.id)}
+                  onMouseLeave={() => setHoveredStock(null)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <span className="font-bold text-green-400">
+                    {prod.estoque}
+                  </span>
+                  {hoveredStock === prod.id && (
+                    <div className="absolute z-10 left-1/2 transform -translate-x-1/2 top-8 px-3 py-1 rounded-lg bg-zinc-900 text-zinc-100 text-xs shadow-md border border-cyan-500 animate-fade-in">
+                      Estoque: {prod.estoque}
+                    </div>
+                  )}
                 </td>
                 <td className="px-3 py-2">{prod.title}</td>
                 <td className="px-3 py-2">
@@ -107,11 +114,9 @@ export default function ProductTable() {
                 <td className="px-3 py-2">{prod.vendas}</td>
                 <td className="px-3 py-2 text-right">
                   {prod.promocao && (
-                    <Tooltip title="Produto em promoção!">
-                      <span className="text-blue-400">
-                        <FiEdit2 size={18} />
-                      </span>
-                    </Tooltip>
+                    <span className="text-blue-400" title="Produto em promoção!">
+                      <FiEdit2 size={18} />
+                    </span>
                   )}
                 </td>
               </tr>
