@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { FiFilter, FiEdit2 } from "react-icons/fi";
 
 const sampleProducts = [
   {
@@ -8,7 +7,7 @@ const sampleProducts = [
     estoque: 13,
     title: "Plafon Redondo Freijó 35cm",
     precoVenda: 199.99,
-    precoCusto: 100.00,
+    precoCusto: 100.0,
     margemPercentual: 50,
     margemReais: 99.99,
     lucroTotal: 1599.92,
@@ -26,9 +25,7 @@ export default function ProductTable() {
   // Função para editar preço de venda/custo inline
   const handleEdit = (id, field, value) => {
     setProducts((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, [field]: Number(value) } : p
-      )
+      prev.map((p) => (p.id === id ? { ...p, [field]: Number(value) } : p))
     );
   };
 
@@ -36,8 +33,8 @@ export default function ProductTable() {
     <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-4">
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-xl font-bold">Anúncios Integrados</h2>
-        <button className="flex items-center px-4 py-2 bg-[#23243a] rounded-lg hover:bg-[#2b2d4a] transition">
-          <FiFilter className="mr-2" /> Filtros
+        <button className="px-4 py-2 bg-[#23243a] rounded-lg hover:bg-[#2b2d4a] transition">
+          Filtros
         </button>
       </div>
       <div className="overflow-x-auto">
@@ -61,8 +58,11 @@ export default function ProductTable() {
             {products.map((prod) => (
               <tr
                 key={prod.id}
-                className={`border-b border-[#23243a] ${prod.promocao ? "bg-[#14273b] border-l-4 border-blue-500" : ""
-                  }`}
+                className={`border-b border-[#23243a] ${
+                  prod.promocao
+                    ? "bg-[#14273b] border-l-4 border-blue-500"
+                    : ""
+                }`}
               >
                 <td className="px-3 py-2">
                   <img
@@ -114,8 +114,11 @@ export default function ProductTable() {
                 <td className="px-3 py-2">{prod.vendas}</td>
                 <td className="px-3 py-2 text-right">
                   {prod.promocao && (
-                    <span className="text-blue-400" title="Produto em promoção!">
-                      <FiEdit2 size={18} />
+                    <span
+                      className="text-blue-400 font-semibold"
+                      title="Produto em promoção!"
+                    >
+                      PROMO
                     </span>
                   )}
                 </td>
