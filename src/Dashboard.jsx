@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, Home, Layers, LogOut, Bot } from "lucide-react";
 
 // Importe as logos reais
@@ -13,8 +13,27 @@ export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [page, setPage] = useState("dashboard");
   const [filtro, setFiltro] = useState("Hoje");
-  // Estado visual para simular integração Mercado Livre
-  const [mlIntegrado, setMlIntegrado] = useState(false);
+  // Estado visual/persistente da integração Mercado Livre
+  const [mlIntegrado, setMlIntegrado] = useState(
+    sessionStorage.getItem("mlIntegrado") === "true"
+  );
+
+  // Detecta integração ao voltar do Mercado Livre (baseado na URL)
+  useEffect(() => {
+    // Se a URL contém "auth/callback" (ajuste caso a rota do backend mude)
+    if (window.location.pathname.includes("auth/callback") || window.location.search.includes("code=")) {
+      setMlIntegrado(true);
+      sessionStorage.setItem("mlIntegrado", "true");
+      // Remove o código da URL para evitar múltiplas ativações (opcional)
+      window.history.replaceState({}, document.title, "/");
+    }
+  }, []);
+
+  // Permite redefinir integração (para testes, pode ser removido em produção)
+  const handleResetIntegracao = () => {
+    setMlIntegrado(false);
+    sessionStorage.removeItem("mlIntegrado");
+  };
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-800 text-zinc-50">
@@ -125,6 +144,17 @@ export default function Dashboard() {
             </div>
             {/* Tabela de anúncios integrada */}
             <ProductTable />
+            {/* Botão para resetar integração (apenas para testes/validação) */}
+            {mlIntegrado && (
+              <div className="mt-8 text-center">
+                <button
+                  onClick={handleResetIntegracao}
+                  className="px-4 py-2 rounded-xl bg-zinc-700 text-cyan-300 border border-cyan-400 hover:bg-red-600 hover:text-white transition"
+                >
+                  Resetar Integração (teste)
+                </button>
+              </div>
+            )}
           </div>
         )}
         {page === "integracoes" && (
@@ -138,15 +168,25 @@ export default function Dashboard() {
                    style={{ boxShadow: "0 0 24px 4px #ffe60066, 0 0 8px 1px #06b6d4aa" }}>
                 <img src={logoMercadoLivre} alt="Mercado Livre" className="w-16 h-16 object-contain mb-2" />
                 <span className="text-sm text-zinc-300 font-bold">Mercado Livre</span>
-                <button
-                  className="mt-2 px-4 py-1 rounded-xl bg-red-500 text-white shadow-red-400/70 shadow-lg font-bold hover:bg-red-700 transition text-sm"
-                  style={{ borderRadius: "1.25rem", boxShadow: "0 0 12px #e63946cc" }}
-                  onClick={() => {
-                    window.location.href = "https://dsseller-backend-final.onrender.com/auth/meli";
-                  }}
-                >
-                  Integrar
-                </button>
+                {mlIntegrado ? (
+                  <button
+                    className="mt-2 px-4 py-1 rounded-xl bg-green-500 text-white font-bold shadow-green-400/70 shadow-lg text-sm cursor-not-allowed"
+                    style={{ borderRadius: "1.25rem", boxShadow: "0 0 12px #21c65cbb" }}
+                    disabled
+                  >
+                    Integrado
+                  </button>
+                ) : (
+                  <button
+                    className="mt-2 px-4 py-1 rounded-xl bg-red-500 text-white shadow-red-400/70 shadow-lg font-bold hover:bg-red-700 transition text-sm"
+                    style={{ borderRadius: "1.25rem", boxShadow: "0 0 12px #e63946cc" }}
+                    onClick={() => {
+                      window.location.href = "https://dsseller-backend-final.onrender.com/auth/meli";
+                    }}
+                  >
+                    Integrar
+                  </button>
+                )}
               </div>
               {/* Shopee */}
               <div className="flex flex-col items-center gap-2 p-6 rounded-3xl bg-zinc-900 border-2 border-orange-400 shadow-orange-400/50 shadow-xl opacity-70"
