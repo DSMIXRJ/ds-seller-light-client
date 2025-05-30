@@ -44,8 +44,9 @@ export default function Sidebar({ activePage }) {
           <Home className="w-6 h-6" />
           {sidebarOpen && <span>Dashboard</span>}
         </button>
+        {/* Botão Integrações corrigido */}
         <button
-          onClick={() => navigate("/integracoes")}
+          onClick={() => navigate("/dashboard")}
           className={`flex items-center gap-3 px-3 py-3 rounded-xl text-lg font-medium transition ${
             activePage === "integracoes"
               ? "bg-cyan-900 text-cyan-300"
