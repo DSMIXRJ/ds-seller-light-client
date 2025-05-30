@@ -31,7 +31,10 @@ export default function Dashboard() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-800 text-zinc-50">
-      <Sidebar activePage="dashboard" />
+      <Sidebar
+        activePage="dashboard"
+        onIntegracoesClick={() => window.location.href = "/dashboard"}
+      />
       <main className="flex-1 flex flex-col p-8 items-center justify-center">
         <div className="w-full max-w-6xl">
           <h1 className="text-3xl md:text-4xl font-bold text-cyan-400 mb-10 tracking-widest">
