@@ -13,23 +13,24 @@ export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [page, setPage] = useState("dashboard");
   const [filtro, setFiltro] = useState("Hoje");
-  // Estado visual/persistente da integração Mercado Livre
+
+  // Checa sessionStorage para manter status se já estava integrado
   const [mlIntegrado, setMlIntegrado] = useState(
     sessionStorage.getItem("mlIntegrado") === "true"
   );
 
-  // Detecta integração ao voltar do Mercado Livre (baseado na URL)
+  // Detecta integração ao voltar do ML com o parâmetro na URL
   useEffect(() => {
-    // Se a URL contém "auth/callback" (ajuste caso a rota do backend mude)
-    if (window.location.pathname.includes("auth/callback") || window.location.search.includes("code=")) {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("ml_integrado") === "1") {
       setMlIntegrado(true);
       sessionStorage.setItem("mlIntegrado", "true");
-      // Remove o código da URL para evitar múltiplas ativações (opcional)
-      window.history.replaceState({}, document.title, "/");
+      // Limpa o parâmetro da URL para evitar múltiplas ativações (opcional)
+      window.history.replaceState({}, document.title, "/dashboard");
     }
   }, []);
 
-  // Permite redefinir integração (para testes, pode ser removido em produção)
+  // (Opcional) Resetar integração para testes
   const handleResetIntegracao = () => {
     setMlIntegrado(false);
     sessionStorage.removeItem("mlIntegrado");
@@ -144,7 +145,7 @@ export default function Dashboard() {
             </div>
             {/* Tabela de anúncios integrada */}
             <ProductTable />
-            {/* Botão para resetar integração (apenas para testes/validação) */}
+            {/* (Opcional) Botão de reset para teste */}
             {mlIntegrado && (
               <div className="mt-8 text-center">
                 <button
