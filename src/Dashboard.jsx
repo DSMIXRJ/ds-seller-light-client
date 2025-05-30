@@ -6,6 +6,9 @@ import logoMercadoLivre from "./assets/mercado-livre.png";
 import logoShopee from "./assets/shopee.png";
 import logoAmazon from "./assets/amazon.png";
 
+// Importe a tabela de produtos
+import ProductTable from "./components/ProductTable";
+
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [page, setPage] = useState("dashboard");
@@ -117,9 +120,11 @@ export default function Dashboard() {
                 <span className="text-2xl font-bold text-cyan-400">0</span>
               </div>
             </div>
-            <div className="text-zinc-300 text-sm">
+            <div className="text-zinc-300 text-sm mb-6">
               <em>Filtros e cards dinâmicos. Os dados serão integrados ao backend nas próximas etapas.</em>
             </div>
+            {/* Tabela de anúncios integrada */}
+            <ProductTable />
           </div>
         )}
         {page === "integracoes" && (
