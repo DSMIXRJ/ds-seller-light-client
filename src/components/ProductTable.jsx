@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-export default function ProductTable() {
+export default function ProductTable( ) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,13 +18,9 @@ export default function ProductTable() {
         const backendUrl = "https://dsseller-backend-final.onrender.com";
         
         // Verificar qual marketplace está sendo acessado
-        if (integracao === "ml") {
-          const response = await axios.get(`${backendUrl}/api/mercadolivre/items`, {
-            headers: {
-              // Se necessário, enviar token de autenticação do usuário
-              // Authorization: `Bearer ${sessionStorage.getItem('userToken')}`
-            }
-          });
+        if (integracao === "ml" ) {
+          // Usando o endpoint correto com /api/ no caminho
+          const response = await axios.get(`${backendUrl}/api/mercadolivre/items`);
           setProducts(response.data);
         } else {
           // Para outros marketplaces, usar dados de exemplo por enquanto
@@ -46,10 +42,6 @@ export default function ProductTable() {
     setProducts((prev) =>
       prev.map((p) => (p.id === id ? { ...p, [field]: Number(value) } : p))
     );
-    
-    // Aqui poderia ser adicionada uma chamada à API para atualizar o preço no Mercado Livre
-    // Por exemplo:
-    // axios.put(`${backendUrl}/api/mercadolivre/items/${id}/price`, { price: value })
   };
 
   // Renderização condicional para loading e erro
