@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-export default function ProductTable( ) {
+export default function ProductTable() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,19 +17,36 @@ export default function ProductTable( ) {
         // URL do backend
         const backendUrl = "https://dsseller-backend-final.onrender.com";
         
+        console.log("Tentando acessar:", `${backendUrl}/api/mercadolivre/items` );
+        
         // Verificar qual marketplace está sendo acessado
-        if (integracao === "ml" ) {
-          // Usando o endpoint correto com /api/ no caminho
-          const response = await axios.get(`${backendUrl}/api/mercadolivre/items`);
-          setProducts(response.data);
+        if (integracao === "ml") {
+          // Tentar sem o /api/ primeiro
+          try {
+            const response = await axios.get(`${backendUrl}/mercadolivre/items`);
+            console.log("Resposta sem /api/:", response.data);
+            setProducts(response.data);
+          } catch (innerErr) {
+            console.error("Erro sem /api/:", innerErr);
+            
+            // Tentar com /api/
+            const response = await axios.get(`${backendUrl}/api/mercadolivre/items`);
+            console.log("Resposta com /api/:", response.data);
+            setProducts(response.data);
+          }
         } else {
           // Para outros marketplaces, usar dados de exemplo por enquanto
           setProducts(sampleProducts);
         }
         setLoading(false);
       } catch (err) {
-        console.error("Erro ao buscar anúncios:", err);
-        setError("Não foi possível carregar os anúncios. Por favor, verifique sua conexão e tente novamente.");
+        console.error("Erro detalhado:", err);
+        if (err.response) {
+          console.error("Dados da resposta:", err.response.data);
+          console.error("Status:", err.response.status);
+          console.error("Headers:", err.response.headers);
+        }
+        setError("Não foi possível carregar os anúncios. Por favor, verifique sua conexão e tente novamente. Erro: " + (err.message || "Desconhecido"));
         setLoading(false);
       }
     };
