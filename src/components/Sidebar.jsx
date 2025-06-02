@@ -12,6 +12,7 @@ export default function Sidebar({ activePage }) {
   const [mlIntegrado, setMlIntegrado] = useState(false);
   const [shopeeIntegrado, setShopeeIntegrado] = useState(false);
   const [amazonIntegrado, setAmazonIntegrado] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,22 +21,22 @@ export default function Sidebar({ activePage }) {
   useEffect(() => {
     const checkIntegrationStatus = async () => {
       try {
-        // Verificar status no localStorage primeiro (para resposta rápida)
-        const localStatus = localStorage.getItem("mlIntegrado") === "true";
-        setMlIntegrado(localStatus);
-        
-        // Verificar status no backend (mais confiável)
+        setIsLoading(true);
+        // Verificar status no backend (fonte confiável)
         const response = await axios.get("https://dsseller-backend-final.onrender.com/api/mercadolivre/integration-status");
         const backendStatus = response.data.integrated;
         
-        // Atualizar estado e localStorage se necessário
-        if (backendStatus !== localStatus) {
-          setMlIntegrado(backendStatus);
-          localStorage.setItem("mlIntegrado", backendStatus ? "true" : "false");
-        }
+        // Atualizar estado e localStorage
+        setMlIntegrado(backendStatus);
+        localStorage.setItem("mlIntegrado", backendStatus ? "true" : "false");
       } catch (error) {
         console.error("Erro ao verificar status de integração:", error);
-        // Manter o status do localStorage em caso de erro
+        
+        // Em caso de erro, usar o valor do localStorage como fallback
+        const localStatus = localStorage.getItem("mlIntegrado") === "true";
+        setMlIntegrado(localStatus);
+      } finally {
+        setIsLoading(false);
       }
     };
     
@@ -51,6 +52,9 @@ export default function Sidebar({ activePage }) {
       checkIntegrationStatus();
     }
     
+    // Verificar status a cada 30 segundos para manter sincronizado
+    const intervalId = setInterval(checkIntegrationStatus, 30000);
+    
     // Adicionar event listener para detectar mudanças no localStorage
     const handleStorageChange = (e) => {
       if (e.key === "mlIntegrado") {
@@ -62,6 +66,7 @@ export default function Sidebar({ activePage }) {
     
     return () => {
       window.removeEventListener('storage', handleStorageChange);
+      clearInterval(intervalId);
     };
   }, [location]);
 
@@ -124,7 +129,7 @@ export default function Sidebar({ activePage }) {
           <div className="flex flex-col gap-2 ml-7 mt-2">
             <button
               onClick={() => mlIntegrado && navigate("/anuncios/ml")}
-              disabled={!mlIntegrado}
+              disabled={!mlIntegrado || isLoading}
               className={`flex items-center gap-2 px-2 py-1 rounded-lg transition text-sm
                 ${mlIntegrado
                   ? "bg-cyan-900 text-cyan-300 hover:bg-cyan-700"
@@ -133,6 +138,7 @@ export default function Sidebar({ activePage }) {
             >
               <img src={logoMercadoLivre} alt="ML" className="w-6 h-6" />
               Mercado Livre
+              {isLoading && <span className="ml-1 animate-pulse">...</span>}
             </button>
             <button
               onClick={() => shopeeIntegrado && navigate("/anuncios/shopee")}

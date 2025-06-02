@@ -35,13 +35,13 @@ export default function Dashboard() {
         activePage="dashboard"
         onIntegracoesClick={() => window.location.href = "/dashboard"}
       />
-      <main className="flex-1 flex flex-col p-8 items-center justify-center">
+      <main className="flex-1 ml-56 flex flex-col p-8 items-center justify-center">
         <div className="w-full max-w-6xl">
           <h1 className="text-3xl md:text-4xl font-bold text-cyan-400 mb-10 tracking-widest">
             Painel de Estatísticas
           </h1>
           {/* Filtros de período */}
-          <div className="flex gap-4 mb-8">
+          <div className="flex flex-wrap gap-4 mb-8">
             {["Hoje", "7 dias", "30 dias", "Total"].map((opcao) => (
               <button
                 key={opcao}
