@@ -4,46 +4,70 @@ import logoMercadoLivre from "../assets/mercado-livre.png";
 import logoShopee from "../assets/shopee.png";
 import logoAmazon from "../assets/amazon.png";
 import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 
 export default function Sidebar({ activePage }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [anunciosOpen, setAnunciosOpen] = useState(false);
-  const [mlIntegrado, setMlIntegrado] = useState(sessionStorage.getItem("mlIntegrado") === "true");
-  const shopeeIntegrado = false; // simule conforme precisar
-  const amazonIntegrado = false; // simule conforme precisar
-
+  const [mlIntegrado, setMlIntegrado] = useState(false);
+  const [shopeeIntegrado, setShopeeIntegrado] = useState(false);
+  const [amazonIntegrado, setAmazonIntegrado] = useState(false);
+  
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Verificar se há parâmetro de integração na URL
+  
+  // Verificar status de integração ao carregar o componente
   useEffect(() => {
+    const checkIntegrationStatus = async () => {
+      try {
+        // Verificar status no localStorage primeiro (para resposta rápida)
+        const localStatus = localStorage.getItem("mlIntegrado") === "true";
+        setMlIntegrado(localStatus);
+        
+        // Verificar status no backend (mais confiável)
+        const response = await axios.get("https://dsseller-backend-final.onrender.com/api/mercadolivre/integration-status");
+        const backendStatus = response.data.integrated;
+        
+        // Atualizar estado e localStorage se necessário
+        if (backendStatus !== localStatus) {
+          setMlIntegrado(backendStatus);
+          localStorage.setItem("mlIntegrado", backendStatus ? "true" : "false");
+        }
+      } catch (error) {
+        console.error("Erro ao verificar status de integração:", error);
+        // Manter o status do localStorage em caso de erro
+      }
+    };
+    
+    // Verificar parâmetro na URL (após redirecionamento de autenticação)
     const queryParams = new URLSearchParams(location.search);
     const mlIntegradoParam = queryParams.get('ml_integrado');
     
     if (mlIntegradoParam === '1') {
-      sessionStorage.setItem("mlIntegrado", "true");
+      localStorage.setItem("mlIntegrado", "true");
       setMlIntegrado(true);
+    } else {
+      // Verificar status atual
+      checkIntegrationStatus();
     }
     
-    // Verificar o sessionStorage a cada vez que o componente é renderizado
-    const checkIntegrationStatus = () => {
-      const status = sessionStorage.getItem("mlIntegrado") === "true";
-      setMlIntegrado(status);
+    // Adicionar event listener para detectar mudanças no localStorage
+    const handleStorageChange = (e) => {
+      if (e.key === "mlIntegrado") {
+        setMlIntegrado(e.newValue === "true");
+      }
     };
     
-    checkIntegrationStatus();
-    
-    // Adicionar um event listener para o storage
-    window.addEventListener('storage', checkIntegrationStatus);
+    window.addEventListener('storage', handleStorageChange);
     
     return () => {
-      window.removeEventListener('storage', checkIntegrationStatus);
+      window.removeEventListener('storage', handleStorageChange);
     };
   }, [location]);
 
   return (
     <aside
-      className={`relative z-10 transition-all duration-300 ease-in-out ${
+      className={`fixed left-0 top-0 h-full z-10 transition-all duration-300 ease-in-out ${
         sidebarOpen ? "w-56" : "w-16"
       } bg-zinc-900/95 border-r border-zinc-800 flex flex-col py-6 px-2
       before:content-[''] before:absolute before:inset-0 before:rounded-3xl 
