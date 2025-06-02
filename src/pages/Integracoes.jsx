@@ -4,7 +4,6 @@ import logoShopee from "../assets/shopee.png";
 import logoAmazon from "../assets/amazon.png";
 
 export default function Integracoes() {
-  // O estado da integração é salvo no sessionStorage para persistir ao atualizar
   const [mlIntegrado, setMlIntegrado] = useState(
     sessionStorage.getItem("mlIntegrado") === "true"
   );
@@ -18,7 +17,7 @@ export default function Integracoes() {
   };
 
   return (
-    <div className="flex flex-col items-center py-16 min-h-[60vh] w-full bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-800">
+    <div className="flex flex-col items-center py-16 min-h-[60vh] w-full text-zinc-50">
       <h1 className="text-3xl font-bold text-cyan-400 mb-10 drop-shadow-lg">
         Integrações de Marketplace
       </h1>
