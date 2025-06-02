@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Fundo dark global para toda a aplicação */
+body, #root {
+  background: linear-gradient(135deg, #09090b 0%, #18181b 100%);
+  min-height: 100vh;
+}
