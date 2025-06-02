@@ -1,20 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, Home, Layers, LogOut, Bot, List } from "lucide-react";
 import logoMercadoLivre from "../assets/mercado-livre.png";
 import logoShopee from "../assets/shopee.png";
 import logoAmazon from "../assets/amazon.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Sidebar({ activePage }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [anunciosOpen, setAnunciosOpen] = useState(false);
-
-  // MOCK: integração ativa só Mercado Livre
-  const mlIntegrado = sessionStorage.getItem("mlIntegrado") === "true";
+  const [mlIntegrado, setMlIntegrado] = useState(sessionStorage.getItem("mlIntegrado") === "true");
   const shopeeIntegrado = false; // simule conforme precisar
   const amazonIntegrado = false; // simule conforme precisar
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Verificar se há parâmetro de integração na URL
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const mlIntegradoParam = queryParams.get('ml_integrado');
+    
+    if (mlIntegradoParam === '1') {
+      sessionStorage.setItem("mlIntegrado", "true");
+      setMlIntegrado(true);
+    }
+    
+    // Verificar o sessionStorage a cada vez que o componente é renderizado
+    const checkIntegrationStatus = () => {
+      const status = sessionStorage.getItem("mlIntegrado") === "true";
+      setMlIntegrado(status);
+    };
+    
+    checkIntegrationStatus();
+    
+    // Adicionar um event listener para o storage
+    window.addEventListener('storage', checkIntegrationStatus);
+    
+    return () => {
+      window.removeEventListener('storage', checkIntegrationStatus);
+    };
+  }, [location]);
 
   return (
     <aside
