@@ -13,59 +13,52 @@ export default function Sidebar({ activePage }) {
   const [shopeeIntegrado, setShopeeIntegrado] = useState(false);
   const [amazonIntegrado, setAmazonIntegrado] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const navigate = useNavigate();
   const location = useLocation();
-  
-  // Verificar status de integração ao carregar o componente
+
   useEffect(() => {
+    // Se veio do redirect OAuth com ?ml_integrado=1
+    const queryParams = new URLSearchParams(location.search);
+    const mlParam = queryParams.get("ml_integrado");
+    if (mlParam === "1") {
+      localStorage.setItem("mlIntegrado", "true");
+      setMlIntegrado(true);
+      setIsLoading(false);
+      return;
+    }
+
     const checkIntegrationStatus = async () => {
       try {
         setIsLoading(true);
-        // Verificar status no backend (fonte confiável)
-        const response = await axios.get("https://dsseller-backend-final.onrender.com/api/mercadolivre/integration-status");
+        const response = await axios.get(
+          "https://dsseller-backend-final.onrender.com/api/mercadolivre/integration-status"
+        );
         const backendStatus = response.data.integrated;
-        
-        // Atualizar estado e localStorage
+
         setMlIntegrado(backendStatus);
         localStorage.setItem("mlIntegrado", backendStatus ? "true" : "false");
       } catch (error) {
         console.error("Erro ao verificar status de integração:", error);
-        
-        // Em caso de erro, usar o valor do localStorage como fallback
         const localStatus = localStorage.getItem("mlIntegrado") === "true";
         setMlIntegrado(localStatus);
       } finally {
         setIsLoading(false);
       }
     };
-    
-    // Verificar parâmetro na URL (após redirecionamento de autenticação)
-    const queryParams = new URLSearchParams(location.search);
-    const mlIntegradoParam = queryParams.get('ml_integrado');
-    
-    if (mlIntegradoParam === '1') {
-      localStorage.setItem("mlIntegrado", "true");
-      setMlIntegrado(true);
-    } else {
-      // Verificar status atual
-      checkIntegrationStatus();
-    }
-    
-    // Verificar status a cada 30 segundos para manter sincronizado
+
+    checkIntegrationStatus();
     const intervalId = setInterval(checkIntegrationStatus, 30000);
-    
-    // Adicionar event listener para detectar mudanças no localStorage
+
     const handleStorageChange = (e) => {
       if (e.key === "mlIntegrado") {
         setMlIntegrado(e.newValue === "true");
       }
     };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
+    window.addEventListener("storage", handleStorageChange);
+
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
       clearInterval(intervalId);
     };
   }, [location]);
@@ -80,11 +73,9 @@ export default function Sidebar({ activePage }) {
       before:pointer-events-none before:animate-pulse`}
       style={{ boxShadow: "0 0 24px 6px #06b6d4cc" }}
     >
-      {/* Logo IA */}
       <div className="mb-10 flex items-center justify-center relative z-20">
         <Bot className="w-10 h-10 text-cyan-400" />
       </div>
-      {/* Menu Buttons */}
       <nav className="flex flex-col gap-4 flex-1 relative z-20">
         <button
           onClick={() => navigate("/dashboard")}
@@ -98,7 +89,6 @@ export default function Sidebar({ activePage }) {
           <Home className="w-6 h-6" />
           {sidebarOpen && <span>Dashboard</span>}
         </button>
-        {/* Botão Integrações corrigido */}
         <button
           onClick={() => navigate("/integracoes")}
           className={`flex items-center gap-3 px-3 py-3 rounded-xl text-lg font-medium transition ${
@@ -111,7 +101,6 @@ export default function Sidebar({ activePage }) {
           <Layers className="w-6 h-6" />
           {sidebarOpen && <span>Integrações</span>}
         </button>
-        {/* Botão Anúncios */}
         <button
           onClick={() => setAnunciosOpen(!anunciosOpen)}
           className={`flex items-center gap-3 px-3 py-3 rounded-xl text-lg font-medium transition ${
@@ -124,7 +113,6 @@ export default function Sidebar({ activePage }) {
           <List className="w-6 h-6" />
           {sidebarOpen && <span>Anúncios</span>}
         </button>
-        {/* Submenu Anúncios */}
         {anunciosOpen && sidebarOpen && (
           <div className="flex flex-col gap-2 ml-7 mt-2">
             <button
@@ -167,7 +155,6 @@ export default function Sidebar({ activePage }) {
           </div>
         )}
       </nav>
-      {/* Colapsar Sidebar */}
       <button
         onClick={() => setSidebarOpen((s) => !s)}
         className="mt-10 mx-auto p-2 rounded-lg bg-zinc-800 hover:bg-cyan-900 transition relative z-20"
@@ -175,7 +162,6 @@ export default function Sidebar({ activePage }) {
       >
         <Menu className="w-6 h-6" />
       </button>
-      {/* Sair */}
       <button
         title="Sair"
         className="mt-8 text-red-400 hover:text-red-600 transition mx-auto relative z-20"
