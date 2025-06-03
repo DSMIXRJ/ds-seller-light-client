@@ -50,7 +50,7 @@ export default function Integracoes() {
   const botaoEstilo = (integrado) => {
     const cor = integrado ? "#ff3333" : "#00ff88";
     return {
-      marginTop: "0.5rem", // mt-2 equivalente
+      marginTop: "0.5rem",
       backgroundColor: "#111",
       color: cor,
       fontWeight: "bold",
