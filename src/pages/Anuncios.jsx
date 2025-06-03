@@ -2,7 +2,6 @@ import Sidebar from "../components/Sidebar";
 import ProductTable from "../components/ProductTable";
 import { useParams } from "react-router-dom";
 
-// Nomes amigáveis das integrações
 const nomes = {
   ml: "Mercado Livre",
   shopee: "Shopee",
@@ -26,21 +25,3 @@ export default function Anuncios() {
     </div>
   );
 }
-✅ O que fazer agora:
-Substitua o conteúdo do seu arquivo src/pages/Anuncios.jsx por esse.
-
-Salve.
-
-Rode o projeto novamente e teste a página de anúncios.
-
-Assim que disser “deu certo”, eu volto imediatamente para o visual futurista conforme prometido.
-
-
-
-
-
-
-
-
-
-
