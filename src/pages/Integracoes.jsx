@@ -8,6 +8,9 @@ export default function Integracoes() {
   const [mlIntegrado, setMlIntegrado] = useState(
     localStorage.getItem("mlIntegrado") === "true"
   );
+  const [shopeeIntegrado, setShopeeIntegrado] = useState(false); // futuro
+  const [amazonIntegrado, setAmazonIntegrado] = useState(false); // futuro
+  const [atualizar, setAtualizar] = useState(false); // força atualização visual
 
   useEffect(() => {
     localStorage.setItem("mlIntegrado", mlIntegrado ? "true" : "false");
@@ -28,6 +31,21 @@ export default function Integracoes() {
   const handleRemoverML = () => {
     setMlIntegrado(false);
     localStorage.removeItem("mlIntegrado");
+    setAtualizar(!atualizar); // força o componente a re-renderizar
+  };
+
+  const gerarEstiloBox = (integrado, cor) => {
+    if (integrado) {
+      return {
+        borderColor: cor,
+        boxShadow: `0 0 40px 8px ${cor}66, 0 0 20px 4px ${cor}aa`,
+      };
+    } else {
+      return {
+        borderColor: "#ff0000",
+        boxShadow: `0 0 40px 8px #ff000066, 0 0 20px 4px #ff0000aa`,
+      };
+    }
   };
 
   return (
@@ -40,14 +58,8 @@ export default function Integracoes() {
         <div className="flex flex-row gap-8">
           {/* Mercado Livre */}
           <div
-            className={`flex flex-col items-center gap-2 p-6 w-48 h-48 rounded-3xl bg-zinc-900 border-2 ${
-              mlIntegrado ? "border-green-400" : "border-red-500"
-            } shadow-xl transition-all duration-300`}
-            style={{
-              boxShadow: mlIntegrado
-                ? "0 0 28px 4px #00ff5566, 0 0 12px 3px #00ff88aa"
-                : "0 0 28px 4px #ff333366, 0 0 12px 3px #ff0000aa",
-            }}
+            className="flex flex-col items-center gap-2 p-6 w-48 h-48 rounded-3xl bg-zinc-900 border-2 shadow-xl transition-all duration-300"
+            style={gerarEstiloBox(mlIntegrado, "#00ff55")}
           >
             <img
               src={logoMercadoLivre}
@@ -72,8 +84,10 @@ export default function Integracoes() {
           </div>
 
           {/* Shopee */}
-          <div className="flex flex-col items-center gap-2 p-6 w-48 h-48 rounded-3xl bg-zinc-900 border-2 border-orange-400 shadow-orange-400/50 shadow-xl opacity-70"
-               style={{ boxShadow: "0 0 18px 2px #ff572266, 0 0 6px 1px #ff9800aa" }}>
+          <div
+            className="flex flex-col items-center gap-2 p-6 w-48 h-48 rounded-3xl bg-zinc-900 border-2 shadow-xl opacity-80 transition-all duration-300"
+            style={gerarEstiloBox(shopeeIntegrado, "#ff9900")}
+          >
             <img
               src={logoShopee}
               alt="Shopee"
@@ -88,8 +102,10 @@ export default function Integracoes() {
           </div>
 
           {/* Amazon */}
-          <div className="flex flex-col items-center gap-2 p-6 w-48 h-48 rounded-3xl bg-zinc-900 border-2 border-yellow-400 shadow-yellow-400/40 shadow-xl opacity-70"
-               style={{ boxShadow: "0 0 14px 2px #ffb30066, 0 0 6px 1px #ffeb3baa" }}>
+          <div
+            className="flex flex-col items-center gap-2 p-6 w-48 h-48 rounded-3xl bg-zinc-900 border-2 shadow-xl opacity-80 transition-all duration-300"
+            style={gerarEstiloBox(amazonIntegrado, "#ffaa00")}
+          >
             <img
               src={logoAmazon}
               alt="Amazon"
