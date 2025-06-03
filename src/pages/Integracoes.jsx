@@ -37,14 +37,29 @@ export default function Integracoes() {
     if (integrado) {
       return {
         borderColor: cor,
-        boxShadow: `0 0 40px 8px ${cor}66, 0 0 20px 4px ${cor}aa`,
+        boxShadow: `0 0 20px 3px ${cor}66, 0 0 8px 2px ${cor}aa`, // brilho mais concentrado
       };
     } else {
       return {
         borderColor: "#ff0000",
-        boxShadow: `0 0 40px 8px #ff000066, 0 0 20px 4px #ff0000aa`,
+        boxShadow: `0 0 20px 3px #ff000066, 0 0 8px 2px #ff0000aa`,
       };
     }
+  };
+
+  const botaoEstilo = (integrado) => {
+    const cor = integrado ? "#ff3333" : "#00ff88";
+    return {
+      backgroundColor: "#111",
+      color: cor,
+      fontWeight: "bold",
+      padding: "6px 16px",
+      borderRadius: "12px",
+      boxShadow: `0 0 6px 1px ${cor}88`,
+      textShadow: `0 0 4px ${cor}`,
+      fontSize: "0.875rem",
+      transition: "0.3s all ease-in-out",
+    };
   };
 
   return (
@@ -66,17 +81,11 @@ export default function Integracoes() {
               className="w-full h-24 object-contain"
             />
             {mlIntegrado ? (
-              <button
-                className="mt-2 px-4 py-1 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 transition text-sm shadow-md"
-                onClick={handleRemoverML}
-              >
+              <button style={botaoEstilo(true)} onClick={handleRemoverML}>
                 Remover
               </button>
             ) : (
-              <button
-                className="mt-2 px-4 py-1 rounded-xl bg-green-400 text-black font-bold hover:bg-green-500 transition text-sm shadow-md"
-                onClick={handleIntegrarML}
-              >
+              <button style={botaoEstilo(false)} onClick={handleIntegrarML}>
                 Integrar
               </button>
             )}
