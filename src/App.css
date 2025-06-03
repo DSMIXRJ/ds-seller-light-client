@@ -1,3 +1,44 @@
+/* ======== FUNDO FUTURISTA COM LINHAS EM MOVIMENTO ======== */
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #0b0f1c;
+  font-family: sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  background: repeating-linear-gradient(
+    120deg,
+    rgba(0, 255, 255, 0.05) 0px,
+    rgba(0, 255, 255, 0.05) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  animation: moveLines 60s linear infinite;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+@keyframes moveLines {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  100% {
+    transform: translateX(-20%) translateY(-20%);
+  }
+}
+
+/* ======== ESTILOS EXISTENTES DO PROJETO ======== */
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
