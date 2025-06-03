@@ -2,15 +2,15 @@ import { useState, useEffect } from "react";
 import logoMercadoLivre from "../assets/mercado-livre.png";
 import logoShopee from "../assets/shopee.png";
 import logoAmazon from "../assets/amazon.png";
-import Sidebar from "../components/Sidebar"; // ajuste se o nome for diferente
+import Sidebar from "../components/Sidebar";
 
 export default function Integracoes() {
   const [mlIntegrado, setMlIntegrado] = useState(
-    sessionStorage.getItem("mlIntegrado") === "true"
+    localStorage.getItem("mlIntegrado") === "true"
   );
 
   useEffect(() => {
-    sessionStorage.setItem("mlIntegrado", mlIntegrado ? "true" : "false");
+    localStorage.setItem("mlIntegrado", mlIntegrado ? "true" : "false");
   }, [mlIntegrado]);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function Integracoes() {
 
   const handleRemoverML = () => {
     setMlIntegrado(false);
-    sessionStorage.removeItem("mlIntegrado");
+    localStorage.removeItem("mlIntegrado");
   };
 
   return (
