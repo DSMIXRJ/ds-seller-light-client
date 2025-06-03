@@ -2,9 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-// Define a base global de conexão
-axios.defaults.baseURL = "https://dsseller-backend-final.onrender.com";
-
 function Login() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -15,7 +12,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const resposta = await axios.post('/api/login', {
+      const resposta = await axios.post('https://dsseller-backend-final.onrender.com/api/login', {
         email,
         password: senha,
       });
