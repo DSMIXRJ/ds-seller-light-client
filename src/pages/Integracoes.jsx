@@ -8,18 +8,16 @@ export default function Integracoes() {
   const [mlIntegrado, setMlIntegrado] = useState(
     localStorage.getItem("mlIntegrado") === "true"
   );
-  const [shopeeIntegrado, setShopeeIntegrado] = useState(false); // futuro
-  const [amazonIntegrado, setAmazonIntegrado] = useState(false); // futuro
-  const [atualizar, setAtualizar] = useState(false); // força atualização visual
-
-  useEffect(() => {
-    localStorage.setItem("mlIntegrado", mlIntegrado ? "true" : "false");
-  }, [mlIntegrado]);
+  const [shopeeIntegrado, setShopeeIntegrado] = useState(false);
+  const [amazonIntegrado, setAmazonIntegrado] = useState(false);
+  const [atualizar, setAtualizar] = useState(false);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get("ml_integrado") === "1") {
       setMlIntegrado(true);
+      localStorage.setItem("mlIntegrado", "true");
+      window.dispatchEvent(new Event("mlStatusChange"));
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, []);
@@ -30,8 +28,9 @@ export default function Integracoes() {
 
   const handleRemoverML = () => {
     setMlIntegrado(false);
-    localStorage.removeItem("mlIntegrado");
-    setAtualizar(!atualizar); // força o componente a re-renderizar
+    localStorage.setItem("mlIntegrado", "false");
+    window.dispatchEvent(new Event("mlStatusChange"));
+    setAtualizar(!atualizar);
   };
 
   const gerarEstiloBox = (integrado, cor) => {
