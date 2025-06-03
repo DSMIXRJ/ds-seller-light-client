@@ -8,32 +8,21 @@ import { useNavigate, useLocation } from "react-router-dom";
 export default function Sidebar({ activePage }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [anunciosOpen, setAnunciosOpen] = useState(false);
-  const [mlIntegrado, setMlIntegrado] = useState(false); // inicia com false
+  const [mlIntegrado, setMlIntegrado] = useState(false);
   const shopeeIntegrado = false;
   const amazonIntegrado = false;
 
   const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const mlIntegradoParam = queryParams.get("ml_integrado");
-
-    if (mlIntegradoParam === "1") {
-      localStorage.setItem("mlIntegrado", "true");
-      setMlIntegrado(true);
-    } else {
-      const stored = localStorage.getItem("mlIntegrado") === "true";
-      setMlIntegrado(stored);
-    }
-
     const syncStatus = () => {
       setMlIntegrado(localStorage.getItem("mlIntegrado") === "true");
     };
 
-    window.addEventListener("storage", syncStatus);
-    return () => window.removeEventListener("storage", syncStatus);
-  }, [location]);
+    syncStatus();
+    window.addEventListener("mlStatusChange", syncStatus);
+    return () => window.removeEventListener("mlStatusChange", syncStatus);
+  }, []);
 
   return (
     <aside
@@ -45,12 +34,10 @@ export default function Sidebar({ activePage }) {
       before:pointer-events-none before:animate-pulse`}
       style={{ boxShadow: "0 0 24px 6px #06b6d4cc" }}
     >
-      {/* Logo IA */}
       <div className="mb-10 flex items-center justify-center relative z-20">
         <Bot className="w-10 h-10 text-cyan-400" />
       </div>
 
-      {/* Menu Buttons */}
       <nav className="flex flex-col gap-4 flex-1 relative z-20">
         <button
           onClick={() => navigate("/dashboard")}
@@ -59,7 +46,6 @@ export default function Sidebar({ activePage }) {
               ? "bg-cyan-900 text-cyan-300"
               : "hover:bg-zinc-800 text-zinc-200"
           }`}
-          style={{ borderRadius: "1.25rem" }}
         >
           <Home className="w-6 h-6" />
           {sidebarOpen && <span>Dashboard</span>}
@@ -72,7 +58,6 @@ export default function Sidebar({ activePage }) {
               ? "bg-cyan-900 text-cyan-300"
               : "hover:bg-zinc-800 text-zinc-200"
           }`}
-          style={{ borderRadius: "1.25rem" }}
         >
           <Layers className="w-6 h-6" />
           {sidebarOpen && <span>Integrações</span>}
@@ -85,7 +70,6 @@ export default function Sidebar({ activePage }) {
               ? "bg-cyan-900 text-cyan-300"
               : "hover:bg-zinc-800 text-zinc-200"
           }`}
-          style={{ borderRadius: "1.25rem" }}
         >
           <List className="w-6 h-6" />
           {sidebarOpen && <span>Anúncios</span>}
@@ -96,38 +80,25 @@ export default function Sidebar({ activePage }) {
             <button
               onClick={() => mlIntegrado && navigate("/anuncios/ml")}
               disabled={!mlIntegrado}
-              className={`flex items-center gap-2 px-2 py-1 rounded-lg transition text-sm
-                ${
-                  mlIntegrado
-                    ? "bg-cyan-900 text-cyan-300 hover:bg-cyan-700"
-                    : "bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
-                }`}
+              className={`flex items-center gap-2 px-2 py-1 rounded-lg transition text-sm ${
+                mlIntegrado
+                  ? "bg-cyan-900 text-cyan-300 hover:bg-cyan-700"
+                  : "bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
+              }`}
             >
               <img src={logoMercadoLivre} alt="ML" className="w-6 h-6" />
               Mercado Livre
             </button>
             <button
-              onClick={() => shopeeIntegrado && navigate("/anuncios/shopee")}
-              disabled={!shopeeIntegrado}
-              className={`flex items-center gap-2 px-2 py-1 rounded-lg transition text-sm
-                ${
-                  shopeeIntegrado
-                    ? "bg-orange-900 text-orange-300 hover:bg-orange-700"
-                    : "bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
-                }`}
+              disabled
+              className="flex items-center gap-2 px-2 py-1 rounded-lg transition text-sm bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
             >
               <img src={logoShopee} alt="Shopee" className="w-6 h-6" />
               Shopee
             </button>
             <button
-              onClick={() => amazonIntegrado && navigate("/anuncios/amazon")}
-              disabled={!amazonIntegrado}
-              className={`flex items-center gap-2 px-2 py-1 rounded-lg transition text-sm
-                ${
-                  amazonIntegrado
-                    ? "bg-yellow-900 text-yellow-300 hover:bg-yellow-700"
-                    : "bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
-                }`}
+              disabled
+              className="flex items-center gap-2 px-2 py-1 rounded-lg transition text-sm bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
             >
               <img src={logoAmazon} alt="Amazon" className="w-6 h-6" />
               Amazon
