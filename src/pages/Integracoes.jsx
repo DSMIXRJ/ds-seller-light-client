@@ -37,7 +37,7 @@ export default function Integracoes() {
     if (integrado) {
       return {
         borderColor: cor,
-        boxShadow: `0 0 20px 3px ${cor}66, 0 0 8px 2px ${cor}aa`, // brilho mais concentrado
+        boxShadow: `0 0 20px 3px ${cor}66, 0 0 8px 2px ${cor}aa`,
       };
     } else {
       return {
@@ -50,6 +50,7 @@ export default function Integracoes() {
   const botaoEstilo = (integrado) => {
     const cor = integrado ? "#ff3333" : "#00ff88";
     return {
+      marginTop: "0.5rem", // mt-2 equivalente
       backgroundColor: "#111",
       color: cor,
       fontWeight: "bold",
