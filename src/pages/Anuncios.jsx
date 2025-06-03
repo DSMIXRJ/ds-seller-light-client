@@ -2,6 +2,7 @@ import Sidebar from "../components/Sidebar";
 import ProductTable from "../components/ProductTable";
 import { useParams } from "react-router-dom";
 
+// Nomes amigáveis das integrações
 const nomes = {
   ml: "Mercado Livre",
   shopee: "Shopee",
@@ -10,7 +11,6 @@ const nomes = {
 
 export default function Anuncios() {
   const { integracao } = useParams();
-
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-800 text-zinc-50">
       <Sidebar activePage="anuncios" />
@@ -19,7 +19,7 @@ export default function Anuncios() {
           <h1 className="text-3xl md:text-4xl font-bold text-cyan-400 mb-10 tracking-widest">
             Anúncios — {nomes[integracao] || "Integração"}
           </h1>
-          <ProductTable apiPath="/api/mercadolivre/items" />
+          <ProductTable />
         </div>
       </main>
     </div>
