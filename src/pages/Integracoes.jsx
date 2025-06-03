@@ -26,26 +26,11 @@ export default function Integracoes() {
     window.location.href = "https://dsseller-backend-final.onrender.com/auth/meli";
   };
 
-  const handleRemoverML = async () => {
-    try {
-      const response = await fetch(
-        "https://dsseller-backend-final.onrender.com/auth/meli/logout",
-        { method: "DELETE" }
-      );
-
-      if (response.ok) {
-        setMlIntegrado(false);
-        localStorage.setItem("mlIntegrado", "false");
-        window.dispatchEvent(new Event("mlStatusChange"));
-        setAtualizar(!atualizar);
-      } else {
-        console.error("Erro ao revogar token da API do Mercado Livre");
-        alert("Não foi possível remover a integração. Tente novamente.");
-      }
-    } catch (error) {
-      console.error("Erro ao remover integração:", error);
-      alert("Falha ao comunicar com o servidor.");
-    }
+  const handleRemoverML = () => {
+    setMlIntegrado(false);
+    localStorage.setItem("mlIntegrado", "false");
+    window.dispatchEvent(new Event("mlStatusChange"));
+    setAtualizar(!atualizar);
   };
 
   const gerarEstiloBox = (integrado, cor) => {
@@ -65,7 +50,7 @@ export default function Integracoes() {
   const botaoEstilo = (integrado) => {
     const cor = integrado ? "#ff3333" : "#00ff88";
     return {
-      marginTop: "0.5rem",
+      marginTop: "0.5rem", // mt-2 equivalente
       backgroundColor: "#111",
       color: cor,
       fontWeight: "bold",
