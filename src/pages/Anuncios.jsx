@@ -11,6 +11,7 @@ const nomes = {
 
 export default function Anuncios() {
   const { integracao } = useParams();
+
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-800 text-zinc-50">
       <Sidebar activePage="anuncios" />
@@ -19,9 +20,27 @@ export default function Anuncios() {
           <h1 className="text-3xl md:text-4xl font-bold text-cyan-400 mb-10 tracking-widest">
             Anúncios — {nomes[integracao] || "Integração"}
           </h1>
-          <ProductTable />
+          <ProductTable apiPath="/api/mercadolivre/items" />
         </div>
       </main>
     </div>
   );
 }
+✅ O que fazer agora:
+Substitua o conteúdo do seu arquivo src/pages/Anuncios.jsx por esse.
+
+Salve.
+
+Rode o projeto novamente e teste a página de anúncios.
+
+Assim que disser “deu certo”, eu volto imediatamente para o visual futurista conforme prometido.
+
+
+
+
+
+
+
+
+
+
