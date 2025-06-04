@@ -20,14 +20,20 @@ export default function App() {
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
-      ctx.strokeStyle = "rgba(0, 255, 255, 0.2)";
-      ctx.lineWidth = 1;
-
       lines.forEach((line) => {
+        // linha neon mais visível
         ctx.beginPath();
+        ctx.strokeStyle = "rgba(0, 255, 255, 0.35)";
+        ctx.lineWidth = 1;
         ctx.moveTo(line.x, line.y);
         ctx.lineTo(line.x, line.y + line.length);
         ctx.stroke();
+
+        // ponto de luz suave no início da linha
+        ctx.beginPath();
+        ctx.fillStyle = "rgba(0, 255, 255, 0.8)";
+        ctx.arc(line.x, line.y, 1.5, 0, Math.PI * 2);
+        ctx.fill();
 
         line.y += line.speed;
         if (line.y > height) {
