@@ -30,14 +30,14 @@ export default function Dashboard() {
   const [filtro, setFiltro] = useState("Hoje");
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-800 text-zinc-50">
+    <div className="flex min-h-screen text-zinc-50 content-layer">
       <Sidebar
         activePage="dashboard"
         onIntegracoesClick={() => window.location.href = "/dashboard"}
       />
       <main className="flex-1 flex flex-col p-8 items-center justify-center">
         <div className="w-full max-w-6xl">
-          <h1 className="text-3xl md:text-4xl font-bold text-cyan-400 mb-10 tracking-widest">
+          <h1 className="text-3xl md:text-4xl font-bold text-cyan-400 mb-10 tracking-widest glow-cyan">
             Painel de Estatísticas
           </h1>
           {/* Filtros de período */}
@@ -45,10 +45,10 @@ export default function Dashboard() {
             {["Hoje", "7 dias", "30 dias", "Total"].map((opcao) => (
               <button
                 key={opcao}
-                className={`px-6 py-2 rounded-xl font-semibold border-2 transition ${
+                className={`px-6 py-2 rounded-xl font-semibold border-2 transition-all duration-300 ${
                   filtro === opcao
-                    ? "bg-cyan-900 border-cyan-400 text-cyan-300 shadow-cyan-400/30 shadow-lg"
-                    : "bg-zinc-800 border-zinc-700 text-zinc-200 hover:border-cyan-400"
+                    ? "bg-cyan-900/80 border-cyan-400 text-cyan-300 glow-cyan backdrop-blur-sm"
+                    : "bg-zinc-800/60 border-zinc-700 text-zinc-200 hover:border-cyan-400 hover:glow-cyan backdrop-blur-sm"
                 }`}
                 style={{ borderRadius: "1.25rem" }}
                 onClick={() => setFiltro(opcao)}
@@ -62,8 +62,10 @@ export default function Dashboard() {
             {stats.map((stat, idx) => (
               <div
                 key={idx}
-                className={`bg-zinc-800/90 rounded-2xl shadow-xl p-8 flex flex-col items-center border border-${stat.color}-400 hover:shadow-${stat.color}-400/30 transition`}
-                style={{ boxShadow: `0 0 16px 2px var(--tw-shadow-color, #06b6d4bb)` }}
+                className={`bg-zinc-800/70 backdrop-blur-sm rounded-2xl shadow-xl p-8 flex flex-col items-center border border-${stat.color}-400 hover:shadow-${stat.color}-400/40 transition-all duration-300 hover:scale-105`}
+                style={{ 
+                  boxShadow: `0 0 20px 3px ${stat.color === 'cyan' ? '#06b6d4' : stat.color === 'green' ? '#10b981' : '#eab308'}33` 
+                }}
               >
                 <span className="text-sm text-zinc-400 mb-2">{stat.title}</span>
                 <span className={`text-2xl font-bold text-${stat.color}-400`}>{stat.value}</span>
@@ -72,7 +74,7 @@ export default function Dashboard() {
             ))}
           </div>
           {/* Pode adicionar gráficos ou métricas extras aqui */}
-          <div className="text-zinc-400 text-sm text-center opacity-70">
+          <div className="text-zinc-400 text-sm text-center opacity-70 backdrop-blur-sm bg-zinc-900/30 rounded-lg p-4">
             Estatísticas simuladas. Integração real em breve.
           </div>
         </div>
@@ -80,3 +82,4 @@ export default function Dashboard() {
     </div>
   );
 }
+
