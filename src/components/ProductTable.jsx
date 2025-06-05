@@ -9,15 +9,25 @@ export default function ProductTable() {
   const [hoveredStock, setHoveredStock] = useState(null);
   const { integracao } = useParams();
 
+  // Função para buscar anúncios reais
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
+        // URL do backend
         const backendUrl = "https://dsseller-backend-final.onrender.com";
+        
+        // Verificar qual marketplace está sendo acessado
         if (integracao === "ml") {
-          const response = await axios.get(`${backendUrl}/api/mercadolivre/items`);
+          const response = await axios.get(`${backendUrl}/api/mercadolivre/items`, {
+            headers: {
+              // Se necessário, enviar token de autenticação do usuário
+              // Authorization: `Bearer ${sessionStorage.getItem('userToken')}`
+            }
+          });
           setProducts(response.data);
         } else {
+          // Para outros marketplaces, usar dados de exemplo por enquanto
           setProducts(sampleProducts);
         }
         setLoading(false);
@@ -31,12 +41,18 @@ export default function ProductTable() {
     fetchProducts();
   }, [integracao]);
 
+  // Função para editar preço de venda/custo inline
   const handleEdit = (id, field, value) => {
     setProducts((prev) =>
       prev.map((p) => (p.id === id ? { ...p, [field]: Number(value) } : p))
     );
+    
+    // Aqui poderia ser adicionada uma chamada à API para atualizar o preço no Mercado Livre
+    // Por exemplo:
+    // axios.put(`${backendUrl}/api/mercadolivre/items/${id}/price`, { price: value })
   };
 
+  // Renderização condicional para loading e erro
   if (loading) {
     return (
       <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-8 flex justify-center items-center h-64">
@@ -77,7 +93,7 @@ export default function ProductTable() {
           Filtros
         </button>
       </div>
-
+      
       {products.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-gray-400">Nenhum anúncio encontrado para esta integração.</p>
@@ -87,6 +103,7 @@ export default function ProductTable() {
           <table className="min-w-full table-auto">
             <thead className="bg-[#181c2f] text-xs uppercase">
               <tr>
+                <th className="px-3 py-2 text-left">Imagem</th>
                 <th className="px-3 py-2 text-left">Estoque</th>
                 <th className="px-3 py-2 text-left">Título do Produto</th>
                 <th className="px-3 py-2 text-left">Preço de Venda (R$)</th>
@@ -104,9 +121,18 @@ export default function ProductTable() {
                 <tr
                   key={prod.id}
                   className={`border-b border-[#23243a] ${
-                    prod.promocao ? "bg-[#14273b] border-l-4 border-blue-500" : ""
+                    prod.promocao
+                      ? "bg-[#14273b] border-l-4 border-blue-500"
+                      : ""
                   }`}
                 >
+                  <td className="px-3 py-2">
+                    <img
+                      src={prod.image}
+                      alt={prod.title}
+                      className="rounded-lg w-12 h-12 object-cover border border-[#23243a]"
+                    />
+                  </td>
                   <td
                     className="px-3 py-2 relative"
                     onMouseEnter={() => setHoveredStock(prod.id)}
@@ -123,9 +149,9 @@ export default function ProductTable() {
                     )}
                   </td>
                   <td className="px-3 py-2">
-                    <a
-                      href={prod.permalink}
-                      target="_blank"
+                    <a 
+                      href={prod.permalink} 
+                      target="_blank" 
                       rel="noopener noreferrer"
                       className="hover:text-cyan-400 transition"
                     >
@@ -137,7 +163,9 @@ export default function ProductTable() {
                       type="number"
                       className="bg-transparent border-b border-blue-400 w-20 text-right focus:outline-none"
                       value={prod.precoVenda}
-                      onChange={(e) => handleEdit(prod.id, "precoVenda", e.target.value)}
+                      onChange={(e) =>
+                        handleEdit(prod.id, "precoVenda", e.target.value)
+                      }
                     />
                   </td>
                   <td className="px-3 py-2">
@@ -145,7 +173,9 @@ export default function ProductTable() {
                       type="number"
                       className="bg-transparent border-b border-yellow-400 w-20 text-right focus:outline-none"
                       value={prod.precoCusto}
-                      onChange={(e) => handleEdit(prod.id, "precoCusto", e.target.value)}
+                      onChange={(e) =>
+                        handleEdit(prod.id, "precoCusto", e.target.value)
+                      }
                     />
                   </td>
                   <td className="px-3 py-2">{prod.margemPercentual}%</td>
@@ -155,7 +185,10 @@ export default function ProductTable() {
                   <td className="px-3 py-2">{prod.vendas}</td>
                   <td className="px-3 py-2 text-right">
                     {prod.promocao && (
-                      <span className="text-blue-400 font-semibold" title="Produto em promoção!">
+                      <span
+                        className="text-blue-400 font-semibold"
+                        title="Produto em promoção!"
+                      >
                         PROMO
                       </span>
                     )}
@@ -170,9 +203,11 @@ export default function ProductTable() {
   );
 }
 
+// Manter dados de exemplo para fallback e outros marketplaces
 const sampleProducts = [
   {
     id: 1,
+    image: "https://via.placeholder.com/64",
     estoque: 13,
     title: "Plafon Redondo Freijó 35cm",
     precoVenda: 199.99,
@@ -183,6 +218,6 @@ const sampleProducts = [
     visitas: 200,
     vendas: 8,
     promocao: true,
-    permalink: "#"
   },
+  // ...adicione mais produtos para testes
 ];
