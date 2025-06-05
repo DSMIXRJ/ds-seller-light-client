@@ -5,19 +5,23 @@ import logoAmazon from "../assets/amazon.png";
 import Sidebar from "../components/Sidebar";
 
 export default function Integracoes() {
-  const [mlIntegrado, setMlIntegrado] = useState(
-    localStorage.getItem("mlIntegrado") === "true"
-  );
+  const [mlIntegrado, setMlIntegrado] = useState(false);
   const [shopeeIntegrado, setShopeeIntegrado] = useState(false);
   const [amazonIntegrado, setAmazonIntegrado] = useState(false);
   const [atualizar, setAtualizar] = useState(false);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get("ml_integrado") === "1") {
+    const mlQuery = urlParams.get("ml_integrado") === "1";
+    const mlLocal = localStorage.getItem("mlIntegrado") === "true";
+
+    if (mlQuery || mlLocal) {
       setMlIntegrado(true);
       localStorage.setItem("mlIntegrado", "true");
       window.dispatchEvent(new Event("mlStatusChange"));
+    }
+
+    if (mlQuery) {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, []);
