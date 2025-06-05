@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
 import { Menu, Home, Layers, LogOut, Bot, List } from "lucide-react";
-import logoMercadoLivre from "../assets/mercado-livre.png";
-import logoShopee from "../assets/shopee.png";
-import logoAmazon from "../assets/amazon.png";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Sidebar({ activePage }) {
@@ -44,7 +41,6 @@ export default function Sidebar({ activePage }) {
       before:pointer-events-none before:animate-pulse`}
       style={{ boxShadow: "0 0 24px 6px #06b6d4cc" }}
     >
-      {/* Logo */}
       <div className="mb-10 flex items-center justify-center relative z-20">
         <Bot className="w-10 h-10 text-cyan-400" />
       </div>
@@ -98,7 +94,7 @@ export default function Sidebar({ activePage }) {
                     : "bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
                 }`}
             >
-              <img src={logoMercadoLivre} alt="ML" className="w-6 h-6" />
+              {/* Ícone removido */}
               Mercado Livre
             </button>
 
@@ -106,7 +102,7 @@ export default function Sidebar({ activePage }) {
               disabled
               className="flex items-center gap-2 px-2 py-1 rounded-lg bg-zinc-800 text-zinc-500 text-sm cursor-not-allowed"
             >
-              <img src={logoShopee} alt="Shopee" className="w-6 h-6" />
+              {/* Ícone removido */}
               Shopee
             </button>
 
@@ -114,7 +110,7 @@ export default function Sidebar({ activePage }) {
               disabled
               className="flex items-center gap-2 px-2 py-1 rounded-lg bg-zinc-800 text-zinc-500 text-sm cursor-not-allowed"
             >
-              <img src={logoAmazon} alt="Amazon" className="w-6 h-6" />
+              {/* Ícone removido */}
               Amazon
             </button>
           </div>
