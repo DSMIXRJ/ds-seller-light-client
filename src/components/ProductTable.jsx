@@ -34,7 +34,27 @@ export default function ProductTable() {
 
   const handleEdit = (id, field, value) => {
     setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, [field]: Number(value) } : p))
+      prev.map((p) => {
+        if (p.id === id) {
+          const newValue = Number(value);
+          const updated = { ...p, [field]: newValue };
+
+          if (field === "precoCusto") {
+            const venda = updated.precoVenda;
+            const custo = newValue;
+            const margemReais = venda - custo;
+            const margemPercentual = venda > 0 ? ((margemReais / venda) * 100) : 0;
+            const lucroTotal = margemReais * updated.vendas;
+
+            updated.margemReais = margemReais.toFixed(2);
+            updated.margemPercentual = margemPercentual.toFixed(2);
+            updated.lucroTotal = lucroTotal.toFixed(2);
+          }
+
+          return updated;
+        }
+        return p;
+      })
     );
   };
 
@@ -145,7 +165,7 @@ export default function ProductTable() {
                     <input
                       type="number"
                       inputMode="decimal"
-                      className="bg-transparent border-b border-blue-400 w-20 text-right focus:outline-none no-spinner"
+                      className="bg-transparent border-b border-blue-400 w-20 text-right focus:outline-none"
                       value={prod.precoVenda}
                       onChange={(e) =>
                         handleEdit(prod.id, "precoVenda", e.target.value)
@@ -156,7 +176,7 @@ export default function ProductTable() {
                     <input
                       type="number"
                       inputMode="decimal"
-                      className="bg-transparent border-b border-yellow-400 w-20 text-right focus:outline-none no-spinner"
+                      className="bg-transparent border-b border-yellow-400 w-20 text-right focus:outline-none"
                       value={prod.precoCusto}
                       onChange={(e) =>
                         handleEdit(prod.id, "precoCusto", e.target.value)
