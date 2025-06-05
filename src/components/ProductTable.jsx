@@ -92,12 +92,12 @@ export default function ProductTable() {
               <th className="px-3 py-2 text-left">Imagem</th>
               <th className="px-3 py-2 text-left">Estoque</th>
               <th className="px-3 py-2 text-left">Título</th>
-              <th className="px-3 py-2 text-left">Preço Venda</th>
-              <th className="px-3 py-2 text-left">Preço Custo</th>
+              <th className="px-3 py-2 text-left">Preço</th>
+              <th className="px-3 py-2 text-left">Custo</th>
               <th className="px-3 py-2 text-center">Lucro %</th>
               <th className="px-3 py-2 text-center">Lucro (R$)</th>
               <th className="px-3 py-2 text-center">Lucro Total</th>
-              <th className="px-3 py-2 text-left">Vendas</th>
+              <th className="px-3 py-2 text-center">Vendas</th>
             </tr>
           </thead>
           <tbody>
@@ -120,30 +120,28 @@ export default function ProductTable() {
                 <td className="px-3 py-2">
                   <input
                     type="text"
-                    placeholder=""
                     value={prod.precoCustoMasked}
                     onChange={(e) => handleMaskedChange(prod.id, "precoCusto", e.target.value)}
-                    className="w-24 text-right bg-transparent border-b border-cyan-500 focus:outline-none placeholder-transparent"
+                    className="w-24 text-right bg-transparent border-b border-yellow-400 focus:outline-none"
                     inputMode="numeric"
-                    style={{ caretColor: "#00ffff" }}
                   />
                 </td>
                 <td className="px-3 py-2 text-center">
-                  <div className="border-b border-cyan-500 inline-block w-full text-center">
+                  <div className="border-b border-green-500 inline-block w-full text-center">
                     {prod.lucroPercentual}
                   </div>
                 </td>
                 <td className="px-3 py-2 text-center">
-                  <div className="border-b border-cyan-500 inline-block w-full text-center">
+                  <div className="border-b border-blue-500 inline-block w-full text-center">
                     {prod.lucroReais}
                   </div>
                 </td>
                 <td className="px-3 py-2 text-center">
-                  <div className="border-b border-cyan-500 inline-block w-full text-center">
+                  <div className="border-b border-purple-500 inline-block w-full text-center">
                     {prod.lucroTotal}
                   </div>
                 </td>
-                <td className="px-3 py-2">{prod.vendas}</td>
+                <td className="px-3 py-2 text-center">{prod.vendas}</td>
               </tr>
             ))}
           </tbody>
