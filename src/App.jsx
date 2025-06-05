@@ -8,7 +8,7 @@ import FuturisticBackground from "./components/FuturisticBackground";
 export default function App() {
   return (
     <BrowserRouter>
-      {/* Fundo futurista aplicado globalmente */}
+      {/* Fundo futurista aplicado globalmente com maior prioridade de renderização */}
       <FuturisticBackground />
       
       {/* Conteúdo principal com z-index superior */}
