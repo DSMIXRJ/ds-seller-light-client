@@ -107,7 +107,13 @@ export default function ProductTable() {
                   <img src={prod.image} alt="" className="w-12 h-12 rounded" />
                 </td>
                 <td className="px-3 py-2 text-left">{prod.estoque}</td>
-                <td className="px-3 py-2 text-left">{prod.title}</td>
+
+                {/* TÍTULO COM TRUNCATE E TOOLTIP */}
+                <td className="px-3 py-2 text-left">
+                  <div className="truncate max-w-[260px]" title={prod.title}>
+                    {prod.title}
+                  </div>
+                </td>
 
                 {/* PREÇO (input editável) */}
                 <td className="px-3 py-2">
@@ -168,9 +174,10 @@ const sampleProducts = [
     id: 1,
     image: "https://via.placeholder.com/64",
     estoque: 10,
-    title: "Plafon Redondo Freijó 35cm",
+    title: "Plafon Redondo Madeira 35cm Bivolt - Cor Freijó",
     precoVenda: 199.99,
     vendas: 5,
     promocao: true,
   },
 ];
+
