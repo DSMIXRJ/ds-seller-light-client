@@ -11,7 +11,7 @@ const FuturisticBackground = () => {
         {/* Linha vertical (25% da esquerda) */}
         <div className="absolute top-0 left-1/4 w-[2px] h-full bg-gradient-to-b from-transparent via-cyan-400/60 to-transparent animate-pulse-slow line-glow-cyan"></div>
 
-        {/* Linha horizontal (75% da altura) */}
+        {/* Linha horizontal (80% da altura) */}
         <div className="absolute top-3/4 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-400/60 to-transparent animate-pulse-slower line-glow-blue"></div>
       </div>
 
