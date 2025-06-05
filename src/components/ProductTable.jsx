@@ -108,33 +108,43 @@ export default function ProductTable() {
                 </td>
                 <td className="px-3 py-2 text-left">{prod.estoque}</td>
                 <td className="px-3 py-2 text-left">{prod.title}</td>
+
+                {/* Preço */}
                 <td className="px-3 py-2">
-                  <input
-                    type="text"
-                    value={prod.precoVendaMasked}
-                    onChange={(e) => handleMaskedChange(prod.id, "precoVenda", e.target.value)}
-                    className="text-center bg-transparent border-b-2 border-cyan-500 focus:outline-none w-auto min-w-[72px]"
-                    inputMode="numeric"
-                  />
+                  <div className="inline-block border-b-2 border-cyan-500 px-1 min-w-[96px] text-center">
+                    {prod.precoVendaMasked}
+                  </div>
                 </td>
+
+                {/* Custo */}
                 <td className="px-3 py-2">
-                  <input
-                    type="text"
-                    value={prod.precoCustoMasked}
-                    onChange={(e) => handleMaskedChange(prod.id, "precoCusto", e.target.value)}
-                    className="text-center bg-transparent border-b-2 border-yellow-400 focus:outline-none w-auto min-w-[72px]"
-                    inputMode="numeric"
-                  />
+                  <div className="inline-block border-b-2 border-yellow-400 px-1 min-w-[96px] text-center">
+                    {prod.precoCustoMasked || "R$ 0,00"}
+                  </div>
                 </td>
+
+                {/* Lucro % */}
                 <td className="px-3 py-2">
-                  <div className="inline-block border-b-2 border-green-500 px-1">{prod.lucroPercentual}</div>
+                  <div className="inline-block border-b-2 border-green-500 px-1 min-w-[72px] text-center">
+                    {prod.lucroPercentual}
+                  </div>
                 </td>
+
+                {/* Lucro R$ */}
                 <td className="px-3 py-2">
-                  <div className="inline-block border-b-2 border-blue-500 px-1">{prod.lucroReais}</div>
+                  <div className="inline-block border-b-2 border-blue-500 px-1 min-w-[96px] text-center">
+                    {prod.lucroReais}
+                  </div>
                 </td>
+
+                {/* Lucro Total */}
                 <td className="px-3 py-2">
-                  <div className="inline-block border-b-2 border-purple-500 px-1">{prod.lucroTotal}</div>
+                  <div className="inline-block border-b-2 border-purple-500 px-1 min-w-[96px] text-center">
+                    {prod.lucroTotal}
+                  </div>
                 </td>
+
+                {/* Vendas */}
                 <td className="px-3 py-2">{prod.vendas}</td>
               </tr>
             ))}
