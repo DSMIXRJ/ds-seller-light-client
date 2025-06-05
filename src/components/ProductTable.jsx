@@ -108,14 +108,17 @@ export default function ProductTable() {
                 </td>
                 <td className="px-3 py-2 text-left">{prod.estoque}</td>
 
-                {/* TÍTULO COM TRUNCATE E TOOLTIP */}
+                {/* TÍTULO: 2 linhas + tooltip + largura reduzida */}
                 <td className="px-3 py-2 text-left">
-                  <div className="truncate max-w-[260px]" title={prod.title}>
+                  <div
+                    className="max-w-[156px] overflow-hidden text-ellipsis line-clamp-2"
+                    title={prod.title}
+                  >
                     {prod.title}
                   </div>
                 </td>
 
-                {/* PREÇO (input editável) */}
+                {/* PREÇO */}
                 <td className="px-3 py-2">
                   <input
                     type="text"
@@ -126,7 +129,7 @@ export default function ProductTable() {
                   />
                 </td>
 
-                {/* CUSTO (input editável) */}
+                {/* CUSTO */}
                 <td className="px-3 py-2">
                   <input
                     type="text"
@@ -180,4 +183,3 @@ const sampleProducts = [
     promocao: true,
   },
 ];
-
