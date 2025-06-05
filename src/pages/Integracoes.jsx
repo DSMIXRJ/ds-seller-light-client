@@ -15,7 +15,10 @@ export default function Integracoes() {
     const mlQuery = urlParams.get("ml_integrado") === "1";
     const mlLocal = localStorage.getItem("mlIntegrado") === "true";
 
-    if (mlQuery || mlLocal) {
+    // Força integração se a aba de anúncios do Mercado Livre estiver visível
+    const mlAbaAtiva = window.location.pathname.includes("/anuncios");
+
+    if (mlQuery || mlLocal || mlAbaAtiva) {
       setMlIntegrado(true);
       localStorage.setItem("mlIntegrado", "true");
       window.dispatchEvent(new Event("mlStatusChange"));
@@ -152,3 +155,4 @@ export default function Integracoes() {
     </div>
   );
 }
+
