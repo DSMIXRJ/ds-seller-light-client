@@ -6,7 +6,6 @@ export default function ProductTable() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [hoveredStock, setHoveredStock] = useState(null);
   const { integracao } = useParams();
 
   useEffect(() => {
@@ -21,9 +20,9 @@ export default function ProductTable() {
             ...p,
             precoCusto: 0,
             precoVendaMasked: formatCurrency(p.precoVenda),
-            precoCustoMasked: "R$ 0,00",
-            margemPercentual: 0,
-            margemReais: 0,
+            precoCustoMasked: "",
+            lucroPercentual: 0,
+            lucroReais: 0,
             lucroTotal: 0,
           }));
           setProducts(data);
@@ -33,21 +32,17 @@ export default function ProductTable() {
         setLoading(false);
       } catch (err) {
         console.error("Erro ao buscar anúncios:", err);
-        setError("Não foi possível carregar os anúncios.");
+        setError("Erro ao carregar anúncios.");
         setLoading(false);
       }
     };
-
     fetchProducts();
   }, [integracao]);
 
   const formatCurrency = (value) => {
     const numeric = value.toString().replace(/\D/g, "");
     const number = parseFloat(numeric) / 100;
-    return number.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
+    return number.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   };
 
   const parseCurrency = (masked) => {
@@ -70,15 +65,15 @@ export default function ProductTable() {
 
           if (field === "precoCusto") {
             updated.precoCusto = numericValue;
-            updated.precoCustoMasked = formatCurrency(rawValue);
+            updated.precoCustoMasked = rawValue;
           }
 
-          const margemReais = updated.precoVenda - updated.precoCusto;
-          const margemPercentual = updated.precoVenda > 0 ? ((margemReais / updated.precoVenda) * 100) : 0;
-          const lucroTotal = margemReais * updated.vendas;
+          const lucroReais = updated.precoVenda - updated.precoCusto;
+          const lucroPercentual = updated.precoVenda > 0 ? ((lucroReais / updated.precoVenda) * 100) : 0;
+          const lucroTotal = lucroReais * (updated.vendas || 0);
 
-          updated.margemReais = margemReais.toFixed(2);
-          updated.margemPercentual = margemPercentual.toFixed(2);
+          updated.lucroReais = lucroReais.toFixed(2);
+          updated.lucroPercentual = lucroPercentual.toFixed(2);
           updated.lucroTotal = lucroTotal.toFixed(2);
 
           return updated;
@@ -88,13 +83,8 @@ export default function ProductTable() {
     );
   };
 
-  if (loading) {
-    return <div className="text-white p-8">Carregando anúncios...</div>;
-  }
-
-  if (error) {
-    return <div className="text-red-500 p-8">{error}</div>;
-  }
+  if (loading) return <div className="text-white p-8">Carregando...</div>;
+  if (error) return <div className="text-red-500 p-8">{error}</div>;
 
   return (
     <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-4">
@@ -107,9 +97,9 @@ export default function ProductTable() {
               <th className="px-3 py-2 text-left">Título</th>
               <th className="px-3 py-2 text-left">Preço Venda</th>
               <th className="px-3 py-2 text-left">Preço Custo</th>
-              <th className="px-3 py-2 text-left">Margem %</th>
-              <th className="px-3 py-2 text-left">Margem (R$)</th>
-              <th className="px-3 py-2 text-left">Lucro Total</th>
+              <th className="px-3 py-2 text-center">Lucro %</th>
+              <th className="px-3 py-2 text-center">Lucro (R$)</th>
+              <th className="px-3 py-2 text-center">Lucro Total</th>
               <th className="px-3 py-2 text-left">Vendas</th>
             </tr>
           </thead>
@@ -126,22 +116,24 @@ export default function ProductTable() {
                     type="text"
                     value={prod.precoVendaMasked}
                     onChange={(e) => handleMaskedChange(prod.id, "precoVenda", e.target.value)}
-                    className="w-24 text-right bg-transparent border-b border-blue-400 focus:outline-none"
+                    className="w-24 text-right bg-transparent border-b border-cyan-500 focus:outline-none"
                     inputMode="numeric"
                   />
                 </td>
                 <td className="px-3 py-2">
                   <input
                     type="text"
+                    placeholder=""
                     value={prod.precoCustoMasked}
                     onChange={(e) => handleMaskedChange(prod.id, "precoCusto", e.target.value)}
-                    className="w-24 text-right bg-transparent border-b border-yellow-400 focus:outline-none"
+                    className="w-24 text-right bg-transparent border-b border-cyan-500 focus:outline-none placeholder-transparent"
                     inputMode="numeric"
+                    style={{ caretColor: "#00ffff" }}
                   />
                 </td>
-                <td className="px-3 py-2">{prod.margemPercentual}%</td>
-                <td className="px-3 py-2">R$ {prod.margemReais}</td>
-                <td className="px-3 py-2">R$ {prod.lucroTotal}</td>
+                <td className="px-3 py-2 text-center">{prod.lucroPercentual}%</td>
+                <td className="px-3 py-2 text-center">R$ {prod.lucroReais}</td>
+                <td className="px-3 py-2 text-center">R$ {prod.lucroTotal}</td>
                 <td className="px-3 py-2">{prod.vendas}</td>
               </tr>
             ))}
@@ -156,11 +148,10 @@ const sampleProducts = [
   {
     id: 1,
     image: "https://via.placeholder.com/64",
-    estoque: 13,
+    estoque: 10,
     title: "Plafon Redondo Freijó 35cm",
     precoVenda: 199.99,
-    vendas: 8,
+    vendas: 5,
     promocao: true,
   },
 ];
-
