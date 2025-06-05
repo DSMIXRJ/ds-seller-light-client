@@ -109,42 +109,50 @@ export default function ProductTable() {
                 <td className="px-3 py-2 text-left">{prod.estoque}</td>
                 <td className="px-3 py-2 text-left">{prod.title}</td>
 
-                {/* Preço */}
+                {/* PREÇO (input editável) */}
                 <td className="px-3 py-2">
-                  <div className="inline-block border-b-2 border-cyan-500 px-1 min-w-[96px] text-center">
-                    {prod.precoVendaMasked}
-                  </div>
+                  <input
+                    type="text"
+                    value={prod.precoVendaMasked}
+                    onChange={(e) => handleMaskedChange(prod.id, "precoVenda", e.target.value)}
+                    className="text-center bg-transparent border-b-2 border-cyan-500 focus:outline-none min-w-[96px]"
+                    inputMode="numeric"
+                  />
                 </td>
 
-                {/* Custo */}
+                {/* CUSTO (input editável) */}
                 <td className="px-3 py-2">
-                  <div className="inline-block border-b-2 border-yellow-400 px-1 min-w-[96px] text-center">
-                    {prod.precoCustoMasked || "R$ 0,00"}
-                  </div>
+                  <input
+                    type="text"
+                    value={prod.precoCustoMasked}
+                    onChange={(e) => handleMaskedChange(prod.id, "precoCusto", e.target.value)}
+                    className="text-center bg-transparent border-b-2 border-yellow-400 focus:outline-none min-w-[96px]"
+                    inputMode="numeric"
+                  />
                 </td>
 
-                {/* Lucro % */}
+                {/* LUCRO % */}
                 <td className="px-3 py-2">
-                  <div className="inline-block border-b-2 border-green-500 px-1 min-w-[72px] text-center">
+                  <div className="inline-block border-b-2 border-green-500 px-1 min-w-[64px] text-center">
                     {prod.lucroPercentual}
                   </div>
                 </td>
 
-                {/* Lucro R$ */}
+                {/* LUCRO R$ */}
                 <td className="px-3 py-2">
                   <div className="inline-block border-b-2 border-blue-500 px-1 min-w-[96px] text-center">
                     {prod.lucroReais}
                   </div>
                 </td>
 
-                {/* Lucro Total */}
+                {/* LUCRO TOTAL */}
                 <td className="px-3 py-2">
                   <div className="inline-block border-b-2 border-purple-500 px-1 min-w-[96px] text-center">
                     {prod.lucroTotal}
                   </div>
                 </td>
 
-                {/* Vendas */}
+                {/* VENDAS */}
                 <td className="px-3 py-2">{prod.vendas}</td>
               </tr>
             ))}
