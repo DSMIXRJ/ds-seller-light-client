@@ -57,7 +57,6 @@ export default function Sidebar({ activePage }) {
               ? "bg-cyan-900 text-cyan-300"
               : "hover:bg-zinc-800 text-zinc-200"
           }`}
-          style={{ borderRadius: "1.25rem" }}
         >
           <Home className="w-6 h-6" />
           {sidebarOpen && <span>Dashboard</span>}
@@ -70,7 +69,6 @@ export default function Sidebar({ activePage }) {
               ? "bg-cyan-900 text-cyan-300"
               : "hover:bg-zinc-800 text-zinc-200"
           }`}
-          style={{ borderRadius: "1.25rem" }}
         >
           <Layers className="w-6 h-6" />
           {sidebarOpen && <span>Integrações</span>}
@@ -83,7 +81,6 @@ export default function Sidebar({ activePage }) {
               ? "bg-cyan-900 text-cyan-300"
               : "hover:bg-zinc-800 text-zinc-200"
           }`}
-          style={{ borderRadius: "1.25rem" }}
         >
           <List className="w-6 h-6" />
           {sidebarOpen && <span>Anúncios</span>}
@@ -104,6 +101,7 @@ export default function Sidebar({ activePage }) {
               <img src={logoMercadoLivre} alt="ML" className="w-6 h-6" />
               Mercado Livre
             </button>
+
             <button
               disabled
               className="flex items-center gap-2 px-2 py-1 rounded-lg bg-zinc-800 text-zinc-500 text-sm cursor-not-allowed"
@@ -111,6 +109,7 @@ export default function Sidebar({ activePage }) {
               <img src={logoShopee} alt="Shopee" className="w-6 h-6" />
               Shopee
             </button>
+
             <button
               disabled
               className="flex items-center gap-2 px-2 py-1 rounded-lg bg-zinc-800 text-zinc-500 text-sm cursor-not-allowed"
@@ -124,4 +123,18 @@ export default function Sidebar({ activePage }) {
 
       <button
         onClick={() => setSidebarOpen((s) => !s)}
-        className="mt-10 mx-auto p-2 rounded-lg bg-zinc-800 hover:bg-cy
+        className="mt-10 mx-auto p-2 rounded-lg bg-zinc-800 hover:bg-cyan-900 transition relative z-20"
+        title="Expandir/recolher menu"
+      >
+        <Menu className="w-6 h-6" />
+      </button>
+
+      <button
+        title="Sair"
+        className="mt-8 text-red-400 hover:text-red-600 transition mx-auto relative z-20"
+      >
+        <LogOut className="w-6 h-6" />
+      </button>
+    </aside>
+  );
+}
