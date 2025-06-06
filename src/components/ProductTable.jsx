@@ -108,17 +108,16 @@ export default function ProductTable() {
                 </td>
                 <td className="px-3 py-2 text-left">{prod.estoque}</td>
 
-                {/* TÍTULO: 2 linhas + tooltip + largura ajustada */}
+                {/* TÍTULO - AUMENTADO PARA 280px */}
                 <td className="px-3 py-2 text-left align-top">
                   <div
-                    className="max-w-[220px] overflow-hidden text-ellipsis line-clamp-2"
+                    className="max-w-[280px] overflow-hidden text-ellipsis line-clamp-2"
                     title={prod.title}
                   >
                     {prod.title}
                   </div>
                 </td>
 
-                {/* PREÇO */}
                 <td className="px-3 py-2">
                   <input
                     type="text"
@@ -129,7 +128,6 @@ export default function ProductTable() {
                   />
                 </td>
 
-                {/* CUSTO */}
                 <td className="px-3 py-2">
                   <input
                     type="text"
@@ -140,28 +138,24 @@ export default function ProductTable() {
                   />
                 </td>
 
-                {/* LUCRO % */}
                 <td className="px-3 py-2">
                   <div className="inline-block border-b-2 border-green-500 px-1 min-w-[64px] text-center">
                     {prod.lucroPercentual}
                   </div>
                 </td>
 
-                {/* LUCRO R$ */}
                 <td className="px-3 py-2">
                   <div className="inline-block border-b-2 border-blue-500 px-1 min-w-[96px] text-center">
                     {prod.lucroReais}
                   </div>
                 </td>
 
-                {/* LUCRO TOTAL */}
                 <td className="px-3 py-2">
                   <div className="inline-block border-b-2 border-purple-500 px-1 min-w-[96px] text-center">
                     {prod.lucroTotal}
                   </div>
                 </td>
 
-                {/* VENDAS */}
                 <td className="px-3 py-2">{prod.vendas}</td>
               </tr>
             ))}
