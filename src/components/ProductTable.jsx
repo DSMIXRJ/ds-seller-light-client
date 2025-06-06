@@ -108,10 +108,10 @@ export default function ProductTable() {
                 </td>
                 <td className="px-3 py-2 text-left">{prod.estoque}</td>
 
-                {/* TÍTULO - AUMENTADO PARA 476px */}
-                <td className="px-3 py-2 text-left align-top">
+                {/* TÍTULO - OCUPA TODO ESPAÇO DISPONÍVEL */}
+                <td className="px-3 py-2 text-left align-top w-full">
                   <div
-                    className="max-w-[476px] overflow-hidden text-ellipsis line-clamp-2"
+                    className="w-full break-words"
                     title={prod.title}
                   >
                     {prod.title}
