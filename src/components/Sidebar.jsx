@@ -33,7 +33,7 @@ export default function Sidebar({ activePage }) {
 
   return (
     <aside
-      className={`relative z-10 transition-all duration-300 ease-in-out ${
+      className={`fixed top-0 left-0 h-full z-40 transition-all duration-300 ease-in-out ${
         sidebarOpen ? "w-56" : "w-16"
       } bg-zinc-900/95 border-r border-zinc-800 flex flex-col py-6 px-2
       before:content-[''] before:absolute before:inset-0 before:rounded-3xl 

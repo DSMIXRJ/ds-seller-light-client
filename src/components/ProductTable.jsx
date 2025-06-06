@@ -109,10 +109,10 @@ export default function ProductTable() {
         <table className="w-full table-fixed border-collapse">
           <thead>
             <tr className="bg-[#181c2f] text-xs uppercase sticky top-0 z-50" style={{ position: 'sticky', top: '0px' }}>
-              <th className="px-1 py-3 text-left w-[60px] bg-[#181c2f] border-b-2 border-cyan-500/50">Img</th>
+              <th className="px-1 py-3 text-center w-[60px] bg-[#181c2f] border-b-2 border-cyan-500/50">Img</th>
               <th className="px-1 py-3 text-center w-[80px] bg-[#181c2f] border-b-2 border-cyan-500/50">SKU</th>
               <th className="px-1 py-3 text-center w-[50px] bg-[#181c2f] border-b-2 border-cyan-500/50">Est</th>
-              <th className="px-1 py-3 text-left w-[240px] bg-[#181c2f] border-b-2 border-cyan-500/50">Título</th>
+              <th className="px-1 py-3 text-center w-[200px] bg-[#181c2f] border-b-2 border-cyan-500/50">Título</th>
               <th className="px-1 py-3 text-center w-[80px] bg-[#181c2f] border-b-2 border-cyan-500/50">Preço</th>
               <th className="px-1 py-3 text-center w-[80px] bg-[#181c2f] border-b-2 border-cyan-500/50">Custo</th>
               <th className="px-1 py-3 text-center w-[60px] bg-[#181c2f] border-b-2 border-cyan-500/50">%</th>
@@ -138,7 +138,7 @@ export default function ProductTable() {
                     {prod.estoque}
                   </div>
                 </td>
-                <td className="px-1 py-2 text-left w-[240px]">
+                <td className="px-1 py-2 text-left w-[200px]">
                   <div className="w-full break-words leading-tight text-xs" style={{
                     display: '-webkit-box',
                     WebkitLineClamp: 2,
