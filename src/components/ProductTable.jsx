@@ -81,103 +81,124 @@ export default function ProductTable() {
     );
   };
 
-  if (loading) return <div className="text-white p-8">Carregando...</div>;
-  if (error) return <div className="text-red-500 p-8">{error}</div>;
+  if (loading) return (
+    <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-8 text-center">
+      <div className="animate-pulse">Carregando anúncios...</div>
+    </div>
+  );
+  
+  if (error) return (
+    <div className="bg-[#101420] text-red-500 rounded-2xl shadow-xl p-8 text-center">
+      {error}
+    </div>
+  );
 
   return (
-    <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-4 overflow-x-auto w-full">
-      <div className="min-w-[1400px]"> {/* Garantir largura mínima para todas as colunas */}
-        <table className="w-full table-auto">
-        <thead className="bg-[#181c2f] text-xs uppercase text-center">
-          <tr>
-            <th className="px-2 py-3 text-left w-[80px]">Imagem</th>
-            <th className="px-2 py-3 text-center w-[120px]">SKU</th>
-            <th className="px-2 py-3 text-center w-[80px]">Estoque</th>
-            <th className="px-2 py-3 text-left w-[320px]">Título</th>
-            <th className="px-2 py-3 text-center w-[120px]">Preço</th>
-            <th className="px-2 py-3 text-center w-[120px]">Custo</th>
-            <th className="px-2 py-3 text-center w-[100px]">Lucro %</th>
-            <th className="px-2 py-3 text-center w-[120px]">Lucro (R$)</th>
-            <th className="px-2 py-3 text-center w-[140px]">Lucro Total</th>
-            <th className="px-2 py-3 text-center w-[90px]">Visitas</th>
-            <th className="px-2 py-3 text-center w-[90px]">Vendas</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((prod) => (
-            <tr key={prod.id} className="border-b border-[#23243a] text-center">
-              <td className="px-2 py-3 text-left w-[80px]">
-                <img src={prod.image} alt="" className="w-12 h-12 rounded" />
-              </td>
-              <td className="px-2 py-3 w-[120px]">
-                <div className="inline-block border-b-2 border-white px-1 min-w-[96px] text-center">
-                  {prod.sku}
-                </div>
-              </td>
-              <td className="px-2 py-3 w-[80px]">
-                <div className="inline-block border-b-2 border-indigo-400 px-1 min-w-[60px] text-center">
-                  {prod.estoque}
-                </div>
-              </td>
-              <td className="px-2 py-3 text-left align-top w-[320px] max-w-[320px]">
-                <div className="w-full break-words leading-tight text-sm" style={{
-                  display: '-webkit-box',
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: 'vertical',
-                  overflow: 'hidden',
-                  lineHeight: '1.3'
-                }} title={prod.title}>
-                  {prod.title}
-                </div>
-              </td>
-              <td className="px-2 py-3 w-[120px]">
-                <input
-                  type="text"
-                  value={prod.precoVendaMasked}
-                  onChange={(e) => handleMaskedChange(prod.id, "precoVenda", e.target.value)}
-                  className="text-center bg-transparent border-b-2 border-cyan-500 focus:outline-none min-w-[120px]"
-                  inputMode="numeric"
-                />
-              </td>
-              <td className="px-2 py-3 w-[120px]">
-                <input
-                  type="text"
-                  value={prod.precoCustoMasked}
-                  onChange={(e) => handleMaskedChange(prod.id, "precoCusto", e.target.value)}
-                  className="text-center bg-transparent border-b-2 border-yellow-400 focus:outline-none min-w-[120px]"
-                  inputMode="numeric"
-                />
-              </td>
-              <td className="px-2 py-3 w-[100px]">
-                <div className="inline-block border-b-2 border-green-500 px-1 min-w-[96px] text-center">
-                  {prod.lucroPercentual}
-                </div>
-              </td>
-              <td className="px-2 py-3 w-[120px]">
-                <div className="inline-block border-b-2 border-blue-500 px-1 min-w-[120px] text-center">
-                  {prod.lucroReais}
-                </div>
-              </td>
-              <td className="px-2 py-3 w-[140px]">
-                <div className="inline-block border-b-2 border-purple-500 px-1 min-w-[140px] text-center">
-                  {prod.lucroTotal}
-                </div>
-              </td>
-              <td className="px-2 py-3 w-[90px]">
-                <div className="inline-block border-b-2 border-pink-500 px-1 min-w-[80px] text-center">
-                  {prod.visitas}
-                </div>
-              </td>
-              <td className="px-2 py-3 w-[90px]">
-                <div className="inline-block border-b-2 border-orange-500 px-1 min-w-[80px] text-center">
-                  {prod.vendas}
-                </div>
-              </td>
+    <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-6 w-full">
+      {/* Indicador de scroll horizontal */}
+      <div className="mb-4 text-xs text-gray-400 text-center">
+        {products.length > 0 && "← Role horizontalmente para ver todas as colunas →"}
+      </div>
+      
+      <div className="overflow-x-auto">
+        <table className="w-full table-fixed min-w-[1600px]">
+          <thead className="bg-[#181c2f] text-xs uppercase">
+            <tr>
+              <th className="px-3 py-4 text-left w-[100px]">Imagem</th>
+              <th className="px-3 py-4 text-center w-[140px]">SKU</th>
+              <th className="px-3 py-4 text-center w-[100px]">Estoque</th>
+              <th className="px-3 py-4 text-left w-[400px]">Título</th>
+              <th className="px-3 py-4 text-center w-[140px]">Preço</th>
+              <th className="px-3 py-4 text-center w-[140px]">Custo</th>
+              <th className="px-3 py-4 text-center w-[120px]">Lucro %</th>
+              <th className="px-3 py-4 text-center w-[140px]">Lucro (R$)</th>
+              <th className="px-3 py-4 text-center w-[160px]">Lucro Total</th>
+              <th className="px-3 py-4 text-center w-[120px]">Visitas</th>
+              <th className="px-3 py-4 text-center w-[120px]">Vendas</th>
             </tr>
-          ))}
-        </tbody>
+          </thead>
+          <tbody>
+            {products.map((prod) => (
+              <tr key={prod.id} className="border-b border-[#23243a] hover:bg-[#1a1f35] transition-colors">
+                <td className="px-3 py-4 text-left w-[100px]">
+                  <img src={prod.image} alt="" className="w-14 h-14 rounded object-cover" />
+                </td>
+                <td className="px-3 py-4 w-[140px]">
+                  <div className="inline-block border-b-2 border-white px-2 py-1 min-w-[120px] text-center text-sm">
+                    {prod.sku}
+                  </div>
+                </td>
+                <td className="px-3 py-4 w-[100px]">
+                  <div className="inline-block border-b-2 border-indigo-400 px-2 py-1 min-w-[80px] text-center text-sm">
+                    {prod.estoque}
+                  </div>
+                </td>
+                <td className="px-3 py-4 text-left w-[400px]">
+                  <div className="w-full break-words leading-tight text-sm pr-2" style={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    lineHeight: '1.4'
+                  }} title={prod.title}>
+                    {prod.title}
+                  </div>
+                </td>
+                <td className="px-3 py-4 w-[140px]">
+                  <input
+                    type="text"
+                    value={prod.precoVendaMasked}
+                    onChange={(e) => handleMaskedChange(prod.id, "precoVenda", e.target.value)}
+                    className="w-full text-center bg-transparent border-b-2 border-cyan-500 focus:outline-none focus:border-cyan-300 py-1 text-sm"
+                    inputMode="numeric"
+                  />
+                </td>
+                <td className="px-3 py-4 w-[140px]">
+                  <input
+                    type="text"
+                    value={prod.precoCustoMasked}
+                    onChange={(e) => handleMaskedChange(prod.id, "precoCusto", e.target.value)}
+                    className="w-full text-center bg-transparent border-b-2 border-yellow-400 focus:outline-none focus:border-yellow-300 py-1 text-sm"
+                    inputMode="numeric"
+                  />
+                </td>
+                <td className="px-3 py-4 w-[120px]">
+                  <div className="inline-block border-b-2 border-green-500 px-2 py-1 min-w-[100px] text-center text-sm">
+                    {prod.lucroPercentual}
+                  </div>
+                </td>
+                <td className="px-3 py-4 w-[140px]">
+                  <div className="inline-block border-b-2 border-blue-500 px-2 py-1 min-w-[120px] text-center text-sm">
+                    {prod.lucroReais}
+                  </div>
+                </td>
+                <td className="px-3 py-4 w-[160px]">
+                  <div className="inline-block border-b-2 border-purple-500 px-2 py-1 min-w-[140px] text-center text-sm">
+                    {prod.lucroTotal}
+                  </div>
+                </td>
+                <td className="px-3 py-4 w-[120px]">
+                  <div className="inline-block border-b-2 border-pink-500 px-2 py-1 min-w-[100px] text-center text-sm font-medium">
+                    {prod.visitas || 0}
+                  </div>
+                </td>
+                <td className="px-3 py-4 w-[120px]">
+                  <div className="inline-block border-b-2 border-orange-500 px-2 py-1 min-w-[100px] text-center text-sm font-medium">
+                    {prod.vendas || 0}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
+      
+      {/* Resumo da tabela */}
+      {products.length > 0 && (
+        <div className="mt-4 text-xs text-gray-400 text-center">
+          Exibindo {products.length} anúncios • Todas as colunas visíveis: Imagem, SKU, Estoque, Título, Preço, Custo, Lucro %, Lucro (R$), Lucro Total, Visitas, Vendas
+        </div>
+      )}
     </div>
   );
 }
