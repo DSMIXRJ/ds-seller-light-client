@@ -17,7 +17,7 @@ export default function ProductTable() {
 
         const data = response.data.map((p) => ({
           ...p,
-          sku: p.sku || "—",
+          // Manter o SKU que vem do backend
           precoCusto: 0,
           precoVendaMasked: formatCurrency(p.precoVenda),
           precoCustoMasked: "",
@@ -86,40 +86,51 @@ export default function ProductTable() {
 
   return (
     <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-4 overflow-x-auto w-full">
-      <table className="min-w-full table-auto">
+      <div className="min-w-[1400px]"> {/* Garantir largura mínima para todas as colunas */}
+        <table className="w-full table-auto">
         <thead className="bg-[#181c2f] text-xs uppercase text-center">
           <tr>
-            <th className="px-3 py-2 text-left">Imagem</th>
-            <th className="px-3 py-2 text-left">SKU</th>
-            <th className="px-3 py-2 text-left">Estoque</th>
-            <th className="px-3 py-2 text-left">Título</th>
-            <th className="px-3 py-2 text-center">Preço</th>
-            <th className="px-3 py-2 text-center">Custo</th>
-            <th className="px-3 py-2 text-center">Lucro %</th>
-            <th className="px-3 py-2 text-center">Lucro (R$)</th>
-            <th className="px-3 py-2 text-center">Lucro Total</th>
-            <th className="px-3 py-2 text-center">Visitas</th>
-            <th className="px-3 py-2 text-center">Vendas</th>
+            <th className="px-2 py-3 text-left w-[80px]">Imagem</th>
+            <th className="px-2 py-3 text-center w-[120px]">SKU</th>
+            <th className="px-2 py-3 text-center w-[80px]">Estoque</th>
+            <th className="px-2 py-3 text-left w-[320px]">Título</th>
+            <th className="px-2 py-3 text-center w-[120px]">Preço</th>
+            <th className="px-2 py-3 text-center w-[120px]">Custo</th>
+            <th className="px-2 py-3 text-center w-[100px]">Lucro %</th>
+            <th className="px-2 py-3 text-center w-[120px]">Lucro (R$)</th>
+            <th className="px-2 py-3 text-center w-[140px]">Lucro Total</th>
+            <th className="px-2 py-3 text-center w-[90px]">Visitas</th>
+            <th className="px-2 py-3 text-center w-[90px]">Vendas</th>
           </tr>
         </thead>
         <tbody>
           {products.map((prod) => (
             <tr key={prod.id} className="border-b border-[#23243a] text-center">
-              <td className="px-3 py-2 text-left">
+              <td className="px-2 py-3 text-left w-[80px]">
                 <img src={prod.image} alt="" className="w-12 h-12 rounded" />
               </td>
-              <td className="px-3 py-2">
+              <td className="px-2 py-3 w-[120px]">
                 <div className="inline-block border-b-2 border-white px-1 min-w-[96px] text-center">
                   {prod.sku}
                 </div>
               </td>
-              <td className="px-3 py-2">{prod.estoque}</td>
-              <td className="px-3 py-2 text-left align-top max-w-[480px]">
-                <div className="w-full break-words line-clamp-2" title={prod.title}>
+              <td className="px-2 py-3 w-[80px]">
+                <div className="inline-block border-b-2 border-indigo-400 px-1 min-w-[60px] text-center">
+                  {prod.estoque}
+                </div>
+              </td>
+              <td className="px-2 py-3 text-left align-top w-[320px] max-w-[320px]">
+                <div className="w-full break-words leading-tight text-sm" style={{
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                  lineHeight: '1.3'
+                }} title={prod.title}>
                   {prod.title}
                 </div>
               </td>
-              <td className="px-3 py-2">
+              <td className="px-2 py-3 w-[120px]">
                 <input
                   type="text"
                   value={prod.precoVendaMasked}
@@ -128,7 +139,7 @@ export default function ProductTable() {
                   inputMode="numeric"
                 />
               </td>
-              <td className="px-3 py-2">
+              <td className="px-2 py-3 w-[120px]">
                 <input
                   type="text"
                   value={prod.precoCustoMasked}
@@ -137,27 +148,27 @@ export default function ProductTable() {
                   inputMode="numeric"
                 />
               </td>
-              <td className="px-3 py-2">
+              <td className="px-2 py-3 w-[100px]">
                 <div className="inline-block border-b-2 border-green-500 px-1 min-w-[96px] text-center">
                   {prod.lucroPercentual}
                 </div>
               </td>
-              <td className="px-3 py-2">
+              <td className="px-2 py-3 w-[120px]">
                 <div className="inline-block border-b-2 border-blue-500 px-1 min-w-[120px] text-center">
                   {prod.lucroReais}
                 </div>
               </td>
-              <td className="px-3 py-2">
-                <div className="inline-block border-b-2 border-purple-500 px-1 min-w-[120px] text-center">
+              <td className="px-2 py-3 w-[140px]">
+                <div className="inline-block border-b-2 border-purple-500 px-1 min-w-[140px] text-center">
                   {prod.lucroTotal}
                 </div>
               </td>
-              <td className="px-3 py-2">
+              <td className="px-2 py-3 w-[90px]">
                 <div className="inline-block border-b-2 border-pink-500 px-1 min-w-[80px] text-center">
                   {prod.visitas}
                 </div>
               </td>
-              <td className="px-3 py-2">
+              <td className="px-2 py-3 w-[90px]">
                 <div className="inline-block border-b-2 border-orange-500 px-1 min-w-[80px] text-center">
                   {prod.vendas}
                 </div>
@@ -165,7 +176,8 @@ export default function ProductTable() {
             </tr>
           ))}
         </tbody>
-      </table>
+        </table>
+      </div>
     </div>
   );
 }
