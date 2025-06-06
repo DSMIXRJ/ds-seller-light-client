@@ -110,4 +110,62 @@ export default function ProductTable() {
               </td>
               <td className="px-3 py-2">
                 <div className="inline-block border-b-2 border-white px-1 min-w-[96px] text-center">
-                  {
+                  {prod.sku}
+                </div>
+              </td>
+              <td className="px-3 py-2">{prod.estoque}</td>
+              <td className="px-3 py-2 text-left align-top max-w-[460px]">
+                <div className="w-full break-words line-clamp-2" title={prod.title}>
+                  {prod.title}
+                </div>
+              </td>
+              <td className="px-3 py-2">
+                <input
+                  type="text"
+                  value={prod.precoVendaMasked}
+                  onChange={(e) => handleMaskedChange(prod.id, "precoVenda", e.target.value)}
+                  className="text-center bg-transparent border-b-2 border-cyan-500 focus:outline-none min-w-[120px]"
+                  inputMode="numeric"
+                />
+              </td>
+              <td className="px-3 py-2">
+                <input
+                  type="text"
+                  value={prod.precoCustoMasked}
+                  onChange={(e) => handleMaskedChange(prod.id, "precoCusto", e.target.value)}
+                  className="text-center bg-transparent border-b-2 border-yellow-400 focus:outline-none min-w-[120px]"
+                  inputMode="numeric"
+                />
+              </td>
+              <td className="px-3 py-2">
+                <div className="inline-block border-b-2 border-green-500 px-1 min-w-[96px] text-center">
+                  {prod.lucroPercentual}
+                </div>
+              </td>
+              <td className="px-3 py-2">
+                <div className="inline-block border-b-2 border-blue-500 px-1 min-w-[120px] text-center">
+                  {prod.lucroReais}
+                </div>
+              </td>
+              <td className="px-3 py-2">
+                <div className="inline-block border-b-2 border-purple-500 px-1 min-w-[120px] text-center">
+                  {prod.lucroTotal}
+                </div>
+              </td>
+              <td className="px-3 py-2">
+                <div className="inline-block border-b-2 border-pink-500 px-1 min-w-[80px] text-center">
+                  {prod.visitas || "—"}
+                </div>
+              </td>
+              <td className="px-3 py-2">
+                <div className="inline-block border-b-2 border-orange-500 px-1 min-w-[80px] text-center">
+                  {prod.vendas}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
