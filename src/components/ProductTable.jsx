@@ -108,10 +108,11 @@ export default function ProductTable() {
                 </td>
                 <td className="px-3 py-2 text-left">{prod.estoque}</td>
 
-                {/* TÍTULO - OCUPA TODO ESPAÇO DISPONÍVEL */}
+                {/* TÍTULO - ESTILO ELEGANTE COM TRUNCAMENTO */}
                 <td className="px-3 py-2 text-left align-top w-full">
                   <div
-                    className="w-full break-words"
+                    className="w-full break-words line-clamp-3"
+                    style={{ display: '-webkit-box', WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
                     title={prod.title}
                   >
                     {prod.title}
