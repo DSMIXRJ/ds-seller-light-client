@@ -95,31 +95,23 @@ export default function ProductTable() {
 
   return (
     <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-4 w-full">
-      {/* Indicador de cabeçalho fixo */}
-      <div className="mb-3 text-xs text-gray-400 text-center">
-        {products.length > 0 && (
-          <div className="flex items-center justify-center gap-2">
-            <span className="text-cyan-400">✓ Todas as colunas visíveis</span>
-            <span>• Cabeçalho fixo ativo</span>
-          </div>
-        )}
-      </div>
+
       
       <div className="w-full">
         <table className="w-full table-fixed border-collapse">
           <thead>
             <tr className="bg-[#181c2f] text-xs uppercase sticky top-0 z-50" style={{ position: 'sticky', top: '0px' }}>
-              <th className="px-1 py-3 text-center w-[60px] bg-[#181c2f] border-b-2 border-cyan-500/50">Img</th>
+              <th className="px-1 py-3 text-center w-[60px] bg-[#181c2f] border-b-2 border-cyan-500/50">Imagem</th>
               <th className="px-1 py-3 text-center w-[80px] bg-[#181c2f] border-b-2 border-cyan-500/50">SKU</th>
-              <th className="px-1 py-3 text-center w-[50px] bg-[#181c2f] border-b-2 border-cyan-500/50">Est</th>
+              <th className="px-1 py-3 text-center w-[50px] bg-[#181c2f] border-b-2 border-cyan-500/50">Estoque</th>
               <th className="px-1 py-3 text-center w-[200px] bg-[#181c2f] border-b-2 border-cyan-500/50">Título</th>
               <th className="px-1 py-3 text-center w-[80px] bg-[#181c2f] border-b-2 border-cyan-500/50">Preço</th>
               <th className="px-1 py-3 text-center w-[80px] bg-[#181c2f] border-b-2 border-cyan-500/50">Custo</th>
               <th className="px-1 py-3 text-center w-[60px] bg-[#181c2f] border-b-2 border-cyan-500/50">%</th>
               <th className="px-1 py-3 text-center w-[80px] bg-[#181c2f] border-b-2 border-cyan-500/50">Lucro</th>
               <th className="px-1 py-3 text-center w-[90px] bg-[#181c2f] border-b-2 border-cyan-500/50">Total</th>
-              <th className="px-1 py-3 text-center w-[70px] bg-[#181c2f] border-b-2 border-cyan-500/50">Visit</th>
-              <th className="px-1 py-3 text-center w-[70px] bg-[#181c2f] border-b-2 border-cyan-500/50">Vend</th>
+              <th className="px-1 py-3 text-center w-[70px] bg-[#181c2f] border-b-2 border-cyan-500/50">Visitas</th>
+              <th className="px-1 py-3 text-center w-[70px] bg-[#181c2f] border-b-2 border-cyan-500/50">Vendas</th>
             </tr>
           </thead>
           <tbody>
