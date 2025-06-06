@@ -17,7 +17,7 @@ export default function ProductTable() {
 
         const data = response.data.map((p) => ({
           ...p,
-          sku: p.sku || p.SKU || p.attributes?.find(attr => attr.id?.toLowerCase() === "seller_custom_field")?.value_name || "—",
+          sku: p.sku || "—",
           precoCusto: 0,
           precoVendaMasked: formatCurrency(p.precoVenda),
           precoCustoMasked: "",
@@ -85,8 +85,8 @@ export default function ProductTable() {
   if (error) return <div className="text-red-500 p-8">{error}</div>;
 
   return (
-    <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-4 overflow-x-auto">
-      <table className="min-w-[1440px] table-auto">
+    <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-4 overflow-x-auto w-full">
+      <table className="min-w-full table-auto">
         <thead className="bg-[#181c2f] text-xs uppercase text-center">
           <tr>
             <th className="px-3 py-2 text-left">Imagem</th>
@@ -114,7 +114,7 @@ export default function ProductTable() {
                 </div>
               </td>
               <td className="px-3 py-2">{prod.estoque}</td>
-              <td className="px-3 py-2 text-left align-top max-w-[460px]">
+              <td className="px-3 py-2 text-left align-top max-w-[480px]">
                 <div className="w-full break-words line-clamp-2" title={prod.title}>
                   {prod.title}
                 </div>
@@ -154,7 +154,7 @@ export default function ProductTable() {
               </td>
               <td className="px-3 py-2">
                 <div className="inline-block border-b-2 border-pink-500 px-1 min-w-[80px] text-center">
-                  {prod.visitas || "—"}
+                  {prod.visitas}
                 </div>
               </td>
               <td className="px-3 py-2">
