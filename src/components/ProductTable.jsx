@@ -90,6 +90,7 @@ export default function ProductTable() {
           <thead className="bg-[#181c2f] text-xs uppercase text-center">
             <tr>
               <th className="px-3 py-2 text-left">Imagem</th>
+              <th className="px-3 py-2 text-left">SKU</th>
               <th className="px-3 py-2 text-left">Estoque</th>
               <th className="px-3 py-2 text-left">Título</th>
               <th className="px-3 py-2 text-center">Preço</th>
@@ -97,6 +98,7 @@ export default function ProductTable() {
               <th className="px-3 py-2 text-center">Lucro %</th>
               <th className="px-3 py-2 text-center">Lucro (R$)</th>
               <th className="px-3 py-2 text-center">Lucro Total</th>
+              <th className="px-3 py-2 text-center">Visitas</th>
               <th className="px-3 py-2 text-center">Vendas</th>
             </tr>
           </thead>
@@ -106,19 +108,16 @@ export default function ProductTable() {
                 <td className="px-3 py-2 text-left">
                   <img src={prod.image} alt="" className="w-12 h-12 rounded" />
                 </td>
+                <td className="px-3 py-2 text-left">{prod.sku || "—"}</td>
                 <td className="px-3 py-2 text-left">{prod.estoque}</td>
-
-                {/* TÍTULO - ESTILO ELEGANTE COM TRUNCAMENTO */}
                 <td className="px-3 py-2 text-left align-top w-full">
                   <div
-                    className="w-full break-words line-clamp-3"
-                    style={{ display: '-webkit-box', WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+                    className="w-full break-words line-clamp-2"
                     title={prod.title}
                   >
                     {prod.title}
                   </div>
                 </td>
-
                 <td className="px-3 py-2">
                   <input
                     type="text"
@@ -128,7 +127,6 @@ export default function ProductTable() {
                     inputMode="numeric"
                   />
                 </td>
-
                 <td className="px-3 py-2">
                   <input
                     type="text"
@@ -138,25 +136,22 @@ export default function ProductTable() {
                     inputMode="numeric"
                   />
                 </td>
-
                 <td className="px-3 py-2">
                   <div className="inline-block border-b-2 border-green-500 px-1 min-w-[64px] text-center">
                     {prod.lucroPercentual}
                   </div>
                 </td>
-
                 <td className="px-3 py-2">
                   <div className="inline-block border-b-2 border-blue-500 px-1 min-w-[96px] text-center">
                     {prod.lucroReais}
                   </div>
                 </td>
-
                 <td className="px-3 py-2">
                   <div className="inline-block border-b-2 border-purple-500 px-1 min-w-[96px] text-center">
                     {prod.lucroTotal}
                   </div>
                 </td>
-
+                <td className="px-3 py-2">{prod.visitas || "—"}</td>
                 <td className="px-3 py-2">{prod.vendas}</td>
               </tr>
             ))}
@@ -171,10 +166,12 @@ const sampleProducts = [
   {
     id: 1,
     image: "https://via.placeholder.com/64",
+    sku: "SKU12345",
     estoque: 10,
     title: "Plafon Redondo Madeira 35cm Bivolt - Cor Freijó",
     precoVenda: 199.99,
     vendas: 5,
+    visitas: 200,
     promocao: true,
   },
 ];
