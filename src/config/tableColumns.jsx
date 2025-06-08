@@ -14,18 +14,18 @@ export const createColumns = (handleMaskedChange) => [
       />
     ),
     enableSorting: false,
-    size: 80, // aumente se precisar de mais espaço para a miniatura
+    size: 80,
   },
   {
     accessorKey: 'sku',
     header: 'SKU',
     cell: (info) => (
-      <div className="w-full border-b-2 border-white px-1 py-1 text-center text-xs truncate">
+      <div className="w-full border-b-2 border-white px-1 py-1 text-center text-xs break-all">
         {info.getValue()}
       </div>
     ),
     enableSorting: false,
-    size: 80,
+    size: 100, // aumente se necessário para skus grandes
   },
   {
     accessorKey: 'estoque',
@@ -100,7 +100,7 @@ export const createColumns = (handleMaskedChange) => [
     accessorKey: 'lucroReais',
     header: 'Lucro',
     cell: (info) => (
-      <div className="w-full border-b-2 border-blue-500 px-1 py-1 text-center text-xs truncate">
+      <div className="w-full border-b-2 border-blue-500 px-1 py-1 text-center text-xs">
         {info.getValue()}
       </div>
     ),
@@ -111,7 +111,7 @@ export const createColumns = (handleMaskedChange) => [
     accessorKey: 'lucroTotal',
     header: 'Total',
     cell: (info) => (
-      <div className="w-full border-b-2 border-purple-500 px-1 py-1 text-center text-xs truncate">
+      <div className="w-full border-b-2 border-purple-500 px-1 py-1 text-center text-xs">
         {info.getValue()}
       </div>
     ),
