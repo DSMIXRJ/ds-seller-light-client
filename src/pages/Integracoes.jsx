@@ -5,20 +5,17 @@ import logoAmazon from "../assets/amazon.png";
 import Sidebar from "../components/Sidebar";
 
 export default function Integracoes() {
-  const [mlIntegrado, setMlIntegrado] = useState(false);
+  const [mlIntegrado, setMlIntegrado] = useState(localStorage.getItem("mlIntegrado") === "true");
   const [shopeeIntegrado, setShopeeIntegrado] = useState(false);
   const [amazonIntegrado, setAmazonIntegrado] = useState(false);
-  const [atualizar, setAtualizar] = useState(false);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const mlQuery = urlParams.get("ml_integrado") === "1";
     const mlLocal = localStorage.getItem("mlIntegrado") === "true";
 
-    // Força integração se a aba de anúncios do Mercado Livre estiver visível
-    const mlAbaAtiva = window.location.pathname.includes("/anuncios");
-
-    if (mlQuery || mlLocal || mlAbaAtiva) {
+    // Sincroniza com o localStorage ao entrar
+    if (mlQuery || mlLocal) {
       setMlIntegrado(true);
       localStorage.setItem("mlIntegrado", "true");
       window.dispatchEvent(new Event("mlStatusChange"));
@@ -27,6 +24,16 @@ export default function Integracoes() {
     if (mlQuery) {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
+
+    // Atualiza status em tempo real quando houver mudança no localStorage
+    const handleStatusChange = () => {
+      setMlIntegrado(localStorage.getItem("mlIntegrado") === "true");
+    };
+    window.addEventListener("mlStatusChange", handleStatusChange);
+
+    return () => {
+      window.removeEventListener("mlStatusChange", handleStatusChange);
+    };
   }, []);
 
   const handleIntegrarML = () => {
@@ -37,9 +44,9 @@ export default function Integracoes() {
     setMlIntegrado(false);
     localStorage.setItem("mlIntegrado", "false");
     window.dispatchEvent(new Event("mlStatusChange"));
-    setAtualizar(!atualizar);
   };
 
+  // Luzes do box e botão sempre sincronizadas (vermelho = não integrado, verde = integrado)
   const gerarEstiloBox = (integrado, cor, isDisabled = false) => {
     if (isDisabled) {
       return {
@@ -50,13 +57,14 @@ export default function Integracoes() {
     return {
       borderColor: integrado ? cor : "#ff0000",
       boxShadow: integrado
-        ? `0 0 30px 6px ${cor}44, 0 0 15px 2px ${cor}77`
-        : `0 0 25px 4px #ff000044, 0 0 12px 2px #ff000077`,
+        ? `0 0 30px 6px ${cor}cc, 0 0 15px 2px ${cor}99`
+        : `0 0 25px 4px #ff0000cc, 0 0 12px 2px #ff000099`,
+      transition: "0.3s",
     };
   };
 
   const botaoEstilo = (integrado) => {
-    const cor = integrado ? "#ff3333" : "#00ff88";
+    const cor = integrado ? "#00ff55" : "#ff3333";
     return {
       marginTop: "0.5rem",
       backgroundColor: "rgba(17, 17, 17, 0.8)",
@@ -90,19 +98,25 @@ export default function Integracoes() {
               src={logoMercadoLivre}
               alt="Mercado Livre"
               className="w-16 h-16 object-contain mb-2 transition-transform duration-300 hover:scale-110"
+              style={{
+                filter: mlIntegrado
+                  ? "drop-shadow(0 0 12px #00ff55cc)"
+                  : "drop-shadow(0 0 12px #ff3333cc)",
+                transition: "filter 0.3s",
+              }}
             />
             <span className="text-sm text-zinc-300 font-bold">Mercado Livre</span>
             {mlIntegrado ? (
-              <button 
-                style={botaoEstilo(true)} 
+              <button
+                style={botaoEstilo(true)}
                 onClick={handleRemoverML}
                 className="hover:scale-105 active:scale-95"
               >
                 Remover
               </button>
             ) : (
-              <button 
-                style={botaoEstilo(false)} 
+              <button
+                style={botaoEstilo(false)}
                 onClick={handleIntegrarML}
                 className="hover:scale-105 active:scale-95"
               >
@@ -155,4 +169,3 @@ export default function Integracoes() {
     </div>
   );
 }
-
