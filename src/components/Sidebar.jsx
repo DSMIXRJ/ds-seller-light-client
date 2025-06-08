@@ -1,52 +1,42 @@
 import { useState, useEffect } from "react";
-import { Menu, Home, Layers, LogOut, Bot, List } from "lucide-react";
+import { Menu, Home, Layers, LogOut, Bot, ShoppingCart } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const API_BASE_URL = "https://dsseller-backend-final.onrender.com";
 
 export default function Sidebar({ activePage }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [anunciosOpen, setAnunciosOpen] = useState(false);
   const [mlIntegrado, setMlIntegrado] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Função para verificar status no backend
+  // Verifica status da integração Mercado Livre
   const checkMLStatus = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/mercadolivre/status`);
       const data = await response.json();
       return data.integrated || false;
-    } catch (error) {
-      console.error("Erro ao verificar status ML:", error);
+    } catch {
       return false;
     }
   };
 
   useEffect(() => {
     const updateStatus = async () => {
-      // Primeiro verifica o localStorage para resposta rápida
       const localStatus = localStorage.getItem("mlIntegrado") === "true";
       setMlIntegrado(localStatus);
-
-      // Depois verifica no backend para garantir consistência
       const backendStatus = await checkMLStatus();
       if (backendStatus !== localStatus) {
         setMlIntegrado(backendStatus);
         localStorage.setItem("mlIntegrado", backendStatus.toString());
       }
     };
-
-    // Atualiza status ao carregar e ao trocar de rota
     updateStatus();
-
-    // Escuta mudanças de status
     const handleStatusChange = async () => {
       const backendStatus = await checkMLStatus();
       setMlIntegrado(backendStatus);
     };
     window.addEventListener("mlStatusChange", handleStatusChange);
-
     return () => {
       window.removeEventListener("mlStatusChange", handleStatusChange);
     };
@@ -55,7 +45,7 @@ export default function Sidebar({ activePage }) {
   return (
     <aside
       className={`fixed top-0 left-0 h-full z-40 transition-all duration-300 ease-in-out ${
-        sidebarOpen ? "w-40" : "w-12"
+        sidebarOpen ? "w-44" : "w-12"
       } bg-zinc-900/95 border-r border-zinc-800 flex flex-col py-6 px-2
       before:content-[''] before:absolute before:inset-0 before:rounded-3xl 
       before:border-4 before:border-cyan-400 before:blur before:opacity-60 
@@ -91,48 +81,81 @@ export default function Sidebar({ activePage }) {
           {sidebarOpen && <span>Integrações</span>}
         </button>
 
-        <button
-          onClick={() => setAnunciosOpen(!anunciosOpen)}
-          className={`flex items-center gap-3 px-3 py-3 rounded-xl text-lg font-medium transition ${
-            activePage === "anuncios"
-              ? "bg-cyan-900 text-cyan-300"
-              : "hover:bg-zinc-800 text-zinc-200"
-          }`}
-        >
-          <List className="w-6 h-6" />
-          {sidebarOpen && <span>Anúncios</span>}
-        </button>
+        {/* Botão Mercado Livre */}
+        <div>
+          <button
+            onClick={() => mlIntegrado && navigate("/anuncios/ml")}
+            disabled={!mlIntegrado}
+            className={`flex items-center gap-3 px-3 py-3 rounded-xl text-lg font-medium transition w-full ${
+              activePage === "anuncios_ml"
+                ? "bg-cyan-900 text-cyan-300"
+                : mlIntegrado
+                ? "hover:bg-zinc-800 text-zinc-200"
+                : "bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
+            }`}
+          >
+            <ShoppingCart className="w-6 h-6" />
+            {sidebarOpen && <span>Mercado Livre</span>}
+          </button>
+          {sidebarOpen && (
+            <div className="flex flex-col gap-2 ml-7 mt-1">
+              <button
+                onClick={() => mlIntegrado && navigate("/anuncios/ml")}
+                disabled={!mlIntegrado}
+                className={`flex items-center gap-2 px-2 py-1 rounded-lg transition text-sm
+                  ${
+                    mlIntegrado
+                      ? "bg-cyan-900 text-cyan-300 hover:bg-cyan-700"
+                      : "bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
+                  }`}
+              >
+                Anúncios
+              </button>
+            </div>
+          )}
+        </div>
 
-        {anunciosOpen && sidebarOpen && (
-          <div className="flex flex-col gap-2 ml-7 mt-2">
-            <button
-              onClick={() => mlIntegrado && navigate("/anuncios/ml")}
-              disabled={!mlIntegrado}
-              className={`flex items-center gap-2 px-2 py-1 rounded-lg transition text-sm
-                ${
-                  mlIntegrado
-                    ? "bg-cyan-900 text-cyan-300 hover:bg-cyan-700"
-                    : "bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
-                }`}
-            >
-              Mercado Livre
-            </button>
+        {/* Botão Shopee */}
+        <div>
+          <button
+            disabled
+            className="flex items-center gap-3 px-3 py-3 rounded-xl text-lg font-medium w-full bg-zinc-800 text-zinc-500 cursor-not-allowed"
+          >
+            <ShoppingCart className="w-6 h-6" />
+            {sidebarOpen && <span>Shopee</span>}
+          </button>
+          {sidebarOpen && (
+            <div className="flex flex-col gap-2 ml-7 mt-1">
+              <button
+                disabled
+                className="flex items-center gap-2 px-2 py-1 rounded-lg bg-zinc-800 text-zinc-500 text-sm cursor-not-allowed"
+              >
+                Em breve
+              </button>
+            </div>
+          )}
+        </div>
 
-            <button
-              disabled
-              className="flex items-center gap-2 px-2 py-1 rounded-lg bg-zinc-800 text-zinc-500 text-sm cursor-not-allowed"
-            >
-              Shopee
-            </button>
-
-            <button
-              disabled
-              className="flex items-center gap-2 px-2 py-1 rounded-lg bg-zinc-800 text-zinc-500 text-sm cursor-not-allowed"
-            >
-              Amazon
-            </button>
-          </div>
-        )}
+        {/* Botão Amazon */}
+        <div>
+          <button
+            disabled
+            className="flex items-center gap-3 px-3 py-3 rounded-xl text-lg font-medium w-full bg-zinc-800 text-zinc-500 cursor-not-allowed"
+          >
+            <ShoppingCart className="w-6 h-6" />
+            {sidebarOpen && <span>Amazon</span>}
+          </button>
+          {sidebarOpen && (
+            <div className="flex flex-col gap-2 ml-7 mt-1">
+              <button
+                disabled
+                className="flex items-center gap-2 px-2 py-1 rounded-lg bg-zinc-800 text-zinc-500 text-sm cursor-not-allowed"
+              >
+                Em breve
+              </button>
+            </div>
+          )}
+        </div>
       </nav>
 
       <button
@@ -152,4 +175,3 @@ export default function Sidebar({ activePage }) {
     </aside>
   );
 }
-
