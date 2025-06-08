@@ -10,22 +10,23 @@ export default function Integracoes() {
   const [amazonIntegrado, setAmazonIntegrado] = useState(false);
 
   useEffect(() => {
+    // Sempre checa a URL para integração
     const urlParams = new URLSearchParams(window.location.search);
-    const mlQuery = urlParams.get("ml_integrado") === "1";
-    const mlLocal = localStorage.getItem("mlIntegrado") === "true";
+    const mlQuery = urlParams.get("ml_integrado");
 
-    // Sincroniza com o localStorage ao entrar
-    if (mlQuery || mlLocal) {
-      setMlIntegrado(true);
+    if (mlQuery === "1") {
       localStorage.setItem("mlIntegrado", "true");
+      setMlIntegrado(true);
       window.dispatchEvent(new Event("mlStatusChange"));
-    }
 
-    if (mlQuery) {
+      // Remove o parâmetro da URL (sem recarregar)
       window.history.replaceState({}, document.title, window.location.pathname);
+    } else {
+      // Garante que o estado reflete o storage ao carregar
+      setMlIntegrado(localStorage.getItem("mlIntegrado") === "true");
     }
 
-    // Atualiza status em tempo real quando houver mudança no localStorage
+    // Atualiza status em tempo real
     const handleStatusChange = () => {
       setMlIntegrado(localStorage.getItem("mlIntegrado") === "true");
     };
@@ -46,7 +47,7 @@ export default function Integracoes() {
     window.dispatchEvent(new Event("mlStatusChange"));
   };
 
-  // Luzes do box e botão sempre sincronizadas (vermelho = não integrado, verde = integrado)
+  // Luzes sincronizadas
   const gerarEstiloBox = (integrado, cor, isDisabled = false) => {
     if (isDisabled) {
       return {
@@ -169,3 +170,4 @@ export default function Integracoes() {
     </div>
   );
 }
+
