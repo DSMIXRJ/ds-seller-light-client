@@ -1,5 +1,5 @@
 import Sidebar from "../components/Sidebar";
-import ProductTable from "../components/ProductTable";
+import ProductTableTanStack from "../components/ProductTableTanStack";
 import { useParams } from "react-router-dom";
 
 // Nomes amigáveis das integrações
@@ -24,9 +24,10 @@ export default function Anuncios() {
 
         {/* Content below fixed header */}
         <div className="w-full max-w-6xl pt-[120px]">
-          <ProductTable />
+          <ProductTableTanStack />
         </div>
       </main>
     </div>
   );
 }
+
