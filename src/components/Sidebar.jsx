@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
-import { Menu, Home, Layers, LogOut, Bot, ShoppingCart } from "lucide-react";
+import { Menu, Home, Layers, LogOut, Bot, ShoppingCart, ChevronDown } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const API_BASE_URL = "https://dsseller-backend-final.onrender.com";
 
 export default function Sidebar({ activePage }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mlOpen, setMlOpen] = useState(false);
+  const [shopeeOpen, setShopeeOpen] = useState(false);
+  const [amazonOpen, setAmazonOpen] = useState(false);
   const [mlIntegrado, setMlIntegrado] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,6 +45,17 @@ export default function Sidebar({ activePage }) {
     };
   }, [location]);
 
+  // Função genérica para abrir/fechar submenus
+  const handleToggle = (marketplace) => {
+    setMlOpen(marketplace === "ml" ? !mlOpen : false);
+    setShopeeOpen(marketplace === "shopee" ? !shopeeOpen : false);
+    setAmazonOpen(marketplace === "amazon" ? !amazonOpen : false);
+  };
+
+  // Classes para fonte menor e suavidade
+  const btnClass = "flex items-center gap-3 px-3 py-2 rounded-xl text-base font-normal transition w-full";
+  const subBtnClass = "flex items-center gap-2 px-2 py-1 rounded-lg transition text-xs";
+
   return (
     <aside
       className={`fixed top-0 left-0 h-full z-40 transition-all duration-300 ease-in-out ${
@@ -56,58 +70,58 @@ export default function Sidebar({ activePage }) {
         <Bot className="w-10 h-10 text-cyan-400" />
       </div>
 
-      <nav className="flex flex-col gap-4 flex-1 relative z-20">
+      <nav className="flex flex-col gap-2 flex-1 relative z-20">
         <button
           onClick={() => navigate("/dashboard")}
-          className={`flex items-center gap-3 px-3 py-3 rounded-xl text-lg font-medium transition ${
+          className={`${btnClass} ${
             activePage === "dashboard"
               ? "bg-cyan-900 text-cyan-300"
               : "hover:bg-zinc-800 text-zinc-200"
           }`}
         >
-          <Home className="w-6 h-6" />
+          <Home className="w-5 h-5" />
           {sidebarOpen && <span>Dashboard</span>}
         </button>
 
         <button
           onClick={() => navigate("/integracoes")}
-          className={`flex items-center gap-3 px-3 py-3 rounded-xl text-lg font-medium transition ${
+          className={`${btnClass} ${
             activePage === "integracoes"
               ? "bg-cyan-900 text-cyan-300"
               : "hover:bg-zinc-800 text-zinc-200"
           }`}
         >
-          <Layers className="w-6 h-6" />
+          <Layers className="w-5 h-5" />
           {sidebarOpen && <span>Integrações</span>}
         </button>
 
-        {/* Botão Mercado Livre */}
+        {/* Mercado Livre */}
         <div>
           <button
-            onClick={() => mlIntegrado && navigate("/anuncios/ml")}
-            disabled={!mlIntegrado}
-            className={`flex items-center gap-3 px-3 py-3 rounded-xl text-lg font-medium transition w-full ${
-              activePage === "anuncios_ml"
+            onClick={() => handleToggle("ml")}
+            className={`${btnClass} ${
+              mlOpen
                 ? "bg-cyan-900 text-cyan-300"
                 : mlIntegrado
                 ? "hover:bg-zinc-800 text-zinc-200"
                 : "bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
             }`}
+            disabled={!mlIntegrado}
           >
-            <ShoppingCart className="w-6 h-6" />
+            <ShoppingCart className="w-5 h-5" />
             {sidebarOpen && <span>Mercado Livre</span>}
+            {sidebarOpen && <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${mlOpen ? "rotate-180" : ""}`} />}
           </button>
-          {sidebarOpen && (
-            <div className="flex flex-col gap-2 ml-7 mt-1">
+          {mlOpen && sidebarOpen && (
+            <div className="flex flex-col gap-1 ml-7 mt-1">
               <button
                 onClick={() => mlIntegrado && navigate("/anuncios/ml")}
                 disabled={!mlIntegrado}
-                className={`flex items-center gap-2 px-2 py-1 rounded-lg transition text-sm
-                  ${
-                    mlIntegrado
-                      ? "bg-cyan-900 text-cyan-300 hover:bg-cyan-700"
-                      : "bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
-                  }`}
+                className={`${subBtnClass} ${
+                  mlIntegrado
+                    ? "bg-cyan-900 text-cyan-300 hover:bg-cyan-700"
+                    : "bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
+                }`}
               >
                 Anúncios
               </button>
@@ -115,20 +129,22 @@ export default function Sidebar({ activePage }) {
           )}
         </div>
 
-        {/* Botão Shopee */}
+        {/* Shopee */}
         <div>
           <button
+            onClick={() => handleToggle("shopee")}
+            className={`${btnClass} bg-zinc-800 text-zinc-500 cursor-not-allowed`}
             disabled
-            className="flex items-center gap-3 px-3 py-3 rounded-xl text-lg font-medium w-full bg-zinc-800 text-zinc-500 cursor-not-allowed"
           >
-            <ShoppingCart className="w-6 h-6" />
+            <ShoppingCart className="w-5 h-5" />
             {sidebarOpen && <span>Shopee</span>}
+            {sidebarOpen && <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${shopeeOpen ? "rotate-180" : ""}`} />}
           </button>
-          {sidebarOpen && (
-            <div className="flex flex-col gap-2 ml-7 mt-1">
+          {shopeeOpen && sidebarOpen && (
+            <div className="flex flex-col gap-1 ml-7 mt-1">
               <button
                 disabled
-                className="flex items-center gap-2 px-2 py-1 rounded-lg bg-zinc-800 text-zinc-500 text-sm cursor-not-allowed"
+                className={`${subBtnClass} bg-zinc-800 text-zinc-500 cursor-not-allowed`}
               >
                 Em breve
               </button>
@@ -136,20 +152,22 @@ export default function Sidebar({ activePage }) {
           )}
         </div>
 
-        {/* Botão Amazon */}
+        {/* Amazon */}
         <div>
           <button
+            onClick={() => handleToggle("amazon")}
+            className={`${btnClass} bg-zinc-800 text-zinc-500 cursor-not-allowed`}
             disabled
-            className="flex items-center gap-3 px-3 py-3 rounded-xl text-lg font-medium w-full bg-zinc-800 text-zinc-500 cursor-not-allowed"
           >
-            <ShoppingCart className="w-6 h-6" />
+            <ShoppingCart className="w-5 h-5" />
             {sidebarOpen && <span>Amazon</span>}
+            {sidebarOpen && <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${amazonOpen ? "rotate-180" : ""}`} />}
           </button>
-          {sidebarOpen && (
-            <div className="flex flex-col gap-2 ml-7 mt-1">
+          {amazonOpen && sidebarOpen && (
+            <div className="flex flex-col gap-1 ml-7 mt-1">
               <button
                 disabled
-                className="flex items-center gap-2 px-2 py-1 rounded-lg bg-zinc-800 text-zinc-500 text-sm cursor-not-allowed"
+                className={`${subBtnClass} bg-zinc-800 text-zinc-500 cursor-not-allowed`}
               >
                 Em breve
               </button>
