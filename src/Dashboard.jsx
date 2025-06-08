@@ -2,36 +2,18 @@ import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 
 const stats = [
-  {
-    title: "Faturamento (R$)",
-    value: "2.450,00",
-    change: "+12%",
-    description: "em relação à semana passada",
-    color: "cyan",
-  },
-  {
-    title: "Vendas",
-    value: "26",
-    change: "+8%",
-    description: "em relação à semana passada",
-    color: "green",
-  },
-  {
-    title: "Visitas",
-    value: "3.120",
-    change: "+5%",
-    description: "em relação à semana passada",
-    color: "yellow",
-  },
+  { title: "Faturamento (R$)", value: "2.450,00", change: "+12%", description: "em relação à semana passada", color: "cyan" },
+  { title: "Vendas", value: "26", change: "+8%", description: "em relação à semana passada", color: "green" },
+  { title: "Visitas", value: "3.120", change: "+5%", description: "em relação à semana passada", color: "yellow" },
 ];
 
 export default function Dashboard() {
   const [filtro, setFiltro] = useState("Hoje");
 
   return (
-    <div className="flex min-h-screen w-full overflow-x-auto">
+    <div className="flex min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-800 text-zinc-50">
       <Sidebar activePage="dashboard" />
-      <main className="flex-1 flex flex-col p-8 items-center justify-center overflow-x-auto">
+      <main className="flex-1 flex flex-col items-center ml-40 p-8">
         <div className="w-full max-w-6xl">
           <h1 className="text-3xl md:text-4xl font-bold text-cyan-400 mb-10 tracking-widest glow-cyan">
             Painel de Estatísticas
@@ -61,21 +43,14 @@ export default function Dashboard() {
                 className={`bg-zinc-800/70 backdrop-blur-sm rounded-2xl shadow-xl p-8 flex flex-col items-center border border-${stat.color}-400 hover:shadow-${stat.color}-400/40 transition-all duration-300 hover:scale-105`}
                 style={{
                   boxShadow: `0 0 20px 3px ${
-                    stat.color === "cyan"
-                      ? "#06b6d4"
-                      : stat.color === "green"
-                      ? "#10b981"
-                      : "#eab308"
+                    stat.color === "cyan" ? "#06b6d4" : stat.color === "green" ? "#10b981" : "#eab308"
                   }33`,
                 }}
               >
                 <span className="text-sm text-zinc-400 mb-2">{stat.title}</span>
-                <span className={`text-2xl font-bold text-${stat.color}-400`}>
-                  {stat.value}
-                </span>
+                <span className={`text-2xl font-bold text-${stat.color}-400`}>{stat.value}</span>
                 <span className="text-xs mt-1 text-zinc-300">
-                  {stat.change}{" "}
-                  <span className="text-zinc-400">{stat.description}</span>
+                  {stat.change} <span className="text-zinc-400">{stat.description}</span>
                 </span>
               </div>
             ))}
