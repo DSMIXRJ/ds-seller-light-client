@@ -1,4 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+// Ícone simples de copiar (SVG)
+const CopyIcon = ({ copied }) => (
+  copied ? (
+    <span title="Copiado!" className="ml-2 text-green-400">✔️</span>
+  ) : (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="ml-2 inline w-4 h-4 text-gray-400 cursor-pointer hover:text-cyan-400 transition"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
+      <rect x="3" y="3" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
+    </svg>
+  )
+);
+
+// Wrapper para célula do SKU com copiar
+function SkuCell({ value }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(value);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  return (
+    <div className="w-full border-b-2 border-white px-1 py-1 text-center text-xs flex items-center justify-center gap-1 break-all">
+      <span>{value}</span>
+      <span onClick={handleCopy} className="select-none">{<CopyIcon copied={copied} />}</span>
+    </div>
+  );
+}
 
 // Configuração das colunas da tabela de produtos
 export const createColumns = (handleMaskedChange) => [
@@ -20,12 +56,10 @@ export const createColumns = (handleMaskedChange) => [
     accessorKey: 'sku',
     header: 'SKU',
     cell: (info) => (
-      <div className="w-full border-b-2 border-white px-1 py-1 text-center text-xs break-all">
-        {info.getValue()}
-      </div>
+      <SkuCell value={info.getValue()} />
     ),
     enableSorting: false,
-    size: 100, // aumente se necessário para skus grandes
+    size: 100,
   },
   {
     accessorKey: 'estoque',
