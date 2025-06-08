@@ -4,31 +4,66 @@ import logoShopee from "../assets/shopee.png";
 import logoAmazon from "../assets/amazon.png";
 import Sidebar from "../components/Sidebar";
 
+const API_BASE_URL = "https://dsseller-backend-final.onrender.com";
+
 export default function Integracoes() {
-  const [mlIntegrado, setMlIntegrado] = useState(localStorage.getItem("mlIntegrado") === "true");
+  const [mlIntegrado, setMlIntegrado] = useState(false);
   const [shopeeIntegrado, setShopeeIntegrado] = useState(false);
   const [amazonIntegrado, setAmazonIntegrado] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [removing, setRemoving] = useState(false);
+
+  // Função para verificar status no backend
+  const checkMLStatus = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/mercadolivre/status`);
+      const data = await response.json();
+      return data.integrated || false;
+    } catch (error) {
+      console.error("Erro ao verificar status ML:", error);
+      return false;
+    }
+  };
+
+  // Função para atualizar status local e global
+  const updateMLStatus = (status) => {
+    setMlIntegrado(status);
+    localStorage.setItem("mlIntegrado", status.toString());
+    window.dispatchEvent(new Event("mlStatusChange"));
+  };
 
   useEffect(() => {
-    // Sempre checa a URL para integração
-    const urlParams = new URLSearchParams(window.location.search);
-    const mlQuery = urlParams.get("ml_integrado");
+    const initializeStatus = async () => {
+      setLoading(true);
+      
+      // Sempre checa a URL para integração
+      const urlParams = new URLSearchParams(window.location.search);
+      const mlQuery = urlParams.get("ml_integrado");
 
-    if (mlQuery === "1") {
-      localStorage.setItem("mlIntegrado", "true");
-      setMlIntegrado(true);
-      window.dispatchEvent(new Event("mlStatusChange"));
+      if (mlQuery === "1") {
+        // Se veio da URL de callback, aguarda um pouco para o backend processar
+        setTimeout(async () => {
+          const backendStatus = await checkMLStatus();
+          updateMLStatus(backendStatus);
+          setLoading(false);
+        }, 2000);
 
-      // Remove o parâmetro da URL (sem recarregar)
-      window.history.replaceState({}, document.title, window.location.pathname);
-    } else {
-      // Garante que o estado reflete o storage ao carregar
-      setMlIntegrado(localStorage.getItem("mlIntegrado") === "true");
-    }
+        // Remove o parâmetro da URL (sem recarregar)
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } else {
+        // Verifica status no backend
+        const backendStatus = await checkMLStatus();
+        updateMLStatus(backendStatus);
+        setLoading(false);
+      }
+    };
+
+    initializeStatus();
 
     // Atualiza status em tempo real
-    const handleStatusChange = () => {
-      setMlIntegrado(localStorage.getItem("mlIntegrado") === "true");
+    const handleStatusChange = async () => {
+      const backendStatus = await checkMLStatus();
+      setMlIntegrado(backendStatus);
     };
     window.addEventListener("mlStatusChange", handleStatusChange);
 
@@ -38,13 +73,36 @@ export default function Integracoes() {
   }, []);
 
   const handleIntegrarML = () => {
-    window.location.href = "https://dsseller-backend-final.onrender.com/auth/meli";
+    window.location.href = `${API_BASE_URL}/auth/meli`;
   };
 
-  const handleRemoverML = () => {
-    setMlIntegrado(false);
-    localStorage.setItem("mlIntegrado", "false");
-    window.dispatchEvent(new Event("mlStatusChange"));
+  const handleRemoverML = async () => {
+    if (removing) return;
+    
+    setRemoving(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/mercadolivre/remove`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        updateMLStatus(false);
+        console.log("Integração removida com sucesso");
+      } else {
+        console.error("Erro ao remover integração:", data.message);
+        alert("Erro ao remover integração. Tente novamente.");
+      }
+    } catch (error) {
+      console.error("Erro ao remover integração:", error);
+      alert("Erro ao remover integração. Tente novamente.");
+    } finally {
+      setRemoving(false);
+    }
   };
 
   // Luzes sincronizadas
@@ -64,23 +122,35 @@ export default function Integracoes() {
     };
   };
 
-  const botaoEstilo = (integrado) => {
+  const botaoEstilo = (integrado, isLoading = false) => {
     const cor = integrado ? "#00ff55" : "#ff3333";
     return {
       marginTop: "0.5rem",
       backgroundColor: "rgba(17, 17, 17, 0.8)",
-      color: cor,
+      color: isLoading ? "#999" : cor,
       fontWeight: "bold",
       padding: "8px 18px",
       borderRadius: "1.25rem",
-      boxShadow: `0 0 15px ${cor}66`,
-      textShadow: `0 0 6px ${cor}`,
+      boxShadow: isLoading ? "none" : `0 0 15px ${cor}66`,
+      textShadow: isLoading ? "none" : `0 0 6px ${cor}`,
       fontSize: "0.875rem",
       transition: "0.3s all ease-in-out",
       backdropFilter: "blur(10px)",
-      border: `1px solid ${cor}44`,
+      border: `1px solid ${isLoading ? "#666" : cor}44`,
+      cursor: isLoading ? "not-allowed" : "pointer",
     };
   };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen text-white content-layer">
+        <Sidebar />
+        <div className="flex flex-col flex-1 items-center justify-center py-16 min-h-[60vh]">
+          <div className="text-cyan-400 text-lg">Verificando status das integrações...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen text-white content-layer">
@@ -109,11 +179,12 @@ export default function Integracoes() {
             <span className="text-sm text-zinc-300 font-bold">Mercado Livre</span>
             {mlIntegrado ? (
               <button
-                style={botaoEstilo(true)}
+                style={botaoEstilo(true, removing)}
                 onClick={handleRemoverML}
+                disabled={removing}
                 className="hover:scale-105 active:scale-95"
               >
-                Remover
+                {removing ? "Removendo..." : "Remover"}
               </button>
             ) : (
               <button

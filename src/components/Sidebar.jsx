@@ -2,22 +2,50 @@ import { useState, useEffect } from "react";
 import { Menu, Home, Layers, LogOut, Bot, List } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
+const API_BASE_URL = "https://dsseller-backend-final.onrender.com";
+
 export default function Sidebar({ activePage }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [anunciosOpen, setAnunciosOpen] = useState(false);
-  const [mlIntegrado, setMlIntegrado] = useState(localStorage.getItem("mlIntegrado") === "true");
+  const [mlIntegrado, setMlIntegrado] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Função para verificar status no backend
+  const checkMLStatus = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/mercadolivre/status`);
+      const data = await response.json();
+      return data.integrated || false;
+    } catch (error) {
+      console.error("Erro ao verificar status ML:", error);
+      return false;
+    }
+  };
+
   useEffect(() => {
-    // Sempre lê do localStorage
-    const handleStatusChange = () => {
-      setMlIntegrado(localStorage.getItem("mlIntegrado") === "true");
+    const updateStatus = async () => {
+      // Primeiro verifica o localStorage para resposta rápida
+      const localStatus = localStorage.getItem("mlIntegrado") === "true";
+      setMlIntegrado(localStatus);
+
+      // Depois verifica no backend para garantir consistência
+      const backendStatus = await checkMLStatus();
+      if (backendStatus !== localStatus) {
+        setMlIntegrado(backendStatus);
+        localStorage.setItem("mlIntegrado", backendStatus.toString());
+      }
+    };
+
+    // Atualiza status ao carregar e ao trocar de rota
+    updateStatus();
+
+    // Escuta mudanças de status
+    const handleStatusChange = async () => {
+      const backendStatus = await checkMLStatus();
+      setMlIntegrado(backendStatus);
     };
     window.addEventListener("mlStatusChange", handleStatusChange);
-
-    // Também atualiza ao trocar de rota/página
-    setMlIntegrado(localStorage.getItem("mlIntegrado") === "true");
 
     return () => {
       window.removeEventListener("mlStatusChange", handleStatusChange);
@@ -124,3 +152,4 @@ export default function Sidebar({ activePage }) {
     </aside>
   );
 }
+
