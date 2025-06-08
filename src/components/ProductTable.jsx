@@ -17,7 +17,6 @@ export default function ProductTable() {
 
         const data = response.data.map((p) => ({
           ...p,
-          // Manter o SKU que vem do backend
           precoCusto: 0,
           precoVendaMasked: formatCurrency(p.precoVenda),
           precoCustoMasked: "",
@@ -94,24 +93,22 @@ export default function ProductTable() {
   );
 
   return (
-    <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-4 w-full">
-
-      
+    <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-4 w-full overflow-auto">
       <div className="w-full">
         <table className="w-full table-fixed border-collapse">
-          <thead>
-            <tr className="bg-[#181c2f] text-xs uppercase sticky top-0 z-50" style={{ position: 'sticky', top: '0px' }}>
-              <th className="px-1 py-3 text-center w-[60px] bg-[#181c2f] border-b-2 border-cyan-500/50">Imagem</th>
-              <th className="px-1 py-3 text-center w-[80px] bg-[#181c2f] border-b-2 border-cyan-500/50">SKU</th>
-              <th className="px-1 py-3 text-center w-[50px] bg-[#181c2f] border-b-2 border-cyan-500/50">Estoque</th>
-              <th className="px-1 py-3 text-center w-[200px] bg-[#181c2f] border-b-2 border-cyan-500/50">Título</th>
-              <th className="px-1 py-3 text-center w-[80px] bg-[#181c2f] border-b-2 border-cyan-500/50">Preço</th>
-              <th className="px-1 py-3 text-center w-[80px] bg-[#181c2f] border-b-2 border-cyan-500/50">Custo</th>
-              <th className="px-1 py-3 text-center w-[60px] bg-[#181c2f] border-b-2 border-cyan-500/50">%</th>
-              <th className="px-1 py-3 text-center w-[80px] bg-[#181c2f] border-b-2 border-cyan-500/50">Lucro</th>
-              <th className="px-1 py-3 text-center w-[90px] bg-[#181c2f] border-b-2 border-cyan-500/50">Total</th>
-              <th className="px-1 py-3 text-center w-[70px] bg-[#181c2f] border-b-2 border-cyan-500/50">Visitas</th>
-              <th className="px-1 py-3 text-center w-[70px] bg-[#181c2f] border-b-2 border-cyan-500/50">Vendas</th>
+          <thead className="sticky top-[120px] z-20 bg-[#181c2f]">
+            <tr className="text-xs uppercase border-b-2 border-cyan-500/50">
+              <th className="px-1 py-3 text-center w-[60px]">Imagem</th>
+              <th className="px-1 py-3 text-center w-[80px]">SKU</th>
+              <th className="px-1 py-3 text-center w-[50px]">Estoque</th>
+              <th className="px-1 py-3 text-center w-[200px]">Título</th>
+              <th className="px-1 py-3 text-center w-[80px]">Preço</th>
+              <th className="px-1 py-3 text-center w-[80px]">Custo</th>
+              <th className="px-1 py-3 text-center w-[60px]">%</th>
+              <th className="px-1 py-3 text-center w-[80px]">Lucro</th>
+              <th className="px-1 py-3 text-center w-[90px]">Total</th>
+              <th className="px-1 py-3 text-center w-[70px]">Visitas</th>
+              <th className="px-1 py-3 text-center w-[70px]">Vendas</th>
             </tr>
           </thead>
           <tbody>
@@ -189,8 +186,7 @@ export default function ProductTable() {
           </tbody>
         </table>
       </div>
-      
-      {/* Resumo da tabela */}
+
       {products.length > 0 && (
         <div className="mt-3 text-xs text-gray-400 text-center">
           Exibindo {products.length} anúncios • Layout: 960px total • Sem scroll horizontal
