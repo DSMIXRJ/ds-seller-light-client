@@ -5,27 +5,20 @@ import { useNavigate, useLocation } from "react-router-dom";
 export default function Sidebar({ activePage }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [anunciosOpen, setAnunciosOpen] = useState(false);
-  const [mlIntegrado, setMlIntegrado] = useState(false);
+  const [mlIntegrado, setMlIntegrado] = useState(localStorage.getItem("mlIntegrado") === "true");
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const mlIntegradoParam = queryParams.get("ml_integrado");
-
-    if (mlIntegradoParam === "1") {
-      sessionStorage.setItem("mlIntegrado", "true");
-    }
-
-    const status = sessionStorage.getItem("mlIntegrado") === "true";
-    setMlIntegrado(status);
-
+    // Sempre lê do localStorage
     const handleStatusChange = () => {
-      const atualizado = sessionStorage.getItem("mlIntegrado") === "true";
-      setMlIntegrado(atualizado);
+      setMlIntegrado(localStorage.getItem("mlIntegrado") === "true");
     };
-
     window.addEventListener("mlStatusChange", handleStatusChange);
+
+    // Também atualiza ao trocar de rota/página
+    setMlIntegrado(localStorage.getItem("mlIntegrado") === "true");
+
     return () => {
       window.removeEventListener("mlStatusChange", handleStatusChange);
     };
@@ -94,7 +87,6 @@ export default function Sidebar({ activePage }) {
                     : "bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
                 }`}
             >
-              {/* Ícone removido */}
               Mercado Livre
             </button>
 
@@ -102,7 +94,6 @@ export default function Sidebar({ activePage }) {
               disabled
               className="flex items-center gap-2 px-2 py-1 rounded-lg bg-zinc-800 text-zinc-500 text-sm cursor-not-allowed"
             >
-              {/* Ícone removido */}
               Shopee
             </button>
 
@@ -110,7 +101,6 @@ export default function Sidebar({ activePage }) {
               disabled
               className="flex items-center gap-2 px-2 py-1 rounded-lg bg-zinc-800 text-zinc-500 text-sm cursor-not-allowed"
             >
-              {/* Ícone removido */}
               Amazon
             </button>
           </div>
