@@ -96,7 +96,7 @@ export default function ProductTable() {
     <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-4 w-full overflow-auto">
       <div className="w-full">
         <table className="w-full table-fixed border-collapse">
-          <thead className="sticky top-[120px] z-20 bg-[#181c2f]">
+          <thead className="sticky top-[96px] z-30 bg-[#181c2f]">
             <tr className="text-xs uppercase border-b-2 border-cyan-500/50">
               <th className="px-1 py-3 text-center w-[60px]">Imagem</th>
               <th className="px-1 py-3 text-center w-[80px]">SKU</th>
