@@ -1,0 +1,1 @@
+// index.jsx - será preenchido com conteúdo real depois
