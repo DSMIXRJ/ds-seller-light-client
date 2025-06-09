@@ -1,107 +1,98 @@
+import { useState, useCallback, useMemo } from "react";
+
 export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
-  
+  // Estado local para controlar os valores durante a digitação
+  const [localValues, setLocalValues] = useState(config);
+
   // Função para formatar valores percentuais
-  const formatarPercentual = (valor) => {
-    // Remove tudo que não é número
+  const formatarPercentual = useCallback((valor) => {
     const apenasNumeros = valor.replace(/\D/g, '');
-    
     if (apenasNumeros === '') return '';
-    
-    // Converte para número e divide por 100 para ter 2 casas decimais
     const numero = parseInt(apenasNumeros) / 100;
-    
-    // Formata com vírgula como separador decimal
     return numero.toLocaleString('pt-BR', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
-  };
+  }, []);
 
   // Função para formatar valores monetários
-  const formatarMonetario = (valor) => {
-    // Remove tudo que não é número
+  const formatarMonetario = useCallback((valor) => {
     const apenasNumeros = valor.replace(/\D/g, '');
-    
     if (apenasNumeros === '') return '';
-    
-    // Converte para número e divide por 100 para ter 2 casas decimais
     const numero = parseInt(apenasNumeros) / 100;
-    
-    // Formata com vírgula como separador decimal
     return numero.toLocaleString('pt-BR', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
-  };
+  }, []);
 
-  // Função para onChange - permite digitação livre
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    // Armazena o valor exatamente como digitado, sem formatação
-    setConfig((prev) => ({ ...prev, [name]: value }));
-  };
+  // Campos monetários
+  const camposMonetarios = useMemo(() => ['extras'], []);
 
-  // Função para onBlur - formata quando sair do campo
-  const handleBlur = (e) => {
-    const { name, value } = e.target;
-    
-    // Define quais campos são monetários (com prefixo R$)
-    const camposMonetarios = ['extras'];
-    
+  // Função para onChange - atualiza estado local
+  const handleChange = useCallback((name, value) => {
+    setLocalValues(prev => ({ ...prev, [name]: value }));
+  }, []);
+
+  // Função para onBlur - formata e atualiza estado principal
+  const handleBlur = useCallback((name, value) => {
     let valorFormatado;
     
     if (camposMonetarios.includes(name)) {
-      // Formata como valor monetário
       valorFormatado = formatarMonetario(value);
     } else {
-      // Formata como percentual
       valorFormatado = formatarPercentual(value);
     }
     
-    // Só atualiza se o valor mudou
-    if (valorFormatado !== value) {
-      setConfig((prev) => ({ ...prev, [name]: valorFormatado }));
-    }
-  };
+    const novoValor = valorFormatado || value;
+    setLocalValues(prev => ({ ...prev, [name]: novoValor }));
+    setConfig(prev => ({ ...prev, [name]: novoValor }));
+  }, [camposMonetarios, formatarMonetario, formatarPercentual, setConfig]);
 
-  const InputComPrefixo = ({ label, name, value, prefixo }) => (
-    <div className="col-span-1">
-      <label className="text-sm text-zinc-200 font-semibold block text-center mb-1">{label}</label>
-      <div className="flex w-full rounded-lg overflow-hidden border border-zinc-700 bg-zinc-800 focus-within:border-cyan-400">
-        <div className="w-12 bg-zinc-100 text-black flex items-center justify-center text-sm font-bold border-r border-zinc-400">
-          {prefixo}
+  // Componente de input memoizado para evitar re-renderizações
+  const InputComPrefixo = useMemo(() => {
+    return function InputComPrefixoMemo({ label, name, value, prefixo }) {
+      return (
+        <div className="col-span-1">
+          <label className="text-sm text-zinc-200 font-semibold block text-center mb-1">
+            {label}
+          </label>
+          <div className="flex w-full rounded-lg overflow-hidden border border-zinc-700 bg-zinc-800 focus-within:border-cyan-400">
+            <div className="w-12 bg-zinc-100 text-black flex items-center justify-center text-sm font-bold border-r border-zinc-400">
+              {prefixo}
+            </div>
+            <input
+              type="text"
+              name={name}
+              value={localValues[name] || ""}
+              onChange={(e) => handleChange(name, e.target.value)}
+              onBlur={(e) => handleBlur(name, e.target.value)}
+              className="flex-1 p-2 bg-transparent text-zinc-100 outline-none text-center"
+              placeholder="0,00"
+              inputMode="numeric"
+              autoComplete="off"
+            />
+          </div>
         </div>
-        <input
-          type="text"
-          name={name}
-          value={value || ""}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          className="flex-1 p-2 bg-transparent text-zinc-100 outline-none text-center"
-          placeholder="0,00"
-          inputMode="numeric"
-          autoComplete="off"
-        />
-      </div>
-    </div>
-  );
+      );
+    };
+  }, [localValues, handleChange, handleBlur]);
 
-  const tratarNumeros = () => {
+  const tratarNumeros = useCallback(() => {
     const camposConvertidos = {};
-    for (const chave in config) {
-      const valor = config[chave];
-      // Converte vírgula para ponto e remove espaços para parsing
+    for (const chave in localValues) {
+      const valor = localValues[chave];
       const valorLimpo = valor?.toString().replace(',', '.').trim();
       const num = parseFloat(valorLimpo);
       camposConvertidos[chave] = isNaN(num) ? 0 : num;
     }
     return camposConvertidos;
-  };
+  }, [localValues]);
 
-  const salvarConfiguracoes = () => {
+  const salvarConfiguracoes = useCallback(() => {
     const dados = tratarNumeros();
     onSave(dados);
-  };
+  }, [tratarNumeros, onSave]);
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
@@ -111,12 +102,12 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
         </h2>
 
         <div className="grid grid-cols-2 gap-4">
-          <InputComPrefixo label="Margem Mínima" name="margemMinima" value={config.margemMinima} prefixo="%" />
-          <InputComPrefixo label="Margem Máxima" name="margemMaxima" value={config.margemMaxima} prefixo="%" />
-          <InputComPrefixo label="Premium" name="premium" value={config.premium} prefixo="%" />
-          <InputComPrefixo label="Clássico" name="classico" value={config.classico} prefixo="%" />
-          <InputComPrefixo label="Imposto CNPJ" name="imposto" value={config.imposto} prefixo="%" />
-          <InputComPrefixo label="Extra" name="extras" value={config.extras} prefixo="R$" />
+          <InputComPrefixo label="Margem Mínima" name="margemMinima" prefixo="%" />
+          <InputComPrefixo label="Margem Máxima" name="margemMaxima" prefixo="%" />
+          <InputComPrefixo label="Premium" name="premium" prefixo="%" />
+          <InputComPrefixo label="Clássico" name="classico" prefixo="%" />
+          <InputComPrefixo label="Imposto CNPJ" name="imposto" prefixo="%" />
+          <InputComPrefixo label="Extra" name="extras" prefixo="R$" />
         </div>
 
         <div className="flex justify-between gap-3 mt-8">
