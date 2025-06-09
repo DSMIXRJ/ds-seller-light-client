@@ -3,6 +3,7 @@ import logoMercadoLivre from "../assets/mercado-livre.png";
 import logoShopee from "../assets/shopee.png";
 import logoAmazon from "../assets/amazon.png";
 import Sidebar from "../components/Sidebar";
+import { Settings } from "lucide-react";
 
 const API_BASE_URL = "https://dsseller-backend-final.onrender.com";
 
@@ -12,6 +13,15 @@ export default function Integracoes() {
   const [amazonIntegrado, setAmazonIntegrado] = useState(false);
   const [loading, setLoading] = useState(true);
   const [removing, setRemoving] = useState(false);
+
+  // Configuração Modal Mercado Livre
+  const [showConfigML, setShowConfigML] = useState(false);
+  const [mlConfig, setMlConfig] = useState({
+    imposto: "",
+    margemMinima: "",
+    tipoAnuncio: "premium",
+    extras: "",
+  });
 
   // Função para verificar status no backend
   const checkMLStatus = async () => {
@@ -41,17 +51,13 @@ export default function Integracoes() {
       const mlQuery = urlParams.get("ml_integrado");
 
       if (mlQuery === "1") {
-        // Se veio da URL de callback, aguarda um pouco para o backend processar
         setTimeout(async () => {
           const backendStatus = await checkMLStatus();
           updateMLStatus(backendStatus);
           setLoading(false);
         }, 2000);
-
-        // Remove o parâmetro da URL (sem recarregar)
         window.history.replaceState({}, document.title, window.location.pathname);
       } else {
-        // Verifica status no backend
         const backendStatus = await checkMLStatus();
         updateMLStatus(backendStatus);
         setLoading(false);
@@ -60,7 +66,6 @@ export default function Integracoes() {
 
     initializeStatus();
 
-    // Atualiza status em tempo real
     const handleStatusChange = async () => {
       const backendStatus = await checkMLStatus();
       setMlIntegrado(backendStatus);
@@ -103,6 +108,23 @@ export default function Integracoes() {
     } finally {
       setRemoving(false);
     }
+  };
+
+  // Modal Config ML
+  const handleOpenConfigML = () => setShowConfigML(true);
+  const handleCloseConfigML = () => setShowConfigML(false);
+
+  const handleConfigChange = (e) => {
+    const { name, value } = e.target;
+    setMlConfig((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSalvarConfigML = () => {
+    // Aqui você pode implementar o envio dessa configuração para o backend, se desejar.
+    handleCloseConfigML();
   };
 
   // Luzes sincronizadas
@@ -162,9 +184,18 @@ export default function Integracoes() {
         <div className="flex flex-row gap-8 flex-wrap justify-center">
           {/* Mercado Livre */}
           <div
-            className="flex flex-col items-center gap-2 p-6 w-48 h-48 rounded-3xl bg-zinc-900/60 backdrop-blur-md border-2 shadow-xl transition-all duration-500 hover:scale-105 hover:rotate-1"
+            className="flex flex-col items-center gap-2 p-6 w-48 h-48 rounded-3xl bg-zinc-900/60 backdrop-blur-md border-2 shadow-xl transition-all duration-500 hover:scale-105 hover:rotate-1 relative"
             style={gerarEstiloBox(mlIntegrado, "#00ff55")}
           >
+            {/* Engrenagem de configuração */}
+            <button
+              className="absolute top-3 right-3 text-cyan-400 hover:text-white bg-zinc-800/80 rounded-full p-1 shadow transition"
+              style={{ zIndex: 2 }}
+              onClick={handleOpenConfigML}
+              title="Configurar integração Mercado Livre"
+            >
+              <Settings className="w-5 h-5" />
+            </button>
             <img
               src={logoMercadoLivre}
               alt="Mercado Livre"
@@ -238,6 +269,84 @@ export default function Integracoes() {
           </div>
         </div>
       </div>
+
+      {/* Modal de configuração Mercado Livre */}
+      {showConfigML && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-zinc-900 rounded-2xl shadow-2xl p-8 min-w-[320px] w-full max-w-[380px] border border-cyan-500/40 relative">
+            <h2 className="text-xl text-cyan-300 font-bold mb-5 text-center">
+              Configurar Integração Mercado Livre
+            </h2>
+            {/* Formulário */}
+            <div className="flex flex-col gap-4">
+              <div>
+                <label className="text-sm text-zinc-200 font-semibold">Imposto CNPJ (%)</label>
+                <input
+                  type="number"
+                  name="imposto"
+                  min="0"
+                  max="99"
+                  className="mt-1 w-full p-2 rounded-lg bg-zinc-800 text-zinc-100 outline-none border border-zinc-700 focus:border-cyan-400 transition"
+                  value={mlConfig.imposto}
+                  onChange={handleConfigChange}
+                  placeholder="Ex: 4"
+                />
+              </div>
+              <div>
+                <label className="text-sm text-zinc-200 font-semibold">Margem Mínima (%)</label>
+                <input
+                  type="number"
+                  name="margemMinima"
+                  min="0"
+                  max="99"
+                  className="mt-1 w-full p-2 rounded-lg bg-zinc-800 text-zinc-100 outline-none border border-zinc-700 focus:border-cyan-400 transition"
+                  value={mlConfig.margemMinima}
+                  onChange={handleConfigChange}
+                  placeholder="Ex: 10"
+                />
+              </div>
+              <div>
+                <label className="text-sm text-zinc-200 font-semibold">Tipo de Anúncio</label>
+                <select
+                  name="tipoAnuncio"
+                  className="mt-1 w-full p-2 rounded-lg bg-zinc-800 text-zinc-100 outline-none border border-zinc-700 focus:border-cyan-400 transition"
+                  value={mlConfig.tipoAnuncio}
+                  onChange={handleConfigChange}
+                >
+                  <option value="premium">Premium</option>
+                  <option value="classico">Clássico</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-sm text-zinc-200 font-semibold">Extras</label>
+                <input
+                  type="text"
+                  name="extras"
+                  className="mt-1 w-full p-2 rounded-lg bg-zinc-800 text-zinc-100 outline-none border border-zinc-700 focus:border-cyan-400 transition"
+                  value={mlConfig.extras}
+                  onChange={handleConfigChange}
+                  placeholder="Taxa extra, frete etc."
+                />
+              </div>
+            </div>
+            {/* Botões */}
+            <div className="flex justify-between gap-3 mt-8">
+              <button
+                onClick={handleCloseConfigML}
+                className="px-5 py-2 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border border-zinc-600"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSalvarConfigML}
+                className="px-6 py-2 rounded-lg bg-cyan-600 text-white font-bold hover:bg-cyan-800 shadow border border-cyan-400"
+              >
+                Salvar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
