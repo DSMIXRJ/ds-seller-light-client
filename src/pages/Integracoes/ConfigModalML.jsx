@@ -24,6 +24,25 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
     </div>
   );
 
+  const InputComPrefixo = ({ label, name, value, prefixo }) => (
+    <div className="col-span-1">
+      <label className="text-sm text-zinc-200 font-semibold block text-center">{label}</label>
+      <div className="mt-1 flex w-full rounded-lg overflow-hidden border border-zinc-700 bg-zinc-800 focus-within:border-cyan-400">
+        <div className="px-3 bg-white text-black flex items-center justify-center text-sm font-bold border-r border-zinc-400">
+          {prefixo}
+        </div>
+        <input
+          type="text"
+          name={name}
+          value={value || ""}
+          onChange={handleChange}
+          className="flex-1 p-2 bg-transparent text-zinc-100 outline-none"
+          placeholder="Frete, embalagem, etc."
+        />
+      </div>
+    </div>
+  );
+
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
       <div className="bg-zinc-900 rounded-2xl shadow-2xl p-8 w-full max-w-md border border-cyan-500/40 relative">
@@ -37,27 +56,9 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
           <InputComSimbolo label="Premium" name="premium" value={config.premium} simbolo="%" />
           <InputComSimbolo label="Clássico" name="classico" value={config.classico} simbolo="%" />
           <InputComSimbolo label="Imposto CNPJ" name="imposto" value={config.imposto} simbolo="%" />
-
-          {/* Campo Custos Extras com R$ fixo */}
-          <div className="col-span-2">
-            <label className="text-sm text-zinc-200 font-semibold block text-center">CUSTOS EXTRAS (R$)</label>
-            <div className="mt-1 flex w-full rounded-lg overflow-hidden border border-zinc-700 bg-zinc-800 focus-within:border-cyan-400">
-              <div className="px-3 bg-white text-black flex items-center justify-center text-sm font-bold border-r border-zinc-400">
-                R$
-              </div>
-              <input
-                type="text"
-                name="extras"
-                value={config.extras || ""}
-                onChange={handleChange}
-                className="flex-1 p-2 bg-transparent text-zinc-100 outline-none"
-                placeholder="Frete, embalagem, outras taxas..."
-              />
-            </div>
-          </div>
+          <InputComPrefixo label="Extra" name="extras" value={config.extras} prefixo="R$" />
         </div>
 
-        {/* Botões */}
         <div className="flex justify-between gap-3 mt-8">
           <button
             onClick={onClose}
