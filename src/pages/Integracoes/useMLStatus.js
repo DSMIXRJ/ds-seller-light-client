@@ -1,6 +1,6 @@
 // ✅ ARQUIVO: src/pages/Integracoes/useMLStatus.js
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const API_BASE_URL = "https://dsseller-backend-final.onrender.com";
 
@@ -28,11 +28,20 @@ export default function useMLStatus() {
     }
   };
 
-  const updateMLStatus = (status) => {
+  const updateMLStatus = useCallback((status) => {
     setMlIntegrado(status);
     localStorage.setItem("mlIntegrado", status.toString());
     window.dispatchEvent(new Event("mlStatusChange"));
-  };
+  }, []);
+
+  // Estabiliza a função setMlConfig com useCallback
+  const handleSetMlConfig = useCallback((newConfig) => {
+    if (typeof newConfig === 'function') {
+      setMlConfig(prev => newConfig(prev));
+    } else {
+      setMlConfig(newConfig);
+    }
+  }, []);
 
   useEffect(() => {
     const initializeStatus = async () => {
@@ -63,13 +72,13 @@ export default function useMLStatus() {
 
     window.addEventListener("mlStatusChange", handleStatusChange);
     return () => window.removeEventListener("mlStatusChange", handleStatusChange);
+  }, [updateMLStatus]);
+
+  const handleIntegrarML = useCallback(() => {
+    window.location.href = `${API_BASE_URL}/auth/meli`;
   }, []);
 
-  const handleIntegrarML = () => {
-    window.location.href = `${API_BASE_URL}/auth/meli`;
-  };
-
-  const handleRemoverML = async () => {
+  const handleRemoverML = useCallback(async () => {
     if (removing) return;
     setRemoving(true);
     try {
@@ -82,11 +91,11 @@ export default function useMLStatus() {
     } finally {
       setRemoving(false);
     }
-  };
+  }, [removing, updateMLStatus]);
 
-  const handleSalvarConfigML = () => {
+  const handleSalvarConfigML = useCallback(() => {
     setShowConfigML(false);
-  };
+  }, []);
 
   return {
     mlIntegrado,
@@ -97,7 +106,8 @@ export default function useMLStatus() {
     showConfigML,
     setShowConfigML,
     mlConfig,
-    setMlConfig,
+    setMlConfig: handleSetMlConfig, // Função estabilizada
     handleSalvarConfigML,
   };
 }
+
