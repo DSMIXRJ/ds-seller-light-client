@@ -1,28 +1,23 @@
 // ✅ ARQUIVO: src/pages/Integracoes/ConfigModalML.jsx
 
-import { NumericFormat } from "react-number-format";
-
 export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
-  const handleChange = (name, value) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
     setConfig((prev) => ({ ...prev, [name]: value }));
   };
 
-  const Campo = ({ label, name, prefixo }) => (
+  const InputComPrefixo = ({ label, name, value, prefixo }) => (
     <div className="col-span-1">
-      <label className="text-sm text-zinc-200 font-semibold block text-center mb-1">{label}</label>
-      <div className="flex w-full rounded-lg overflow-hidden border border-zinc-700 bg-zinc-800 focus-within:border-cyan-400">
-        <div className="w-12 bg-zinc-100 text-black flex items-center justify-center text-sm font-bold border-r border-zinc-400">
+      <label className="text-sm text-zinc-200 font-semibold block text-center">{label}</label>
+      <div className="mt-1 flex w-full rounded-lg overflow-hidden border border-zinc-700 bg-zinc-800 focus-within:border-cyan-400">
+        <div className="px-3 bg-white text-black flex items-center justify-center text-sm font-bold border-r border-zinc-400">
           {prefixo}
         </div>
-        <NumericFormat
-          value={config[name]}
-          onValueChange={({ value }) => handleChange(name, value)}
-          thousandSeparator="."
-          decimalSeparator=","
-          allowNegative={false}
-          decimalScale={2}
-          fixedDecimalScale
-          placeholder="0,00"
+        <input
+          type="text"
+          name={name}
+          value={value || ""}
+          onChange={handleChange}
           className="flex-1 p-2 bg-transparent text-zinc-100 outline-none"
         />
       </div>
@@ -37,12 +32,12 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
         </h2>
 
         <div className="grid grid-cols-2 gap-4">
-          <Campo label="Margem Mínima" name="margemMinima" prefixo="%" />
-          <Campo label="Margem Máxima" name="margemMaxima" prefixo="%" />
-          <Campo label="Premium" name="premium" prefixo="%" />
-          <Campo label="Clássico" name="classico" prefixo="%" />
-          <Campo label="Imposto CNPJ" name="imposto" prefixo="%" />
-          <Campo label="Extra" name="extras" prefixo="R$" />
+          <InputComPrefixo label="Margem Mínima" name="margemMinima" value={config.margemMinima} prefixo="%" />
+          <InputComPrefixo label="Margem Máxima" name="margemMaxima" value={config.margemMaxima} prefixo="%" />
+          <InputComPrefixo label="Premium" name="premium" value={config.premium} prefixo="%" />
+          <InputComPrefixo label="Clássico" name="classico" value={config.classico} prefixo="%" />
+          <InputComPrefixo label="Imposto CNPJ" name="imposto" value={config.imposto} prefixo="%" />
+          <InputComPrefixo label="Extra" name="extras" value={config.extras} prefixo="R$" />
         </div>
 
         <div className="flex justify-between gap-3 mt-8">
