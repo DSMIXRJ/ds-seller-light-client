@@ -1,5 +1,3 @@
-import { useRef, useCallback } from "react";
-
 export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
   
   // Função para formatar valores percentuais
@@ -36,9 +34,16 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
     });
   };
 
-  const handleChange = useCallback((e) => {
+  // Função para onChange - permite digitação livre
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    const cursorPosition = e.target.selectionStart;
+    // Armazena o valor exatamente como digitado, sem formatação
+    setConfig((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Função para onBlur - formata quando sair do campo
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
     
     // Define quais campos são monetários (com prefixo R$)
     const camposMonetarios = ['extras'];
@@ -53,44 +58,33 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
       valorFormatado = formatarPercentual(value);
     }
     
-    setConfig((prev) => ({ ...prev, [name]: valorFormatado }));
-    
-    // Restaura o foco e posição do cursor após a formatação
-    setTimeout(() => {
-      const input = e.target;
-      if (input && document.activeElement !== input) {
-        input.focus();
-        // Posiciona o cursor no final
-        input.setSelectionRange(input.value.length, input.value.length);
-      }
-    }, 0);
-  }, [setConfig]);
-
-  const InputComPrefixo = ({ label, name, value, prefixo }) => {
-    const inputRef = useRef(null);
-    
-    return (
-      <div className="col-span-1">
-        <label className="text-sm text-zinc-200 font-semibold block text-center mb-1">{label}</label>
-        <div className="flex w-full rounded-lg overflow-hidden border border-zinc-700 bg-zinc-800 focus-within:border-cyan-400">
-          <div className="w-12 bg-zinc-100 text-black flex items-center justify-center text-sm font-bold border-r border-zinc-400">
-            {prefixo}
-          </div>
-          <input
-            ref={inputRef}
-            type="text"
-            name={name}
-            value={value || ""}
-            onChange={handleChange}
-            className="flex-1 p-2 bg-transparent text-zinc-100 outline-none text-center"
-            placeholder="0,00"
-            inputMode="numeric"
-            autoComplete="off"
-          />
-        </div>
-      </div>
-    );
+    // Só atualiza se o valor mudou
+    if (valorFormatado !== value) {
+      setConfig((prev) => ({ ...prev, [name]: valorFormatado }));
+    }
   };
+
+  const InputComPrefixo = ({ label, name, value, prefixo }) => (
+    <div className="col-span-1">
+      <label className="text-sm text-zinc-200 font-semibold block text-center mb-1">{label}</label>
+      <div className="flex w-full rounded-lg overflow-hidden border border-zinc-700 bg-zinc-800 focus-within:border-cyan-400">
+        <div className="w-12 bg-zinc-100 text-black flex items-center justify-center text-sm font-bold border-r border-zinc-400">
+          {prefixo}
+        </div>
+        <input
+          type="text"
+          name={name}
+          value={value || ""}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          className="flex-1 p-2 bg-transparent text-zinc-100 outline-none text-center"
+          placeholder="0,00"
+          inputMode="numeric"
+          autoComplete="off"
+        />
+      </div>
+    </div>
+  );
 
   const tratarNumeros = () => {
     const camposConvertidos = {};
