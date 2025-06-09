@@ -1,16 +1,15 @@
-// ✅ ARQUIVO: src/pages/Integracoes/ConfigModalML.jsx
-
 export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setConfig((prev) => ({ ...prev, [name]: value }));
+    const valorFormatado = value.replace(",", "."); // aceita vírgula no input
+    setConfig((prev) => ({ ...prev, [name]: valorFormatado }));
   };
 
   const InputComPrefixo = ({ label, name, value, prefixo }) => (
     <div className="col-span-1">
-      <label className="text-sm text-zinc-200 font-semibold block text-center">{label}</label>
-      <div className="mt-1 flex w-full rounded-lg overflow-hidden border border-zinc-700 bg-zinc-800 focus-within:border-cyan-400">
-        <div className="px-3 bg-white text-black flex items-center justify-center text-sm font-bold border-r border-zinc-400">
+      <label className="text-sm text-zinc-200 font-semibold block text-center mb-1">{label}</label>
+      <div className="flex w-full rounded-lg overflow-hidden border border-zinc-700 bg-zinc-800 focus-within:border-cyan-400">
+        <div className="w-12 bg-zinc-100 text-black flex items-center justify-center text-sm font-bold border-r border-zinc-400">
           {prefixo}
         </div>
         <input
@@ -18,7 +17,9 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
           name={name}
           value={value || ""}
           onChange={handleChange}
-          className="flex-1 p-2 bg-transparent text-zinc-100 outline-none"
+          className="flex-1 p-2 bg-transparent text-zinc-100 outline-none text-center"
+          placeholder="0,00"
+          inputMode="decimal"
         />
       </div>
     </div>
