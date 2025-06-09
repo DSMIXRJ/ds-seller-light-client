@@ -6,24 +6,6 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
     setConfig((prev) => ({ ...prev, [name]: value }));
   };
 
-  const InputComSimbolo = ({ label, name, value, simbolo }) => (
-    <div className="col-span-1">
-      <label className="text-sm text-zinc-200 font-semibold block text-center">{label}</label>
-      <div className="mt-1 flex w-full rounded-lg overflow-hidden border border-zinc-700 bg-zinc-800 focus-within:border-cyan-400">
-        <input
-          type="number"
-          name={name}
-          value={value || ""}
-          onChange={handleChange}
-          className="flex-1 p-2 bg-transparent text-zinc-100 outline-none"
-        />
-        <div className="px-3 bg-white text-black flex items-center justify-center text-sm font-bold border-l border-zinc-400">
-          {simbolo}
-        </div>
-      </div>
-    </div>
-  );
-
   const InputComPrefixo = ({ label, name, value, prefixo }) => (
     <div className="col-span-1">
       <label className="text-sm text-zinc-200 font-semibold block text-center">{label}</label>
@@ -37,7 +19,6 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
           value={value || ""}
           onChange={handleChange}
           className="flex-1 p-2 bg-transparent text-zinc-100 outline-none"
-          placeholder="Frete, embalagem, etc."
         />
       </div>
     </div>
@@ -51,11 +32,11 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
         </h2>
 
         <div className="grid grid-cols-2 gap-4">
-          <InputComSimbolo label="Margem Mínima" name="margemMinima" value={config.margemMinima} simbolo="%" />
-          <InputComSimbolo label="Margem Máxima" name="margemMaxima" value={config.margemMaxima} simbolo="%" />
-          <InputComSimbolo label="Premium" name="premium" value={config.premium} simbolo="%" />
-          <InputComSimbolo label="Clássico" name="classico" value={config.classico} simbolo="%" />
-          <InputComSimbolo label="Imposto CNPJ" name="imposto" value={config.imposto} simbolo="%" />
+          <InputComPrefixo label="Margem Mínima" name="margemMinima" value={config.margemMinima} prefixo="%" />
+          <InputComPrefixo label="Margem Máxima" name="margemMaxima" value={config.margemMaxima} prefixo="%" />
+          <InputComPrefixo label="Premium" name="premium" value={config.premium} prefixo="%" />
+          <InputComPrefixo label="Clássico" name="classico" value={config.classico} prefixo="%" />
+          <InputComPrefixo label="Imposto CNPJ" name="imposto" value={config.imposto} prefixo="%" />
           <InputComPrefixo label="Extra" name="extras" value={config.extras} prefixo="R$" />
         </div>
 
