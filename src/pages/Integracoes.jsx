@@ -16,7 +16,7 @@ export default function Integracoes() {
   // Função para verificar status no backend
   const checkMLStatus = async () => {
     try {
-      const response = await fetch(${API_BASE_URL}/api/mercadolivre/status);
+      const response = await fetch(`${API_BASE_URL}/api/mercadolivre/status`);
       const data = await response.json();
       return data.integrated || false;
     } catch (error) {
@@ -73,7 +73,7 @@ export default function Integracoes() {
   }, []);
 
   const handleIntegrarML = () => {
-    window.location.href = ${API_BASE_URL}/auth/meli;
+    window.location.href = `${API_BASE_URL}/auth/meli`;
   };
 
   const handleRemoverML = async () => {
@@ -81,7 +81,7 @@ export default function Integracoes() {
     
     setRemoving(true);
     try {
-      const response = await fetch(${API_BASE_URL}/api/mercadolivre/remove, {
+      const response = await fetch(`${API_BASE_URL}/api/mercadolivre/remove`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -110,14 +110,14 @@ export default function Integracoes() {
     if (isDisabled) {
       return {
         borderColor: "#666",
-        boxShadow: 0 0 15px 2px #66666633,
+        boxShadow: `0 0 15px 2px #66666633`,
       };
     }
     return {
       borderColor: integrado ? cor : "#ff0000",
       boxShadow: integrado
-        ? 0 0 30px 6px ${cor}cc, 0 0 15px 2px ${cor}99
-        : 0 0 25px 4px #ff0000cc, 0 0 12px 2px #ff000099,
+        ? `0 0 30px 6px ${cor}cc, 0 0 15px 2px ${cor}99`
+        : `0 0 25px 4px #ff0000cc, 0 0 12px 2px #ff000099`,
       transition: "0.3s",
     };
   };
@@ -131,12 +131,12 @@ export default function Integracoes() {
       fontWeight: "bold",
       padding: "8px 18px",
       borderRadius: "1.25rem",
-      boxShadow: isLoading ? "none" : 0 0 15px ${cor}66,
-      textShadow: isLoading ? "none" : 0 0 6px ${cor},
+      boxShadow: isLoading ? "none" : `0 0 15px ${cor}66`,
+      textShadow: isLoading ? "none" : `0 0 6px ${cor}`,
       fontSize: "0.875rem",
       transition: "0.3s all ease-in-out",
       backdropFilter: "blur(10px)",
-      border: 1px solid ${isLoading ? "#666" : cor}44,
+      border: `1px solid ${isLoading ? "#666" : cor}44`,
       cursor: isLoading ? "not-allowed" : "pointer",
     };
   };
@@ -258,7 +258,7 @@ export default function Sidebar({ activePage }) {
   // Verifica status da integração Mercado Livre
   const checkMLStatus = async () => {
     try {
-      const response = await fetch(${API_BASE_URL}/api/mercadolivre/status);
+      const response = await fetch(`${API_BASE_URL}/api/mercadolivre/status`);
       const data = await response.json();
       return data.integrated || false;
     } catch {
@@ -300,12 +300,12 @@ export default function Sidebar({ activePage }) {
 
   return (
     <aside
-      className={fixed top-0 left-0 h-full z-40 transition-all duration-300 ease-in-out ${
+      className={`fixed top-0 left-0 h-full z-40 transition-all duration-300 ease-in-out ${
         sidebarOpen ? "w-44" : "w-12"
       } bg-zinc-900/95 border-r border-zinc-800 flex flex-col py-6 px-2
       before:content-[''] before:absolute before:inset-0 before:rounded-3xl 
       before:border-4 before:border-cyan-400 before:blur before:opacity-60 
-      before:pointer-events-none before:animate-pulse}
+      before:pointer-events-none before:animate-pulse`}
       style={{ boxShadow: "0 0 24px 6px #06b6d4cc" }}
     >
       <div className="mb-10 flex items-center justify-center relative z-20">
@@ -315,11 +315,11 @@ export default function Sidebar({ activePage }) {
       <nav className="flex flex-col gap-2 flex-1 relative z-20">
         <button
           onClick={() => navigate("/dashboard")}
-          className={${btnClass} ${
+          className={`${btnClass} ${
             activePage === "dashboard"
               ? "bg-cyan-900 text-cyan-300"
               : "hover:bg-zinc-800 text-zinc-200"
-          }}
+          }`}
         >
           <Home className="w-5 h-5" />
           {sidebarOpen && <span>Dashboard</span>}
@@ -327,11 +327,11 @@ export default function Sidebar({ activePage }) {
 
         <button
           onClick={() => navigate("/integracoes")}
-          className={${btnClass} ${
+          className={`${btnClass} ${
             activePage === "integracoes"
               ? "bg-cyan-900 text-cyan-300"
               : "hover:bg-zinc-800 text-zinc-200"
-          }}
+          }`}
         >
           <Layers className="w-5 h-5" />
           {sidebarOpen && <span>Integrações</span>}
@@ -341,29 +341,29 @@ export default function Sidebar({ activePage }) {
         <div>
           <button
             onClick={() => handleToggle("ml")}
-            className={${btnClass} ${
+            className={`${btnClass} ${
               mlOpen
                 ? "bg-cyan-900 text-cyan-300"
                 : mlIntegrado
                 ? "hover:bg-zinc-800 text-zinc-200"
                 : "bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
-            }}
+            }`}
             disabled={!mlIntegrado}
           >
             <ShoppingCart className="w-5 h-5" />
             {sidebarOpen && <span>Mercado Livre</span>}
-            {sidebarOpen && <ChevronDown className={w-4 h-4 ml-auto transition-transform ${mlOpen ? "rotate-180" : ""}} />}
+            {sidebarOpen && <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${mlOpen ? "rotate-180" : ""}`} />}
           </button>
           {mlOpen && sidebarOpen && (
             <div className="flex flex-col gap-1 ml-7 mt-1">
               <button
                 onClick={() => mlIntegrado && navigate("/anuncios/ml")}
                 disabled={!mlIntegrado}
-                className={${subBtnClass} ${
+                className={`${subBtnClass} ${
                   mlIntegrado
                     ? "bg-cyan-900 text-cyan-300 hover:bg-cyan-700"
                     : "bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
-                }}
+                }`}
               >
                 Anúncios
               </button>
@@ -375,18 +375,18 @@ export default function Sidebar({ activePage }) {
         <div>
           <button
             onClick={() => handleToggle("shopee")}
-            className={${btnClass} bg-zinc-800 text-zinc-500 cursor-not-allowed}
+            className={`${btnClass} bg-zinc-800 text-zinc-500 cursor-not-allowed`}
             disabled
           >
             <ShoppingCart className="w-5 h-5" />
             {sidebarOpen && <span>Shopee</span>}
-            {sidebarOpen && <ChevronDown className={w-4 h-4 ml-auto transition-transform ${shopeeOpen ? "rotate-180" : ""}} />}
+            {sidebarOpen && <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${shopeeOpen ? "rotate-180" : ""}`} />}
           </button>
           {shopeeOpen && sidebarOpen && (
             <div className="flex flex-col gap-1 ml-7 mt-1">
               <button
                 disabled
-                className={${subBtnClass} bg-zinc-800 text-zinc-500 cursor-not-allowed}
+                className={`${subBtnClass} bg-zinc-800 text-zinc-500 cursor-not-allowed`}
               >
                 Em breve
               </button>
@@ -398,18 +398,18 @@ export default function Sidebar({ activePage }) {
         <div>
           <button
             onClick={() => handleToggle("amazon")}
-            className={${btnClass} bg-zinc-800 text-zinc-500 cursor-not-allowed}
+            className={`${btnClass} bg-zinc-800 text-zinc-500 cursor-not-allowed`}
             disabled
           >
             <ShoppingCart className="w-5 h-5" />
             {sidebarOpen && <span>Amazon</span>}
-            {sidebarOpen && <ChevronDown className={w-4 h-4 ml-auto transition-transform ${amazonOpen ? "rotate-180" : ""}} />}
+            {sidebarOpen && <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${amazonOpen ? "rotate-180" : ""}`} />}
           </button>
           {amazonOpen && sidebarOpen && (
             <div className="flex flex-col gap-1 ml-7 mt-1">
               <button
                 disabled
-                className={${subBtnClass} bg-zinc-800 text-zinc-500 cursor-not-allowed}
+                className={`${subBtnClass} bg-zinc-800 text-zinc-500 cursor-not-allowed`}
               >
                 Em breve
               </button>
