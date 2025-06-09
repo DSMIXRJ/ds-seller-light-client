@@ -1,8 +1,56 @@
 export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
+  
+  // Função para formatar valores percentuais
+  const formatarPercentual = (valor) => {
+    // Remove tudo que não é número
+    const apenasNumeros = valor.replace(/\D/g, '');
+    
+    if (apenasNumeros === '') return '';
+    
+    // Converte para número e divide por 100 para ter 2 casas decimais
+    const numero = parseInt(apenasNumeros) / 100;
+    
+    // Formata com vírgula como separador decimal
+    return numero.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+
+  // Função para formatar valores monetários
+  const formatarMonetario = (valor) => {
+    // Remove tudo que não é número
+    const apenasNumeros = valor.replace(/\D/g, '');
+    
+    if (apenasNumeros === '') return '';
+    
+    // Converte para número e divide por 100 para ter 2 casas decimais
+    const numero = parseInt(apenasNumeros) / 100;
+    
+    // Formata com vírgula como separador decimal
+    return numero.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // Armazena exatamente como digitado, inclusive vírgula
-    setConfig((prev) => ({ ...prev, [name]: value }));
+    
+    // Define quais campos são monetários (com prefixo R$)
+    const camposMonetarios = ['extras'];
+    
+    let valorFormatado;
+    
+    if (camposMonetarios.includes(name)) {
+      // Formata como valor monetário
+      valorFormatado = formatarMonetario(value);
+    } else {
+      // Formata como percentual
+      valorFormatado = formatarPercentual(value);
+    }
+    
+    setConfig((prev) => ({ ...prev, [name]: valorFormatado }));
   };
 
   const InputComPrefixo = ({ label, name, value, prefixo }) => (
@@ -19,7 +67,7 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
           onChange={handleChange}
           className="flex-1 p-2 bg-transparent text-zinc-100 outline-none text-center"
           placeholder="0,00"
-          inputMode="decimal"
+          inputMode="numeric"
         />
       </div>
     </div>
@@ -29,7 +77,9 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
     const camposConvertidos = {};
     for (const chave in config) {
       const valor = config[chave];
-      const num = parseFloat(valor?.replace(",", "."));
+      // Converte vírgula para ponto e remove espaços para parsing
+      const valorLimpo = valor?.toString().replace(',', '.').trim();
+      const num = parseFloat(valorLimpo);
       camposConvertidos[chave] = isNaN(num) ? 0 : num;
     }
     return camposConvertidos;
@@ -74,3 +124,4 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
     </div>
   );
 }
+
