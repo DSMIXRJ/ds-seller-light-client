@@ -10,9 +10,11 @@ export default function useMLStatus() {
   const [removing, setRemoving] = useState(false);
   const [showConfigML, setShowConfigML] = useState(false);
   const [mlConfig, setMlConfig] = useState({
-    imposto: "",
     margemMinima: "",
-    tipoAnuncio: "premium",
+    margemMaxima: "",
+    premium: "",
+    classico: "",
+    imposto: "",
     extras: "",
   });
 
@@ -83,7 +85,6 @@ export default function useMLStatus() {
   };
 
   const handleSalvarConfigML = () => {
-    // Aqui pode ser adicionado envio para backend no futuro
     setShowConfigML(false);
   };
 
