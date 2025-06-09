@@ -1,64 +1,100 @@
+import { useState, useRef } from "react";
+
 export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    
-    // Define quais campos são monetários (com prefixo R$)
-    const camposMonetarios = ['extras'];
-    
+  // Estado para controlar os valores dos inputs
+  const [inputValues, setInputValues] = useState({
+    margemMinima: config.margemMinima || "",
+    margemMaxima: config.margemMaxima || "",
+    premium: config.premium || "",
+    classico: config.classico || "",
+    imposto: config.imposto || "",
+    extras: config.extras || "",
+  });
+
+  // Refs para os inputs
+  const inputRefs = useRef({});
+
+  // Função para formatar números como moeda brasileira
+  const formatCurrency = (value) => {
     // Remove tudo que não é número
-    const apenasNumeros = value.replace(/\D/g, '');
+    const numbers = value.replace(/\D/g, '');
     
-    if (apenasNumeros === '') {
-      setConfig((prev) => ({ ...prev, [name]: '' }));
-      return;
-    }
+    if (numbers === '') return '';
     
-    // Converte para número e divide por 100 para ter 2 casas decimais
-    const numero = parseInt(apenasNumeros) / 100;
+    // Converte para centavos e depois para reais
+    const cents = parseInt(numbers);
+    const reais = cents / 100;
     
-    // Formata com vírgula como separador decimal
-    const valorFormatado = numero.toLocaleString('pt-BR', {
+    // Formata com vírgula decimal
+    return reais.toLocaleString('pt-BR', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
+  };
+
+  // Manipula mudanças nos inputs
+  const handleInputChange = (fieldName, rawValue) => {
+    // Formata o valor em tempo real
+    const formattedValue = formatCurrency(rawValue);
     
-    setConfig((prev) => ({ ...prev, [name]: valorFormatado }));
+    // Atualiza o estado local
+    setInputValues(prev => ({
+      ...prev,
+      [fieldName]: formattedValue
+    }));
+
+    // Atualiza o estado pai
+    setConfig(prev => ({
+      ...prev,
+      [fieldName]: formattedValue
+    }));
   };
 
-  const InputComPrefixo = ({ label, name, value, prefixo }) => (
-    <div className="col-span-1">
-      <label className="text-sm text-zinc-200 font-semibold block text-center mb-1">{label}</label>
-      <div className="flex w-full rounded-lg overflow-hidden border border-zinc-700 bg-zinc-800 focus-within:border-cyan-400">
-        <div className="w-12 bg-zinc-100 text-black flex items-center justify-center text-sm font-bold border-r border-zinc-400">
-          {prefixo}
+  // Componente de input customizado
+  const CurrencyInput = ({ name, label, prefix, placeholder = "0,00" }) => {
+    return (
+      <div className="col-span-1">
+        <label className="text-sm text-zinc-200 font-semibold block text-center mb-1">
+          {label}
+        </label>
+        <div className="flex w-full rounded-lg overflow-hidden border border-zinc-700 bg-zinc-800 focus-within:border-cyan-400">
+          <div className="w-12 bg-zinc-100 text-black flex items-center justify-center text-sm font-bold border-r border-zinc-400">
+            {prefix}
+          </div>
+          <input
+            ref={el => inputRefs.current[name] = el}
+            type="text"
+            value={inputValues[name]}
+            onChange={(e) => handleInputChange(name, e.target.value)}
+            className="flex-1 p-2 bg-transparent text-zinc-100 outline-none text-center"
+            placeholder={placeholder}
+            inputMode="numeric"
+            autoComplete="off"
+          />
         </div>
-        <input
-          type="text"
-          name={name}
-          value={value || ""}
-          onChange={handleChange}
-          className="flex-1 p-2 bg-transparent text-zinc-100 outline-none text-center"
-          placeholder="0,00"
-          inputMode="numeric"
-        />
       </div>
-    </div>
-  );
-
-  const tratarNumeros = () => {
-    const camposConvertidos = {};
-    for (const chave in config) {
-      const valor = config[chave];
-      const valorLimpo = valor?.toString().replace(',', '.').trim();
-      const num = parseFloat(valorLimpo);
-      camposConvertidos[chave] = isNaN(num) ? 0 : num;
-    }
-    return camposConvertidos;
+    );
   };
 
-  const salvarConfiguracoes = () => {
-    const dados = tratarNumeros();
-    onSave(dados);
+  // Processa os dados para salvar
+  const processDataForSave = () => {
+    const processedData = {};
+    
+    Object.keys(inputValues).forEach(key => {
+      const value = inputValues[key];
+      // Converte vírgula para ponto e remove espaços
+      const cleanValue = value.toString().replace(',', '.').trim();
+      const numericValue = parseFloat(cleanValue);
+      processedData[key] = isNaN(numericValue) ? 0 : numericValue;
+    });
+    
+    return processedData;
+  };
+
+  // Função para salvar
+  const handleSave = () => {
+    const processedData = processDataForSave();
+    onSave(processedData);
   };
 
   return (
@@ -69,24 +105,48 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
         </h2>
 
         <div className="grid grid-cols-2 gap-4">
-          <InputComPrefixo label="Margem Mínima" name="margemMinima" value={config.margemMinima} prefixo="%" />
-          <InputComPrefixo label="Margem Máxima" name="margemMaxima" value={config.margemMaxima} prefixo="%" />
-          <InputComPrefixo label="Premium" name="premium" value={config.premium} prefixo="%" />
-          <InputComPrefixo label="Clássico" name="classico" value={config.classico} prefixo="%" />
-          <InputComPrefixo label="Imposto CNPJ" name="imposto" value={config.imposto} prefixo="%" />
-          <InputComPrefixo label="Extra" name="extras" value={config.extras} prefixo="R$" />
+          <CurrencyInput 
+            name="margemMinima" 
+            label="Margem Mínima" 
+            prefix="%" 
+          />
+          <CurrencyInput 
+            name="margemMaxima" 
+            label="Margem Máxima" 
+            prefix="%" 
+          />
+          <CurrencyInput 
+            name="premium" 
+            label="Premium" 
+            prefix="%" 
+          />
+          <CurrencyInput 
+            name="classico" 
+            label="Clássico" 
+            prefix="%" 
+          />
+          <CurrencyInput 
+            name="imposto" 
+            label="Imposto CNPJ" 
+            prefix="%" 
+          />
+          <CurrencyInput 
+            name="extras" 
+            label="Extra" 
+            prefix="R$" 
+          />
         </div>
 
         <div className="flex justify-between gap-3 mt-8">
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border border-zinc-600"
+            className="px-5 py-2 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border border-zinc-600 transition-colors"
           >
             Cancelar
           </button>
           <button
-            onClick={salvarConfiguracoes}
-            className="px-6 py-2 rounded-lg bg-cyan-600 text-white font-bold hover:bg-cyan-800 shadow border border-cyan-400"
+            onClick={handleSave}
+            className="px-6 py-2 rounded-lg bg-cyan-600 text-white font-bold hover:bg-cyan-800 shadow border border-cyan-400 transition-colors"
           >
             Salvar
           </button>
@@ -95,4 +155,5 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
     </div>
   );
 }
+
 
