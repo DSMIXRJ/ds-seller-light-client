@@ -1,8 +1,8 @@
 export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const valorFormatado = value.replace(",", "."); // aceita vírgula no input
-    setConfig((prev) => ({ ...prev, [name]: valorFormatado }));
+    // Armazena exatamente como digitado, inclusive vírgula
+    setConfig((prev) => ({ ...prev, [name]: value }));
   };
 
   const InputComPrefixo = ({ label, name, value, prefixo }) => (
@@ -24,6 +24,21 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
       </div>
     </div>
   );
+
+  const tratarNumeros = () => {
+    const camposConvertidos = {};
+    for (const chave in config) {
+      const valor = config[chave];
+      const num = parseFloat(valor?.replace(",", "."));
+      camposConvertidos[chave] = isNaN(num) ? 0 : num;
+    }
+    return camposConvertidos;
+  };
+
+  const salvarConfiguracoes = () => {
+    const dados = tratarNumeros();
+    onSave(dados);
+  };
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
@@ -49,7 +64,7 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
             Cancelar
           </button>
           <button
-            onClick={onSave}
+            onClick={salvarConfiguracoes}
             className="px-6 py-2 rounded-lg bg-cyan-600 text-white font-bold hover:bg-cyan-800 shadow border border-cyan-400"
           >
             Salvar
