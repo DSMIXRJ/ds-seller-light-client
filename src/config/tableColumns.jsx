@@ -37,7 +37,7 @@ function SkuCell({ value }) {
 }
 
 // Configuração das colunas da tabela de produtos
-export const createColumns = (handleMaskedChange) => [
+export const createColumns = (handleMaskedChange, handleSavePrecoCusto) => [
   {
     accessorKey: 'image',
     header: 'Imagem',
@@ -112,6 +112,11 @@ export const createColumns = (handleMaskedChange) => [
         type="text"
         value={info.getValue()}
         onChange={(e) => handleMaskedChange(info.row.original.id, 'precoCusto', e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleSavePrecoCusto(info.row.original.id, parseCurrency(e.target.value));
+          }
+        }}
         className="w-full text-center bg-transparent border-b-2 border-yellow-400 focus:outline-none py-1 text-xs"
         inputMode="numeric"
       />

@@ -27,15 +27,16 @@ export default function ProductTableTanStack() {
         const response = await axios.get(`${backendUrl}/api/mercadolivre/items`);
 
         const data = response.data.map((p) => {
-          // Assumindo que o backend agora retorna sale_fee_amount
-          const lucroData = calculateLucro(p.precoVenda, p.precoCusto || 0, p.sale_fee_amount || 0, mlConfig);
+          // Usar p.totalCostML que vem do backend
+          const lucroData = calculateLucro(p.precoVenda, p.precoCusto || 0, p.totalCostML || 0, mlConfig);
           return {
             ...p,
             precoCusto: p.precoCusto || 0, // Garante que precoCusto seja um número
             precoVendaMasked: formatCurrency(p.precoVenda),
-            precoCustoMasked: formatCurrency(p.precoCusto || 0),
+            precoCustoMasked: p.precoCusto ? formatCurrency(p.precoCusto) : '', // Inicializa como vazio se 0 ou null
             lucroPercentual: lucroData.lucroPercentual,
             lucroReais: lucroData.lucroReais,
+            totalCostML: p.totalCostML || 0, // Garantir que totalCostML esteja presente
           };
         });
         setProducts(data);
@@ -44,17 +45,14 @@ export default function ProductTableTanStack() {
       }
     };
 
-    // Remover a verificação de mlConfig.premium e mlConfig.classico
     if (!mlStatusLoading) {
       fetchProducts();
     }
   }, [integracao, mlConfig, mlStatusLoading]);
 
-  const handleMaskedChange = async (id, field, rawValue) => {
+  const handleMaskedChange = (id, field, rawValue) => {
     const numericValue = parseCurrency(rawValue);
     const masked = formatCurrency(rawValue);
-
-    let updatedProduct = null; 
 
     setProducts((prev) =>
       prev.map((p) => {
@@ -69,32 +67,31 @@ export default function ProductTableTanStack() {
             updated.precoCustoMasked = masked;
           }
 
-          // Usar p.sale_fee_amount para o cálculo de lucro
-          const lucroData = calculateLucro(updated.precoVenda, updated.precoCusto, updated.sale_fee_amount || 0, mlConfig);
+          // Usar updated.totalCostML para o cálculo de lucro
+          const lucroData = calculateLucro(updated.precoVenda, updated.precoCusto, updated.totalCostML || 0, mlConfig);
           updated.lucroReais = lucroData.lucroReais;
           updated.lucroPercentual = lucroData.lucroPercentual;
           
-          updatedProduct = updated; 
           return updated;
         }
         return p;
       })
     );
+  };
 
-    if (field === 'precoCusto' && updatedProduct) {
-      try {
-        await axios.post(`${backendUrl}/api/mercadolivre/items/update-cost`, {
-          id: updatedProduct.id,
-          precoCusto: updatedProduct.precoCusto,
-        });
-        console.log(`Preço de custo para ${updatedProduct.id} salvo com sucesso.`);
-      } catch (saveError) {
-        console.error(`Erro ao salvar preço de custo para ${updatedProduct.id}:`, saveError);
-      }
+  const handleSavePrecoCusto = async (id, precoCusto) => {
+    try {
+      await axios.post(`${backendUrl}/api/mercadolivre/items/update-cost`, {
+        id: id,
+        precoCusto: precoCusto,
+      });
+      console.log(`Preço de custo para ${id} salvo com sucesso.`);
+    } catch (saveError) {
+      console.error(`Erro ao salvar preço de custo para ${id}:`, saveError);
     }
   };
 
-  const columns = useMemo(() => createColumns(handleMaskedChange), []);
+  const columns = useMemo(() => createColumns(handleMaskedChange, handleSavePrecoCusto), []);
 
   const table = useReactTable({
     data: products,
