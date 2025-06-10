@@ -1,29 +1,24 @@
-// Funções de formatação baseadas no código existente dos Anúncios
-const formatCurrency = (value) => {
-  const numeric = value.toString().replace(/\D/g, '');
-  const number = parseFloat(numeric) / 100;
-  return number.toLocaleString('pt-BR', { 
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2 
-  });
-};
-
-const parseCurrency = (masked) => {
-  const onlyNumbers = masked.replace(/\D/g, '');
-  return parseFloat(onlyNumbers) / 100;
-};
-
 export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
   
-  // Função para lidar com mudanças nos inputs - EXATAMENTE como na tabela de produtos
-  const handleMaskedChange = (field, rawValue) => {
-    const numericValue = parseCurrency(rawValue);
-    const masked = formatCurrency(rawValue);
-
-    setConfig((prev) => ({
-      ...prev,
-      [field]: masked
-    }));
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    
+    // Remove tudo que não é número
+    const numbers = value.replace(/\D/g, '');
+    
+    if (numbers === '') {
+      setConfig(prev => ({ ...prev, [name]: '' }));
+      return;
+    }
+    
+    // Converte para centavos e depois para reais
+    const cents = parseInt(numbers);
+    const reais = cents / 100;
+    
+    // Formata com vírgula
+    const formatted = reais.toFixed(2).replace('.', ',');
+    
+    setConfig(prev => ({ ...prev, [name]: formatted }));
   };
 
   const InputComPrefixo = ({ label, name, value, prefixo }) => (
@@ -35,8 +30,9 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
         </div>
         <input
           type="text"
+          name={name}
           value={value || ""}
-          onChange={(e) => handleMaskedChange(name, e.target.value)}
+          onChange={handleChange}
           className="flex-1 p-2 bg-transparent text-zinc-100 outline-none text-center"
           placeholder="0,00"
           inputMode="numeric"
@@ -49,9 +45,8 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
     const camposConvertidos = {};
     for (const chave in config) {
       const valor = config[chave];
-      // Usa a mesma função parseCurrency da tabela
-      const num = parseCurrency(valor || "0");
-      camposConvertidos[chave] = num;
+      const num = parseFloat(valor?.replace(",", "."));
+      camposConvertidos[chave] = isNaN(num) ? 0 : num;
     }
     return camposConvertidos;
   };
