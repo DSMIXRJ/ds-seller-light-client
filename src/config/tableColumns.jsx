@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { parseCurrency } from '../utils/formatters'; // Importar parseCurrency diretamente aqui
 
 // Ícone simples de copiar (SVG)
 const CopyIcon = ({ copied }) => (

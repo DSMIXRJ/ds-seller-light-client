@@ -25,8 +25,10 @@ export default function ProductTableTanStack() {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(`${backendUrl}/api/mercadolivre/items`);
+        console.log('Frontend: Dados brutos recebidos do backend:', response.data);
 
         const data = response.data.map((p) => {
+          console.log(`Frontend: Processando item ${p.id} - precoCusto: ${p.precoCusto}, totalCostML: ${p.totalCostML}`);
           // Usar p.totalCostML que vem do backend
           const lucroData = calculateLucro(p.precoVenda, p.precoCusto || 0, p.totalCostML || 0, mlConfig);
           return {
@@ -40,8 +42,10 @@ export default function ProductTableTanStack() {
           };
         });
         setProducts(data);
+        console.log('Frontend: Produtos processados para exibição:', data);
       } catch (err) {
         setError('Erro ao carregar anúncios.');
+        console.error('Frontend: Erro ao carregar anúncios:', err);
       }
     };
 
@@ -65,6 +69,7 @@ export default function ProductTableTanStack() {
           } else if (field === 'precoCusto') {
             updated.precoCusto = numericValue;
             updated.precoCustoMasked = masked;
+            console.log(`Frontend: precoCusto alterado para ${id}: ${numericValue}`);
           }
 
           // Usar updated.totalCostML para o cálculo de lucro
@@ -80,18 +85,19 @@ export default function ProductTableTanStack() {
   };
 
   const handleSavePrecoCusto = async (id, precoCusto) => {
+    console.log(`Frontend: Tentando salvar precoCusto para ${id}: ${precoCusto}`);
     try {
       await axios.post(`${backendUrl}/api/mercadolivre/items/update-cost`, {
         id: id,
         precoCusto: precoCusto,
       });
-      console.log(`Preço de custo para ${id} salvo com sucesso.`);
+      console.log(`Frontend: Preço de custo para ${id} salvo com sucesso.`);
     } catch (saveError) {
-      console.error(`Erro ao salvar preço de custo para ${id}:`, saveError);
+      console.error(`Frontend: Erro ao salvar preço de custo para ${id}:`, saveError);
     }
   };
 
-  const columns = useMemo(() => createColumns(handleMaskedChange, handleSavePrecoCusto), []);
+  const columns = useMemo(() => createColumns(handleMaskedChange, handleSavePrecoCusto, parseCurrency), []);
 
   const table = useReactTable({
     data: products,
