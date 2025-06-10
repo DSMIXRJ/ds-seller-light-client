@@ -9,7 +9,7 @@ import {
 import { formatCurrency, parseCurrency, calculateLucro } from '../utils/formatters';
 import { createColumns } from '../config/tableColumns.jsx';
 import TableHeader from './TableHeader';
-import TableBody from './Table/TableBody';
+import TableBody from './TableBody';
 import useMLStatus from '../pages/Integracoes/useMLStatus'; // Importar useMLStatus
 
 export default function ProductTableTanStack() {
