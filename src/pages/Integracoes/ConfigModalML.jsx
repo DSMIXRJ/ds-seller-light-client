@@ -1,26 +1,29 @@
+// Funções de formatação baseadas no código existente dos Anúncios
+const formatCurrency = (value) => {
+  const numeric = value.toString().replace(/\D/g, '');
+  const number = parseFloat(numeric) / 100;
+  return number.toLocaleString('pt-BR', { 
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2 
+  });
+};
+
+const parseCurrency = (masked) => {
+  const onlyNumbers = masked.replace(/\D/g, '');
+  return parseFloat(onlyNumbers) / 100;
+};
+
 export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
   
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    
-    // Pega apenas os números digitados
-    const numeros = value.replace(/\D/g, '');
-    
-    // Se não tem números, limpa o campo
-    if (numeros === '') {
-      setConfig(prev => ({ ...prev, [name]: '' }));
-      return;
-    }
-    
-    // Converte para centavos e formata
-    const valorCentavos = parseInt(numeros);
-    const valorReais = valorCentavos / 100;
-    
-    // Formata com vírgula
-    const valorFormatado = valorReais.toFixed(2).replace('.', ',');
-    
-    // Atualiza o estado
-    setConfig(prev => ({ ...prev, [name]: valorFormatado }));
+  // Função para lidar com mudanças nos inputs - EXATAMENTE como na tabela de produtos
+  const handleMaskedChange = (field, rawValue) => {
+    const numericValue = parseCurrency(rawValue);
+    const masked = formatCurrency(rawValue);
+
+    setConfig((prev) => ({
+      ...prev,
+      [field]: masked
+    }));
   };
 
   const InputComPrefixo = ({ label, name, value, prefixo }) => (
@@ -32,9 +35,8 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
         </div>
         <input
           type="text"
-          name={name}
           value={value || ""}
-          onChange={handleChange}
+          onChange={(e) => handleMaskedChange(name, e.target.value)}
           className="flex-1 p-2 bg-transparent text-zinc-100 outline-none text-center"
           placeholder="0,00"
           inputMode="numeric"
@@ -47,8 +49,9 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
     const camposConvertidos = {};
     for (const chave in config) {
       const valor = config[chave];
-      const num = parseFloat(valor?.replace(",", "."));
-      camposConvertidos[chave] = isNaN(num) ? 0 : num;
+      // Usa a mesma função parseCurrency da tabela
+      const num = parseCurrency(valor || "0");
+      camposConvertidos[chave] = num;
     }
     return camposConvertidos;
   };
