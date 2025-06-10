@@ -156,4 +156,3 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
   );
 }
 
-
