@@ -142,6 +142,17 @@ export const createColumns = (handleMaskedChange) => [
     size: 80,
   },
   {
+    accessorKey: 'lucroTotal',
+    header: 'Total',
+    cell: (info) => (
+      <div className="w-full border-b-2 border-purple-500 px-1 py-1 text-center text-xs">
+        {info.getValue()}
+      </div>
+    ),
+    enableSorting: false,
+    size: 90,
+  },
+  {
     accessorKey: 'visitas',
     header: () => <div className="text-center w-full">Visitas</div>,
     cell: (info) => (
@@ -164,5 +175,3 @@ export const createColumns = (handleMaskedChange) => [
     size: 70,
   },
 ];
-
-
