@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-router-dom';
 import axios from 'axios';
 import {
   useReactTable,
@@ -10,6 +10,7 @@ import { formatCurrency, parseCurrency, calculateLucro } from '../utils/formatte
 import { createColumns } from '../config/tableColumns.jsx';
 import TableHeader from './TableHeader';
 import TableBody from './TableBody';
+import useMLStatus from '../pages/Integracoes/useMLStatus'; // Importar useMLStatus
 
 export default function ProductTableTanStack() {
   const [products, setProducts] = useState([]);
@@ -17,6 +18,7 @@ export default function ProductTableTanStack() {
   const [error, setError] = useState(null);
   const { integracao } = useParams();
   const [sorting, setSorting] = useState([]);
+  const { mlConfig } = useMLStatus(); // Obter mlConfig
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -25,15 +27,19 @@ export default function ProductTableTanStack() {
         const backendUrl = 'https://dsseller-backend-final.onrender.com';
         const response = await axios.get(`${backendUrl}/api/mercadolivre/items`);
 
-        const data = response.data.map((p) => ({
-          ...p,
-          precoCusto: 0,
-          precoVendaMasked: formatCurrency(p.precoVenda),
-          precoCustoMasked: '',
-          lucroPercentual: '0.00%',
-          lucroReais: 'R$ 0,00',
-          lucroTotal: 'R$ 0,00',
-        }));
+        const data = response.data.map((p) => {
+          const tipoAnuncio = p.listing_type_id === 'gold_premium' ? 'premium' : 'classico'; // Assumindo listing_type_id
+          const lucroData = calculateLucro(p.precoVenda, 0, tipoAnuncio, mlConfig);
+          return {
+            ...p,
+            precoCusto: 0,
+            precoVendaMasked: formatCurrency(p.precoVenda),
+            precoCustoMasked: '',
+            lucroPercentual: lucroData.lucroPercentual,
+            lucroReais: lucroData.lucroReais,
+            tipoAnuncio: tipoAnuncio, // Adicionar tipoAnuncio ao estado do produto
+          };
+        });
         setProducts(data);
         setLoading(false);
       } catch (err) {
@@ -42,8 +48,10 @@ export default function ProductTableTanStack() {
       }
     };
 
-    fetchProducts();
-  }, [integracao]);
+    if (mlConfig.premium !== "" && mlConfig.classico !== "") { // Só buscar produtos se a config estiver carregada
+      fetchProducts();
+    }
+  }, [integracao, mlConfig]); // Adicionar mlConfig como dependência
 
   const handleMaskedChange = (id, field, rawValue) => {
     const numericValue = parseCurrency(rawValue);
@@ -64,10 +72,9 @@ export default function ProductTableTanStack() {
             updated.precoCustoMasked = masked;
           }
 
-          const lucroData = calculateLucro(updated.precoVenda, updated.precoCusto, updated.vendas || 0);
+          const lucroData = calculateLucro(updated.precoVenda, updated.precoCusto, updated.tipoAnuncio, mlConfig);
           updated.lucroReais = lucroData.lucroReais;
           updated.lucroPercentual = lucroData.lucroPercentual;
-          updated.lucroTotal = lucroData.lucroTotal;
 
           return updated;
         }
@@ -118,4 +125,5 @@ export default function ProductTableTanStack() {
     </div>
   );
 }
+
 

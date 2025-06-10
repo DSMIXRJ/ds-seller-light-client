@@ -6,7 +6,7 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
 
   const handleInput = (e) => {
     const { name, value } = e.target;
-    const cursorPosition = e.target.selectionStart;
+    const originalCursorPosition = e.target.selectionStart;
     
     // Remove tudo que não é número
     const numbers = value.replace(/\D/g, '');
@@ -24,17 +24,37 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
     // Formata com vírgula
     const formatted = reais.toFixed(2).replace('.', ',');
     
+    // Calculate new cursor position
+    let newCursorPosition = formatted.length;
+    let digitsCount = 0;
+    for (let i = 0; i < originalCursorPosition; i++) {
+      if (value[i] && !isNaN(parseInt(value[i]))) {
+        digitsCount++;
+      }
+    }
+
+    let currentFormattedDigits = 0;
+    for (let i = 0; i < formatted.length; i++) {
+      if (!isNaN(parseInt(formatted[i]))) {
+        currentFormattedDigits++;
+      }
+      if (currentFormattedDigits === digitsCount) {
+        newCursorPosition = i + 1;
+        break;
+      }
+    }
+
     // Atualiza o valor diretamente no input
     e.target.value = formatted;
     
     // Atualiza o estado
     setConfig(prev => ({ ...prev, [name]: formatted }));
     
-    // Mantém o foco no input
+    // Mantém o foco no input e ajusta a posição do cursor
     setTimeout(() => {
       if (inputRefs.current[name]) {
         inputRefs.current[name].focus();
-        inputRefs.current[name].setSelectionRange(formatted.length, formatted.length);
+        inputRefs.current[name].setSelectionRange(newCursorPosition, newCursorPosition);
       }
     }, 0);
   };
@@ -108,4 +128,5 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
     </div>
   );
 }
+
 
