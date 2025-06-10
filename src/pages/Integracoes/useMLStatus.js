@@ -12,7 +12,6 @@ export default function useMLStatus() {
     margemMaxima: "",
     imposto: "",
     extras: "",
-    frete: "",
   });
 
   const checkMLStatus = useCallback(async () => {
@@ -35,7 +34,6 @@ export default function useMLStatus() {
           margemMaxima: data.margemMaxima !== undefined ? String(data.margemMaxima) : "",
           imposto: data.imposto !== undefined ? String(data.imposto) : "",
           extras: data.extras !== undefined ? String(data.extras) : "",
-          frete: data.frete !== undefined ? String(data.frete) : "",
         });
       }
     } catch (error) {

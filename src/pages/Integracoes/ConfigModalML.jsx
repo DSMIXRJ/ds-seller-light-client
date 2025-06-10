@@ -111,7 +111,6 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
           <InputSemPrefixo label="Margem Máxima (%)" name="margemMaxima" defaultValue={config.margemMaxima} />
           <InputSemPrefixo label="Imposto CNPJ (%)" name="imposto" defaultValue={config.imposto} />
           <InputSemPrefixo label="Extra (R$)" name="extras" defaultValue={config.extras} />
-          <InputSemPrefixo label="Frete (R$)" name="frete" defaultValue={config.frete} />
         </div>
 
         <div className="flex justify-between gap-3 mt-8">
