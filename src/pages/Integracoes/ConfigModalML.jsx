@@ -1,12 +1,16 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 
 export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
   
   const inputRefs = useRef({});
 
+  useEffect(() => {
+    console.log("Config received by ConfigModalML:", config);
+  }, [config]);
+
   const handleInput = (e) => {
     const { name, value } = e.target;
-    const cursorPosition = e.target.selectionStart;
+    const originalCursorPosition = e.target.selectionStart;
     
     // Remove tudo que não é número
     const numbers = value.replace(/\D/g, '');
@@ -24,17 +28,37 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
     // Formata com vírgula
     const formatted = reais.toFixed(2).replace('.', ',');
     
+    // Calculate new cursor position
+    let newCursorPosition = formatted.length;
+    let digitsCount = 0;
+    for (let i = 0; i < originalCursorPosition; i++) {
+      if (value[i] && !isNaN(parseInt(value[i]))) {
+        digitsCount++;
+      }
+    }
+
+    let currentFormattedDigits = 0;
+    for (let i = 0; i < formatted.length; i++) {
+      if (!isNaN(parseInt(formatted[i]))) {
+        currentFormattedDigits++;
+      }
+      if (currentFormattedDigits === digitsCount) {
+        newCursorPosition = i + 1;
+        break;
+      }
+    }
+
     // Atualiza o valor diretamente no input
     e.target.value = formatted;
     
     // Atualiza o estado
     setConfig(prev => ({ ...prev, [name]: formatted }));
     
-    // Mantém o foco no input
+    // Mantém o foco no input e ajusta a posição do cursor
     setTimeout(() => {
       if (inputRefs.current[name]) {
         inputRefs.current[name].focus();
-        inputRefs.current[name].setSelectionRange(formatted.length, formatted.length);
+        inputRefs.current[name].setSelectionRange(newCursorPosition, newCursorPosition);
       }
     }, 0);
   };
@@ -66,6 +90,7 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
         camposConvertidos[key] = isNaN(num) ? 0 : num;
       }
     });
+    console.log("Dados sendo enviados para onSave (tratarNumeros):", camposConvertidos);
     return camposConvertidos;
   };
 
@@ -84,10 +109,9 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
         <div className="grid grid-cols-2 gap-4">
           <InputSemPrefixo label="Margem Mínima (%)" name="margemMinima" defaultValue={config.margemMinima} />
           <InputSemPrefixo label="Margem Máxima (%)" name="margemMaxima" defaultValue={config.margemMaxima} />
-          <InputSemPrefixo label="Premium (%)" name="premium" defaultValue={config.premium} />
-          <InputSemPrefixo label="Clássico (%)" name="classico" defaultValue={config.classico} />
           <InputSemPrefixo label="Imposto CNPJ (%)" name="imposto" defaultValue={config.imposto} />
           <InputSemPrefixo label="Extra (R$)" name="extras" defaultValue={config.extras} />
+          <InputSemPrefixo label="Frete (R$)" name="frete" defaultValue={config.frete} />
         </div>
 
         <div className="flex justify-between gap-3 mt-8">
@@ -108,4 +132,5 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
     </div>
   );
 }
+
 

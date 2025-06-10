@@ -9,45 +9,52 @@ import {
 import { formatCurrency, parseCurrency, calculateLucro } from '../utils/formatters';
 import { createColumns } from '../config/tableColumns.jsx';
 import TableHeader from './TableHeader';
-import TableBody from './TableBody';
+import TableBody from './Table/TableBody';
+import useMLStatus from '../pages/Integracoes/useMLStatus'; // Importar useMLStatus
 
 export default function ProductTableTanStack() {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { integracao } = useParams();
   const [sorting, setSorting] = useState([]);
+  const { mlConfig, loading: mlStatusLoading } = useMLStatus(); // Obter mlConfig e o estado de loading do useMLStatus
+
+  const backendUrl = 'https://dsseller-backend-final.onrender.com'; // Definir backendUrl aqui
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        setLoading(true);
-        const backendUrl = 'https://dsseller-backend-final.onrender.com';
         const response = await axios.get(`${backendUrl}/api/mercadolivre/items`);
 
-        const data = response.data.map((p) => ({
-          ...p,
-          precoCusto: 0,
-          precoVendaMasked: formatCurrency(p.precoVenda),
-          precoCustoMasked: '',
-          lucroPercentual: '0.00%',
-          lucroReais: 'R$ 0,00',
-          lucroTotal: 'R$ 0,00',
-        }));
+        const data = response.data.map((p) => {
+          // Assumindo que o backend agora retorna sale_fee_amount
+          const lucroData = calculateLucro(p.precoVenda, p.precoCusto || 0, p.sale_fee_amount || 0, mlConfig);
+          return {
+            ...p,
+            precoCusto: p.precoCusto || 0, // Garante que precoCusto seja um número
+            precoVendaMasked: formatCurrency(p.precoVenda),
+            precoCustoMasked: formatCurrency(p.precoCusto || 0),
+            lucroPercentual: lucroData.lucroPercentual,
+            lucroReais: lucroData.lucroReais,
+          };
+        });
         setProducts(data);
-        setLoading(false);
       } catch (err) {
         setError('Erro ao carregar anúncios.');
-        setLoading(false);
       }
     };
 
-    fetchProducts();
-  }, [integracao]);
+    // Remover a verificação de mlConfig.premium e mlConfig.classico
+    if (!mlStatusLoading) {
+      fetchProducts();
+    }
+  }, [integracao, mlConfig, mlStatusLoading]);
 
-  const handleMaskedChange = (id, field, rawValue) => {
+  const handleMaskedChange = async (id, field, rawValue) => {
     const numericValue = parseCurrency(rawValue);
     const masked = formatCurrency(rawValue);
+
+    let updatedProduct = null; 
 
     setProducts((prev) =>
       prev.map((p) => {
@@ -57,23 +64,34 @@ export default function ProductTableTanStack() {
           if (field === 'precoVenda') {
             updated.precoVenda = numericValue;
             updated.precoVendaMasked = masked;
-          }
-
-          if (field === 'precoCusto') {
+          } else if (field === 'precoCusto') {
             updated.precoCusto = numericValue;
             updated.precoCustoMasked = masked;
           }
 
-          const lucroData = calculateLucro(updated.precoVenda, updated.precoCusto, updated.vendas || 0);
+          // Usar p.sale_fee_amount para o cálculo de lucro
+          const lucroData = calculateLucro(updated.precoVenda, updated.precoCusto, updated.sale_fee_amount || 0, mlConfig);
           updated.lucroReais = lucroData.lucroReais;
           updated.lucroPercentual = lucroData.lucroPercentual;
-          updated.lucroTotal = lucroData.lucroTotal;
-
+          
+          updatedProduct = updated; 
           return updated;
         }
         return p;
       })
     );
+
+    if (field === 'precoCusto' && updatedProduct) {
+      try {
+        await axios.post(`${backendUrl}/api/mercadolivre/items/update-cost`, {
+          id: updatedProduct.id,
+          precoCusto: updatedProduct.precoCusto,
+        });
+        console.log(`Preço de custo para ${updatedProduct.id} salvo com sucesso.`);
+      } catch (saveError) {
+        console.error(`Erro ao salvar preço de custo para ${updatedProduct.id}:`, saveError);
+      }
+    }
   };
 
   const columns = useMemo(() => createColumns(handleMaskedChange), []);
@@ -89,7 +107,7 @@ export default function ProductTableTanStack() {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  if (loading) return (
+  if (mlStatusLoading) return (
     <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-8 text-center">
       <div className="animate-pulse">Carregando anúncios...</div>
     </div>
@@ -118,4 +136,5 @@ export default function ProductTableTanStack() {
     </div>
   );
 }
+
 

@@ -10,10 +10,9 @@ export default function useMLStatus() {
   const [mlConfig, setMlConfig] = useState({
     margemMinima: "",
     margemMaxima: "",
-    premium: "",
-    classico: "",
     imposto: "",
     extras: "",
+    frete: "",
   });
 
   const checkMLStatus = useCallback(async () => {
@@ -23,6 +22,24 @@ export default function useMLStatus() {
       return data.integrated || false;
     } catch {
       return false;
+    }
+  }, []);
+
+  const fetchMLConfig = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/mercadolivre/config`);
+      const data = await response.json();
+      if (data) {
+        setMlConfig({
+          margemMinima: data.margemMinima !== undefined ? String(data.margemMinima) : "",
+          margemMaxima: data.margemMaxima !== undefined ? String(data.margemMaxima) : "",
+          imposto: data.imposto !== undefined ? String(data.imposto) : "",
+          extras: data.extras !== undefined ? String(data.extras) : "",
+          frete: data.frete !== undefined ? String(data.frete) : "",
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao buscar configurações do ML:", error);
     }
   }, []);
 
@@ -41,7 +58,7 @@ export default function useMLStatus() {
   }, []);
 
   useEffect(() => {
-    const initializeStatus = async () => {
+    const initializeStatusAndConfig = async () => {
       setLoading(true);
       const urlParams = new URLSearchParams(window.location.search);
       const mlQuery = urlParams.get("ml_integrado");
@@ -50,26 +67,29 @@ export default function useMLStatus() {
         setTimeout(async () => {
           const backendStatus = await checkMLStatus();
           updateMLStatus(backendStatus);
+          await fetchMLConfig(); // Fetch config after status
           setLoading(false);
         }, 2000);
         window.history.replaceState({}, document.title, window.location.pathname);
       } else {
         const backendStatus = await checkMLStatus();
         updateMLStatus(backendStatus);
+        await fetchMLConfig(); // Fetch config
         setLoading(false);
       }
     };
 
-    initializeStatus();
+    initializeStatusAndConfig();
 
     const handleStatusChange = async () => {
       const backendStatus = await checkMLStatus();
       setMlIntegrado(backendStatus);
+      await fetchMLConfig(); // Fetch config on status change
     };
 
     window.addEventListener("mlStatusChange", handleStatusChange);
     return () => window.removeEventListener("mlStatusChange", handleStatusChange);
-  }, [checkMLStatus, updateMLStatus]);
+  }, [checkMLStatus, updateMLStatus, fetchMLConfig]);
 
   const handleIntegrarML = useCallback(() => {
     window.location.href = `${API_BASE_URL}/auth/meli`;
@@ -90,8 +110,24 @@ export default function useMLStatus() {
     }
   }, [removing, updateMLStatus]);
 
-  const handleSalvarConfigML = useCallback(() => {
-    setShowConfigML(false);
+  const handleSalvarConfigML = useCallback(async (configToSave) => {
+    console.log("Dados de configuração sendo enviados para o backend:", configToSave);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/mercadolivre/config`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(configToSave),
+      });
+      const data = await response.json();
+      if (data.success) {
+        setMlConfig(configToSave);
+        setShowConfigML(false);
+      } else {
+        console.error("Erro ao salvar configurações do ML:", data.message || "Erro desconhecido");
+      }
+    } catch (error) {
+      console.error("Erro ao salvar configurações do ML:", error);
+    }
   }, []);
 
   return {
@@ -107,4 +143,5 @@ export default function useMLStatus() {
     handleSalvarConfigML,
   };
 }
+
 
