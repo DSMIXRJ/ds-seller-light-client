@@ -21,23 +21,18 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
     setConfig(prev => ({ ...prev, [name]: formatted }));
   };
 
-  const InputComPrefixo = ({ label, name, value, prefixo }) => (
+  const InputSemPrefixo = ({ label, name, value }) => (
     <div className="col-span-1">
       <label className="text-sm text-zinc-200 font-semibold block text-center mb-1">{label}</label>
-      <div className="flex w-full rounded-lg overflow-hidden border border-zinc-700 bg-zinc-800 focus-within:border-cyan-400">
-        <div className="w-12 bg-zinc-100 text-black flex items-center justify-center text-sm font-bold border-r border-zinc-400">
-          {prefixo}
-        </div>
-        <input
-          type="text"
-          name={name}
-          value={value || ""}
-          onChange={handleChange}
-          className="flex-1 p-2 bg-transparent text-zinc-100 outline-none text-center"
-          placeholder="0,00"
-          inputMode="numeric"
-        />
-      </div>
+      <input
+        type="text"
+        name={name}
+        value={value || ""}
+        onChange={handleChange}
+        className="w-full p-2 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 outline-none text-center focus:border-cyan-400"
+        placeholder="0,00"
+        inputMode="numeric"
+      />
     </div>
   );
 
@@ -64,12 +59,12 @@ export default function ConfigModalML({ config, setConfig, onClose, onSave }) {
         </h2>
 
         <div className="grid grid-cols-2 gap-4">
-          <InputComPrefixo label="Margem Mínima" name="margemMinima" value={config.margemMinima} prefixo="%" />
-          <InputComPrefixo label="Margem Máxima" name="margemMaxima" value={config.margemMaxima} prefixo="%" />
-          <InputComPrefixo label="Premium" name="premium" value={config.premium} prefixo="%" />
-          <InputComPrefixo label="Clássico" name="classico" value={config.classico} prefixo="%" />
-          <InputComPrefixo label="Imposto CNPJ" name="imposto" value={config.imposto} prefixo="%" />
-          <InputComPrefixo label="Extra" name="extras" value={config.extras} prefixo="R$" />
+          <InputSemPrefixo label="Margem Mínima (%)" name="margemMinima" value={config.margemMinima} />
+          <InputSemPrefixo label="Margem Máxima (%)" name="margemMaxima" value={config.margemMaxima} />
+          <InputSemPrefixo label="Premium (%)" name="premium" value={config.premium} />
+          <InputSemPrefixo label="Clássico (%)" name="classico" value={config.classico} />
+          <InputSemPrefixo label="Imposto CNPJ (%)" name="imposto" value={config.imposto} />
+          <InputSemPrefixo label="Extra (R$)" name="extras" value={config.extras} />
         </div>
 
         <div className="flex justify-between gap-3 mt-8">
