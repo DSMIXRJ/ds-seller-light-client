@@ -31,12 +31,8 @@ export default function Integracoes() {
           {integrations.map((item, index) => (
             <div
               key={index}
-              className={`relative w-44 h-44 flex flex-col items-center justify-center rounded-2xl transition-all
-                ${item.integrated ? "" : ""}`}
-              style={{
-                backgroundColor: "#111",
-                boxShadow: "0 4px 20px rgba(255, 0, 0, 0.15)",
-              }}
+              className={`relative w-44 h-44 flex flex-col items-center justify-center rounded-2xl transition-all bg-zinc-900
+                ring-1 ring-cyan-500/20 shadow-lg shadow-cyan-500/10 hover:scale-105 duration-300`}
             >
               {item.integrated && (
                 <button
@@ -56,19 +52,15 @@ export default function Integracoes() {
               {item.integrated ? (
                 <button
                   onClick={() => handleRemove(index)}
-                  className="w-24 py-2 rounded-xl font-bold bg-green-600 text-white border-2 border-green-300 hover:bg-green-700"
+                  className="w-24 py-2 rounded-xl font-bold bg-cyan-600 text-white border border-cyan-400 shadow hover:bg-cyan-700"
                 >
                   Remover
                 </button>
               ) : (
                 <button
                   onClick={() => handleIntegrate(index)}
-                  className="w-24 py-2 rounded-xl font-bold text-red-500"
-                  style={{
-                    backgroundColor: "#111",
-                    boxShadow: "0 4px 12px rgba(255, 0, 0, 0.25)",
-                    border: "none",
-                  }}
+                  className="w-24 py-2 rounded-xl font-bold text-cyan-400 border border-cyan-500/40 shadow shadow-cyan-400/20 hover:bg-cyan-400/10 hover:text-white transition"
+                  style={{ backgroundColor: "transparent" }}
                 >
                   Integrar
                 </button>
