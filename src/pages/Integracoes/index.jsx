@@ -1,3 +1,4 @@
+// src/pages/Integracoes/index.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
@@ -30,9 +31,12 @@ export default function Integracoes() {
           {integrations.map((item, index) => (
             <div
               key={index}
-              className={`relative w-44 h-44 flex flex-col items-center justify-center rounded-2xl border-2 transition-all
-                ${item.integrated ? "border-green-500" : "border-red-500"}`}
-              style={{ backgroundColor: "#111" }}
+              className={`relative w-44 h-44 flex flex-col items-center justify-center rounded-2xl transition-all
+                ${item.integrated ? "" : ""}`}
+              style={{
+                backgroundColor: "#111",
+                boxShadow: "0 4px 20px rgba(255, 0, 0, 0.15)",
+              }}
             >
               {item.integrated && (
                 <button
@@ -59,8 +63,12 @@ export default function Integracoes() {
               ) : (
                 <button
                   onClick={() => handleIntegrate(index)}
-                  className="w-24 py-2 rounded-xl font-bold border-2 border-red-500 text-red-500"
-                  style={{ backgroundColor: "#111" }}
+                  className="w-24 py-2 rounded-xl font-bold text-red-500"
+                  style={{
+                    backgroundColor: "#111",
+                    boxShadow: "0 4px 12px rgba(255, 0, 0, 0.25)",
+                    border: "none",
+                  }}
                 >
                   Integrar
                 </button>
