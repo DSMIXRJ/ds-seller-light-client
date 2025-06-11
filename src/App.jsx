@@ -3,6 +3,7 @@ import Dashboard from "./Dashboard";
 import Anuncios from "./pages/Anuncios";
 import Login from "./Login";
 import Integracoes from "./pages/Integracoes";
+import EscolherMarketplace from "./pages/EscolherMarketplace";
 import FuturisticBackground from "./components/FuturisticBackground";
 
 export default function App() {
@@ -10,7 +11,7 @@ export default function App() {
     <BrowserRouter>
       {/* Fundo futurista aplicado globalmente com maior prioridade de renderização */}
       <FuturisticBackground />
-      
+
       {/* Conteúdo principal com z-index superior */}
       <div className="relative z-10">
         <Routes>
@@ -18,9 +19,9 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/anuncios/:integracao" element={<Anuncios />} />
           <Route path="/integracoes" element={<Integracoes />} />
+          <Route path="/escolher-marketplace" element={<EscolherMarketplace />} />
         </Routes>
       </div>
     </BrowserRouter>
   );
 }
-
