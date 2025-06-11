@@ -1,4 +1,3 @@
-// src/pages/Integracoes/index.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
@@ -40,6 +39,9 @@ export default function Integracoes() {
     setShowConfig(false);
   };
 
+  const botaoClasse =
+    "w-24 h-9 rounded-xl font-bold text-cyan-400 bg-zinc-800 border border-cyan-500/30 hover:bg-cyan-500/10 hover:text-white transition";
+
   return (
     <div className="flex min-h-screen text-white content-layer">
       <Sidebar />
@@ -72,20 +74,13 @@ export default function Integracoes() {
                     alt="logo"
                     className="w-16 h-16 mb-3"
                   />
-                  <div className="h-5 mb-2 text-sm text-cyan-300 text-center"> {/* espaço reservado para nome da conta */}</div>
-                  <button
-                    onClick={() => handleRemove(index)}
-                    className="w-24 py-2 rounded-xl font-bold text-cyan-400 bg-zinc-800 border border-cyan-500/30 hover:bg-cyan-500/10 hover:text-white transition"
-                  >
+                  <div className="h-5 mb-2 text-sm text-cyan-300 text-center"></div>
+                  <button onClick={() => handleRemove(index)} className={botaoClasse}>
                     Remover
                   </button>
                 </>
               ) : (
-                <button
-                  onClick={() => handleIntegrate(index)}
-                  className="w-24 py-2 rounded-xl font-bold text-cyan-400 border border-cyan-500/40 shadow shadow-cyan-400/20 hover:bg-cyan-400/10 hover:text-white transition"
-                  style={{ backgroundColor: "transparent" }}
-                >
+                <button onClick={() => handleIntegrate(index)} className={botaoClasse}>
                   Integrar
                 </button>
               )}
