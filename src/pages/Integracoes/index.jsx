@@ -2,18 +2,21 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
+import ConfigModalML from "./ConfigModalML";
 import { Settings } from "lucide-react";
 
 export default function Integracoes() {
   const navigate = useNavigate();
   const [integrations, setIntegrations] = useState(
-    Array(6).fill({ integrated: false, marketplace: null, nome: "" })
+    Array(6).fill({ integrated: false, marketplace: null })
   );
+  const [showConfig, setShowConfig] = useState(false);
+  const [activeSlot, setActiveSlot] = useState(null);
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("ds_integrations") || "[]");
     if (Array.isArray(saved) && saved.length > 0) {
-      const filled = Array(6).fill({ integrated: false, marketplace: null, nome: "" });
+      const filled = Array(6).fill({ integrated: false, marketplace: null });
       saved.forEach((item, i) => {
         if (item && item.marketplace) filled[i] = item;
       });
@@ -27,16 +30,15 @@ export default function Integracoes() {
 
   const handleRemove = (index) => {
     const updated = [...integrations];
-    updated[index] = { integrated: false, marketplace: null, nome: "" };
+    updated[index] = { integrated: false, marketplace: null };
     setIntegrations(updated);
     localStorage.setItem("ds_integrations", JSON.stringify(updated));
   };
 
-  const handleSetName = (index, nome) => {
-    const updated = [...integrations];
-    updated[index].nome = nome;
-    setIntegrations(updated);
-    localStorage.setItem("ds_integrations", JSON.stringify(updated));
+  const handleSaveConfig = (slotIndex, configData) => {
+    console.log("Salvar config para slot", slotIndex, configData);
+    // Em breve: salvar dados reais no backend/localStorage
+    setShowConfig(false);
   };
 
   return (
@@ -57,8 +59,8 @@ export default function Integracoes() {
                 <button
                   className="absolute top-2 right-2 text-cyan-400 hover:text-white bg-zinc-800/80 rounded-full p-1"
                   onClick={() => {
-                    const novoNome = prompt("Nome da conta:", item.nome || "");
-                    if (novoNome !== null) handleSetName(index, novoNome);
+                    setActiveSlot(index);
+                    setShowConfig(true);
                   }}
                 >
                   <Settings className="w-5 h-5" />
@@ -69,13 +71,8 @@ export default function Integracoes() {
                   <img
                     src={item.marketplace.logo}
                     alt="logo"
-                    className="w-12 h-12 mb-1"
+                    className="w-12 h-12 mb-3"
                   />
-                  {item.nome && (
-                    <div className="text-sm text-cyan-400 font-medium mb-2 text-center">
-                      {item.nome}
-                    </div>
-                  )}
                   <button
                     onClick={() => handleRemove(index)}
                     className="w-24 py-2 rounded-xl font-bold bg-cyan-600 text-white border border-cyan-400 shadow hover:bg-cyan-700"
@@ -96,6 +93,13 @@ export default function Integracoes() {
           ))}
         </div>
       </div>
+      {showConfig && (
+        <ConfigModalML
+          slot={activeSlot}
+          onClose={() => setShowConfig(false)}
+          onSave={(data) => handleSaveConfig(activeSlot, data)}
+        />
+      )}
     </div>
   );
 }
