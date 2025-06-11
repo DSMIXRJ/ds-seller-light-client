@@ -1,5 +1,5 @@
 // src/pages/Integracoes/index.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import { Settings } from "lucide-react";
@@ -7,8 +7,19 @@ import { Settings } from "lucide-react";
 export default function Integracoes() {
   const navigate = useNavigate();
   const [integrations, setIntegrations] = useState(
-    Array(6).fill({ integrated: false, marketplace: null })
+    Array(6).fill({ integrated: false, marketplace: null, nome: "" })
   );
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("ds_integrations") || "[]");
+    if (Array.isArray(saved) && saved.length > 0) {
+      const filled = Array(6).fill({ integrated: false, marketplace: null, nome: "" });
+      saved.forEach((item, i) => {
+        if (item && item.marketplace) filled[i] = item;
+      });
+      setIntegrations(filled);
+    }
+  }, []);
 
   const handleIntegrate = (index) => {
     navigate("/escolher-marketplace", { state: { slotIndex: index } });
@@ -16,8 +27,16 @@ export default function Integracoes() {
 
   const handleRemove = (index) => {
     const updated = [...integrations];
-    updated[index] = { integrated: false, marketplace: null };
+    updated[index] = { integrated: false, marketplace: null, nome: "" };
     setIntegrations(updated);
+    localStorage.setItem("ds_integrations", JSON.stringify(updated));
+  };
+
+  const handleSetName = (index, nome) => {
+    const updated = [...integrations];
+    updated[index].nome = nome;
+    setIntegrations(updated);
+    localStorage.setItem("ds_integrations", JSON.stringify(updated));
   };
 
   return (
@@ -31,31 +50,39 @@ export default function Integracoes() {
           {integrations.map((item, index) => (
             <div
               key={index}
-              className={`relative w-44 h-44 flex flex-col items-center justify-center rounded-2xl transition-all bg-zinc-900
-                ring-1 ring-cyan-500/20 shadow-lg shadow-cyan-500/10 hover:scale-105 duration-300`}
+              className="relative w-44 h-44 flex flex-col items-center justify-center rounded-2xl transition-all bg-zinc-900
+              ring-1 ring-cyan-500/20 shadow-lg shadow-cyan-500/10 hover:scale-105 duration-300"
             >
               {item.integrated && (
                 <button
                   className="absolute top-2 right-2 text-cyan-400 hover:text-white bg-zinc-800/80 rounded-full p-1"
-                  onClick={() => alert("Abrir configuração")}
+                  onClick={() => {
+                    const novoNome = prompt("Nome da conta:", item.nome || "");
+                    if (novoNome !== null) handleSetName(index, novoNome);
+                  }}
                 >
                   <Settings className="w-5 h-5" />
                 </button>
               )}
               {item.integrated && item.marketplace ? (
-                <img
-                  src={item.marketplace.logo}
-                  alt="logo"
-                  className="w-12 h-12 mb-2"
-                />
-              ) : null}
-              {item.integrated ? (
-                <button
-                  onClick={() => handleRemove(index)}
-                  className="w-24 py-2 rounded-xl font-bold bg-cyan-600 text-white border border-cyan-400 shadow hover:bg-cyan-700"
-                >
-                  Remover
-                </button>
+                <>
+                  <img
+                    src={item.marketplace.logo}
+                    alt="logo"
+                    className="w-12 h-12 mb-1"
+                  />
+                  {item.nome && (
+                    <div className="text-sm text-cyan-400 font-medium mb-2 text-center">
+                      {item.nome}
+                    </div>
+                  )}
+                  <button
+                    onClick={() => handleRemove(index)}
+                    className="w-24 py-2 rounded-xl font-bold bg-cyan-600 text-white border border-cyan-400 shadow hover:bg-cyan-700"
+                  >
+                    Remover
+                  </button>
+                </>
               ) : (
                 <button
                   onClick={() => handleIntegrate(index)}
