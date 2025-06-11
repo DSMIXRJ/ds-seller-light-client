@@ -56,7 +56,7 @@ export default function Sidebar({ activePage }) {
   return (
     <aside
       className={`fixed top-0 left-0 h-full z-40 transition-all duration-300 ease-in-out ${
-        sidebarOpen ? "w-44" : "w-12"
+        sidebarOpen ? "w-56" : "w-12"
       } bg-zinc-900/95 border-r border-zinc-800 flex flex-col py-6 px-2`}
       style={{
         boxShadow: "0 0 40px 4px #06b6d440", // luz inferior
