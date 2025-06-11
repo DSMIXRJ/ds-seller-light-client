@@ -70,11 +70,12 @@ export default function Integracoes() {
                   <img
                     src={item.marketplace.logo}
                     alt="logo"
-                    className="w-12 h-12 mb-3"
+                    className="w-16 h-16 mb-3"
                   />
+                  <div className="h-5 mb-2 text-sm text-cyan-300 text-center"> {/* espaço reservado para nome da conta */}</div>
                   <button
                     onClick={() => handleRemove(index)}
-                    className="w-24 py-2 rounded-xl font-bold bg-cyan-600 text-white border border-cyan-400 shadow hover:bg-cyan-700"
+                    className="w-24 py-2 rounded-xl font-bold text-cyan-400 bg-zinc-800 border border-cyan-500/30 hover:bg-cyan-500/10 hover:text-white transition"
                   >
                     Remover
                   </button>
