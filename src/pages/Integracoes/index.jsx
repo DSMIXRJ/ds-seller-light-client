@@ -40,13 +40,13 @@ export default function Integracoes() {
   };
 
   const botaoClasse =
-    "w-24 h-9 rounded-xl font-bold text-cyan-400 bg-zinc-800 border border-cyan-500/30 hover:bg-cyan-500/10 hover:text-white transition";
+    "w-24 h-9 rounded-xl font-sans text-white bg-zinc-800 border border-cyan-500/30 hover:bg-cyan-500/10 transition";
 
   return (
     <div className="flex min-h-screen text-white content-layer">
       <Sidebar />
       <div className="flex flex-col flex-1 items-center py-16 min-h-[60vh]">
-        <h1 className="text-3xl font-bold text-white font-sans mb-10 text-center">
+        <h1 className="text-3xl font-sans text-white mb-10 text-center">
           Integrações de Marketplace
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -58,7 +58,7 @@ export default function Integracoes() {
             >
               {item.integrated && (
                 <button
-                  className="absolute top-2 right-2 text-cyan-400 hover:text-white bg-zinc-800/80 rounded-full p-1"
+                  className="absolute top-2 right-2 text-white font-sans bg-zinc-800/80 rounded-full p-1"
                   onClick={() => {
                     setActiveSlot(index);
                     setShowConfig(true);
@@ -74,7 +74,7 @@ export default function Integracoes() {
                     alt="logo"
                     className="w-16 h-16 mb-3"
                   />
-                  <div className="h-5 mb-2 text-sm text-cyan-300 text-center"></div>
+                  <div className="h-5 mb-2 text-sm text-white text-center font-sans"></div>
                   <button onClick={() => handleRemove(index)} className={botaoClasse}>
                     Remover
                   </button>
@@ -99,4 +99,3 @@ export default function Integracoes() {
     </div>
   );
 }
-
