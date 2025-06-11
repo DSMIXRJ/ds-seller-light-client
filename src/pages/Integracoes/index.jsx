@@ -37,7 +37,6 @@ export default function Integracoes() {
 
   const handleSaveConfig = (slotIndex, configData) => {
     console.log("Salvar config para slot", slotIndex, configData);
-    // Em breve: salvar dados reais no backend/localStorage
     setShowConfig(false);
   };
 
@@ -95,7 +94,8 @@ export default function Integracoes() {
       </div>
       {showConfig && (
         <ConfigModalML
-          slot={activeSlot}
+          config={{ margemMinima: "", margemMaxima: "", imposto: "", extras: "" }}
+          setConfig={() => {}}
           onClose={() => setShowConfig(false)}
           onSave={(data) => handleSaveConfig(activeSlot, data)}
         />
