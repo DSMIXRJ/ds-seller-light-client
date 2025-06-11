@@ -58,6 +58,9 @@ export default function Sidebar({ activePage }) {
       className={`fixed top-0 left-0 h-full z-40 transition-all duration-300 ease-in-out ${
         sidebarOpen ? "w-44" : "w-12"
       } bg-zinc-900/95 border-r border-zinc-800 flex flex-col py-6 px-2`}
+      style={{
+        boxShadow: "0 0 40px 4px #06b6d440", // luz inferior
+      }}
     >
       <div className="mb-10 flex items-center justify-center relative z-20">
         <Bot className="w-10 h-10 text-cyan-400" />
