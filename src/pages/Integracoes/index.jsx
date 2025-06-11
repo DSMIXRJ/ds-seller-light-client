@@ -46,7 +46,7 @@ export default function Integracoes() {
     <div className="flex min-h-screen text-white content-layer">
       <Sidebar />
       <div className="flex flex-col flex-1 items-center py-16 min-h-[60vh]">
-        <h1 className="text-3xl font-bold text-cyan-400 mb-10 text-center">
+        <h1 className="text-3xl font-bold text-white font-sans mb-10 text-center">
           Integrações de Marketplace
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -99,3 +99,4 @@ export default function Integracoes() {
     </div>
   );
 }
+
