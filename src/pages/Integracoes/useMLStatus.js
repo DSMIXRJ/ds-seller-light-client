@@ -18,7 +18,7 @@ export default function useMLStatus() {
     try {
       const response = await fetch(`${API_BASE_URL}/api/mercadolivre/status`);
       const data = await response.json();
-      return data.integrated || false;
+      return data.status === "ok";
     } catch {
       return false;
     }
@@ -65,14 +65,14 @@ export default function useMLStatus() {
         setTimeout(async () => {
           const backendStatus = await checkMLStatus();
           updateMLStatus(backendStatus);
-          await fetchMLConfig(); // Fetch config after status
+          await fetchMLConfig();
           setLoading(false);
         }, 2000);
         window.history.replaceState({}, document.title, window.location.pathname);
       } else {
         const backendStatus = await checkMLStatus();
         updateMLStatus(backendStatus);
-        await fetchMLConfig(); // Fetch config
+        await fetchMLConfig();
         setLoading(false);
       }
     };
@@ -82,7 +82,7 @@ export default function useMLStatus() {
     const handleStatusChange = async () => {
       const backendStatus = await checkMLStatus();
       setMlIntegrado(backendStatus);
-      await fetchMLConfig(); // Fetch config on status change
+      await fetchMLConfig();
     };
 
     window.addEventListener("mlStatusChange", handleStatusChange);
@@ -141,5 +141,3 @@ export default function useMLStatus() {
     handleSalvarConfigML,
   };
 }
-
-
