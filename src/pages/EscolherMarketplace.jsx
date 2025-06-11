@@ -1,6 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import logoMercadoLivre from "../assets/mercado-livre.png";
+import logoShopee from "../assets/shopee.png";
+import logoAmazon from "../assets/amazon.png";
 import { useEffect } from "react";
 
 export default function EscolherMarketplace() {
@@ -29,6 +31,12 @@ export default function EscolherMarketplace() {
     navigate("/integracoes");
   };
 
+  const marketplaces = [
+    { nome: "Mercado Livre", logo: logoMercadoLivre },
+    { nome: "Shopee", logo: logoShopee },
+    { nome: "Amazon", logo: logoAmazon },
+  ];
+
   return (
     <div className="flex min-h-screen text-white content-layer">
       <Sidebar />
@@ -38,23 +46,21 @@ export default function EscolherMarketplace() {
         </h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          <div
-            onClick={() =>
-              handleEscolher({
-                nome: "Mercado Livre",
-                logo: logoMercadoLivre,
-              })
-            }
-            className="w-44 h-44 flex flex-col items-center justify-center rounded-2xl transition-all bg-zinc-900
-            ring-1 ring-cyan-500/20 shadow-lg shadow-cyan-500/10 hover:scale-105 duration-300 cursor-pointer"
-          >
-            <img
-              src={logoMercadoLivre}
-              alt="Mercado Livre"
-              className="w-20 h-20 mb-4"
-            />
-            <span className="text-sm font-sans text-white text-center">Mercado Livre</span>
-          </div>
+          {marketplaces.map((mp, index) => (
+            <div
+              key={index}
+              onClick={() => handleEscolher(mp)}
+              className="w-44 h-44 flex flex-col items-center justify-center rounded-2xl transition-all bg-zinc-900
+              ring-1 ring-cyan-500/20 shadow-lg shadow-cyan-500/10 hover:scale-105 duration-300 cursor-pointer"
+            >
+              <img
+                src={mp.logo}
+                alt={mp.nome}
+                className="w-20 h-20 mb-4"
+              />
+              <span className="text-sm font-sans text-white text-center">{mp.nome}</span>
+            </div>
+          ))}
         </div>
       </div>
     </div>
