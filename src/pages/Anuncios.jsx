@@ -26,7 +26,7 @@ export default function Anuncios() {
 
   return (
     <MainLayout activePage="anuncios">
-      <h1 className="text-2xl font-sans text-white mb-6">
+      <h1 className="text-3xl md:text-4xl font-bold text-cyan-400 tracking-widest mb-6">
         Anúncios — {nomes[integracao] || "Integração"}
       </h1>
       <ProductTableTanStack />
