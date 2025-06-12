@@ -25,7 +25,7 @@ export default function Anuncios() {
   }, []);
 
   return (
-    <MainLayout>
+    <MainLayout activePage="anuncios">
       <h1 className="text-2xl font-sans text-white mb-6">
         Anúncios — {nomes[integracao] || "Integração"}
       </h1>
