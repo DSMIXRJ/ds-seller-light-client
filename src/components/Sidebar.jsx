@@ -6,7 +6,7 @@ const API_BASE_URL = "https://dsseller-backend-final.onrender.com";
 
 export default function Sidebar({ activePage }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [mlOpen, setMlOpen] = useState(false);
+  const [mlOpen, setMlOpen] = useState(activePage === "anuncios");
   const [shopeeOpen, setShopeeOpen] = useState(false);
   const [amazonOpen, setAmazonOpen] = useState(false);
   const [mlIntegrado, setMlIntegrado] = useState(false);
@@ -58,9 +58,7 @@ export default function Sidebar({ activePage }) {
       className={`fixed top-0 left-0 h-full z-40 transition-all duration-300 ease-in-out ${
         sidebarOpen ? "w-56" : "w-12"
       } bg-zinc-900/95 border-r border-zinc-800 flex flex-col py-6 px-2`}
-      style={{
-        boxShadow: "0 0 40px 4px #06b6d440", // luz inferior
-      }}
+      style={{ boxShadow: "0 0 40px 4px #06b6d440" }}
     >
       <div className="mb-10 flex items-center justify-center relative z-20">
         <Bot className="w-10 h-10 text-cyan-400" />
@@ -116,9 +114,9 @@ export default function Sidebar({ activePage }) {
                 onClick={() => mlIntegrado && navigate("/anuncios/ml")}
                 disabled={!mlIntegrado}
                 className={`${subBtnClass} ${
-                  mlIntegrado
-                    ? "bg-cyan-900 text-cyan-300 hover:bg-cyan-700"
-                    : "bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
+                  activePage === "anuncios"
+                    ? "bg-cyan-900 text-cyan-300"
+                    : "bg-zinc-800 text-zinc-400 hover:bg-cyan-800"
                 }`}
               >
                 Anúncios
@@ -140,16 +138,6 @@ export default function Sidebar({ activePage }) {
               <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${shopeeOpen ? "rotate-180" : ""}`} />
             )}
           </button>
-          {shopeeOpen && sidebarOpen && (
-            <div className="flex flex-col gap-1 ml-7 mt-1">
-              <button
-                disabled
-                className={`${subBtnClass} bg-zinc-800 text-zinc-500 cursor-not-allowed`}
-              >
-                Em breve
-              </button>
-            </div>
-          )}
         </div>
 
         {/* Amazon */}
@@ -165,16 +153,6 @@ export default function Sidebar({ activePage }) {
               <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${amazonOpen ? "rotate-180" : ""}`} />
             )}
           </button>
-          {amazonOpen && sidebarOpen && (
-            <div className="flex flex-col gap-1 ml-7 mt-1">
-              <button
-                disabled
-                className={`${subBtnClass} bg-zinc-800 text-zinc-500 cursor-not-allowed`}
-              >
-                Em breve
-              </button>
-            </div>
-          )}
         </div>
       </nav>
 
