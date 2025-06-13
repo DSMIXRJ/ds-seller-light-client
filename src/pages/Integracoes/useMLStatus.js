@@ -89,8 +89,14 @@ export default function useMLStatus() {
     return () => window.removeEventListener("mlStatusChange", handleStatusChange);
   }, [checkMLStatus, updateMLStatus, fetchMLConfig]);
 
-  const handleIntegrarML = useCallback(() => {
-    window.location.href = `${API_BASE_URL}/auth/meli`;
+  const handleIntegrarML = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/mercadolivre/auth-url`);
+      const data = await response.json();
+      if (data.authUrl) window.location.href = data.authUrl;
+    } catch (error) {
+      console.error("Erro ao iniciar integração com Mercado Livre:", error);
+    }
   }, []);
 
   const handleRemoverML = useCallback(async () => {
@@ -109,7 +115,6 @@ export default function useMLStatus() {
   }, [removing, updateMLStatus]);
 
   const handleSalvarConfigML = useCallback(async (configToSave) => {
-    console.log("Dados de configuração sendo enviados para o backend:", configToSave);
     try {
       const response = await fetch(`${API_BASE_URL}/api/mercadolivre/config`, {
         method: "POST",
