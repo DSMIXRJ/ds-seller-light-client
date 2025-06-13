@@ -13,10 +13,23 @@ export default function AuthCallback() {
       if (code) {
         try {
           const backendUrl = "https://dsseller-backend-final.onrender.com";
-          await axios.post(`${backendUrl}/api/mercadolivre/exchange-code`, { code });
+          await axios.get(`${backendUrl}/api/mercadolivre/exchange-code-get?code=${code}`);
+
+          const integration = {
+            integrated: true,
+            marketplace: {
+              nome: "Mercado Livre",
+              logo: "/ml-logo.png"
+            }
+          };
+
+          const updated = Array(6).fill({ integrated: false, marketplace: null });
+          updated[0] = integration;
+          localStorage.setItem("ds_integrations", JSON.stringify(updated));
+
           navigate("/integracoes");
         } catch (error) {
-          console.error("Erro ao trocar o código:", error);
+          console.error("Erro ao integrar:", error);
           navigate("/integracoes");
         }
       } else {
