@@ -3,7 +3,7 @@ import Login from "./Login";
 import Dashboard from "./Dashboard";
 import EscolherMarketplace from "./pages/EscolherMarketplace";
 import Integracoes from "./pages/Integracoes";
-import ProductTable from "./pages/ProductTable";
+import ProductTable from "./components/ProductTable";
 import AuthCallback from "./pages/AuthCallback";
 import { AuthProvider } from "./context/AuthContext";
 
