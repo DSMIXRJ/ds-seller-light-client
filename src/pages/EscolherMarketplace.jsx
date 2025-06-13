@@ -30,7 +30,7 @@ export default function EscolherMarketplace() {
     localStorage.setItem("ds_integrations", JSON.stringify(updated));
 
     if (marketplace.nome === "Mercado Livre") {
-      window.location.href = "https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=911500565972996&redirect_uri=https://dsseller.com.br/auth/callback";
+      window.location.href = "https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=911500565972996&redirect_uri=https://dsseller-backend-final.onrender.com/auth/callback";
     } else {
       navigate("/integracoes");
     }
