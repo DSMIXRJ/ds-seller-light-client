@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import ConfigModalML from "./ConfigModalML";
 import { Settings } from "lucide-react";
+import useMLStatus from "./useMLStatus";
 
 export default function Integracoes() {
-  const navigate = useNavigate();
   const [integrations, setIntegrations] = useState(
     Array(6).fill({ integrated: false, marketplace: null })
   );
   const [showConfig, setShowConfig] = useState(false);
   const [activeSlot, setActiveSlot] = useState(null);
+  const { handleIntegrarML } = useMLStatus();
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("ds_integrations") || "[]");
@@ -22,10 +22,6 @@ export default function Integracoes() {
       setIntegrations(filled);
     }
   }, []);
-
-  const handleIntegrate = (index) => {
-    navigate("/escolher-marketplace", { state: { slotIndex: index } });
-  };
 
   const handleRemove = (index) => {
     const updated = [...integrations];
@@ -80,7 +76,7 @@ export default function Integracoes() {
                   </button>
                 </>
               ) : (
-                <button onClick={() => handleIntegrate(index)} className={botaoClasse}>
+                <button onClick={handleIntegrarML} className={botaoClasse}>
                   Integrar
                 </button>
               )}
