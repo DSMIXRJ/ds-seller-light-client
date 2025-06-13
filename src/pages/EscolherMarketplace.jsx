@@ -28,6 +28,13 @@ export default function EscolherMarketplace() {
 
     updated[slotIndex] = { integrated: true, marketplace };
     localStorage.setItem("ds_integrations", JSON.stringify(updated));
+
+    // Força o sidebar a atualizar e habilitar botão de anúncios
+    if (marketplace.nome === "Mercado Livre") {
+      localStorage.setItem("mlIntegrado", "true");
+      window.dispatchEvent(new Event("mlStatusChange"));
+    }
+
     navigate("/integracoes");
   };
 
