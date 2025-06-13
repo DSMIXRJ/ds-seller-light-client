@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { parseCurrency } from '../utils/formatters'; // Importar parseCurrency diretamente aqui
 
 // Ícone simples de copiar (SVG)
 const CopyIcon = ({ copied }) => (
@@ -37,7 +38,7 @@ function SkuCell({ value }) {
 }
 
 // Configuração das colunas da tabela de produtos
-export const createColumns = (handleMaskedChange) => [
+export const createColumns = (handleMaskedChange, handleSavePrecoCusto) => [
   {
     accessorKey: 'image',
     header: 'Imagem',
@@ -112,6 +113,11 @@ export const createColumns = (handleMaskedChange) => [
         type="text"
         value={info.getValue()}
         onChange={(e) => handleMaskedChange(info.row.original.id, 'precoCusto', e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleSavePrecoCusto(info.row.original.id, parseCurrency(e.target.value));
+          }
+        }}
         className="w-full text-center bg-transparent border-b-2 border-yellow-400 focus:outline-none py-1 text-xs"
         inputMode="numeric"
       />
@@ -142,17 +148,6 @@ export const createColumns = (handleMaskedChange) => [
     size: 80,
   },
   {
-    accessorKey: 'lucroTotal',
-    header: 'Total',
-    cell: (info) => (
-      <div className="w-full border-b-2 border-purple-500 px-1 py-1 text-center text-xs">
-        {info.getValue()}
-      </div>
-    ),
-    enableSorting: false,
-    size: 90,
-  },
-  {
     accessorKey: 'visitas',
     header: () => <div className="text-center w-full">Visitas</div>,
     cell: (info) => (
@@ -175,3 +170,5 @@ export const createColumns = (handleMaskedChange) => [
     size: 70,
   },
 ];
+
+

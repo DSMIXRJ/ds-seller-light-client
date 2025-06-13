@@ -13,7 +13,6 @@ export default function Sidebar({ activePage }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Verifica status da integração Mercado Livre
   const checkMLStatus = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/mercadolivre/status`);
@@ -45,26 +44,23 @@ export default function Sidebar({ activePage }) {
     };
   }, [location]);
 
-  // Função genérica para abrir/fechar submenus
   const handleToggle = (marketplace) => {
     setMlOpen(marketplace === "ml" ? !mlOpen : false);
     setShopeeOpen(marketplace === "shopee" ? !shopeeOpen : false);
     setAmazonOpen(marketplace === "amazon" ? !amazonOpen : false);
   };
 
-  // Classes para fonte menor e suavidade
   const btnClass = "flex items-center gap-3 px-3 py-2 rounded-xl text-base font-normal transition w-full";
   const subBtnClass = "flex items-center gap-2 px-2 py-1 rounded-lg transition text-xs";
 
   return (
     <aside
       className={`fixed top-0 left-0 h-full z-40 transition-all duration-300 ease-in-out ${
-        sidebarOpen ? "w-44" : "w-12"
-      } bg-zinc-900/95 border-r border-zinc-800 flex flex-col py-6 px-2
-      before:content-[''] before:absolute before:inset-0 before:rounded-3xl 
-      before:border-4 before:border-cyan-400 before:blur before:opacity-60 
-      before:pointer-events-none before:animate-pulse`}
-      style={{ boxShadow: "0 0 24px 6px #06b6d4cc" }}
+        sidebarOpen ? "w-56" : "w-12"
+      } bg-zinc-900/95 border-r border-zinc-800 flex flex-col py-6 px-2`}
+      style={{
+        boxShadow: "0 0 40px 4px #06b6d440", // luz inferior
+      }}
     >
       <div className="mb-10 flex items-center justify-center relative z-20">
         <Bot className="w-10 h-10 text-cyan-400" />
@@ -110,7 +106,9 @@ export default function Sidebar({ activePage }) {
           >
             <ShoppingCart className="w-5 h-5" />
             {sidebarOpen && <span>Mercado Livre</span>}
-            {sidebarOpen && <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${mlOpen ? "rotate-180" : ""}`} />}
+            {sidebarOpen && (
+              <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${mlOpen ? "rotate-180" : ""}`} />
+            )}
           </button>
           {mlOpen && sidebarOpen && (
             <div className="flex flex-col gap-1 ml-7 mt-1">
@@ -138,7 +136,9 @@ export default function Sidebar({ activePage }) {
           >
             <ShoppingCart className="w-5 h-5" />
             {sidebarOpen && <span>Shopee</span>}
-            {sidebarOpen && <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${shopeeOpen ? "rotate-180" : ""}`} />}
+            {sidebarOpen && (
+              <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${shopeeOpen ? "rotate-180" : ""}`} />
+            )}
           </button>
           {shopeeOpen && sidebarOpen && (
             <div className="flex flex-col gap-1 ml-7 mt-1">
@@ -161,7 +161,9 @@ export default function Sidebar({ activePage }) {
           >
             <ShoppingCart className="w-5 h-5" />
             {sidebarOpen && <span>Amazon</span>}
-            {sidebarOpen && <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${amazonOpen ? "rotate-180" : ""}`} />}
+            {sidebarOpen && (
+              <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${amazonOpen ? "rotate-180" : ""}`} />
+            )}
           </button>
           {amazonOpen && sidebarOpen && (
             <div className="flex flex-col gap-1 ml-7 mt-1">

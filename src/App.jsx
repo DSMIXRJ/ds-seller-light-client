@@ -1,26 +1,24 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Dashboard from "./Dashboard";
-import Anuncios from "./pages/Anuncios";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Login";
+import Dashboard from "./Dashboard";
+import EscolherMarketplace from "./pages/EscolherMarketplace";
 import Integracoes from "./pages/Integracoes";
-import FuturisticBackground from "./components/FuturisticBackground";
+import ProductTable from "./components/ProductTable";
+import AuthCallback from "./pages/AuthCallback";
 
-export default function App() {
+function App() {
   return (
-    <BrowserRouter>
-      {/* Fundo futurista aplicado globalmente com maior prioridade de renderização */}
-      <FuturisticBackground />
-      
-      {/* Conteúdo principal com z-index superior */}
-      <div className="relative z-10">
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/anuncios/:integracao" element={<Anuncios />} />
-          <Route path="/integracoes" element={<Integracoes />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/escolher-marketplace" element={<EscolherMarketplace />} />
+        <Route path="/integracoes" element={<Integracoes />} />
+        <Route path="/produtos" element={<ProductTable />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
+      </Routes>
+    </Router>
   );
 }
 
+export default App;
