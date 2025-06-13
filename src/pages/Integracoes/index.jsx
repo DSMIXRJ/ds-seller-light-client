@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import ConfigModalML from "./ConfigModalML";
 import { Settings } from "lucide-react";
-import useMLStatus from "./useMLStatus";
-import axios from "axios";
 
 export default function Integracoes() {
   const [integrations, setIntegrations] = useState(
@@ -11,44 +10,17 @@ export default function Integracoes() {
   );
   const [showConfig, setShowConfig] = useState(false);
   const [activeSlot, setActiveSlot] = useState(null);
-  const { handleIntegrarML } = useMLStatus();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("ds_integrations") || "[]");
-    const filled = Array(6).fill({ integrated: false, marketplace: null });
-
-    // Verifica status real com backend
-    axios.get("https://dsseller-backend-final.onrender.com/api/mercadolivre/status")
-      .then((res) => {
-        if (res.data.integrated) {
-          filled[0] = {
-            integrated: true,
-            marketplace: {
-              nome: "Mercado Livre",
-              logo: "/ml-logo.png"
-            }
-          };
-          setIntegrations(filled);
-          localStorage.setItem("ds_integrations", JSON.stringify(filled));
-        } else {
-          // fallback pro que estava salvo no localStorage
-          if (Array.isArray(saved) && saved.length > 0) {
-            saved.forEach((item, i) => {
-              if (item && item.marketplace) filled[i] = item;
-            });
-            setIntegrations(filled);
-          }
-        }
-      })
-      .catch(() => {
-        // fallback se a API falhar
-        if (Array.isArray(saved) && saved.length > 0) {
-          saved.forEach((item, i) => {
-            if (item && item.marketplace) filled[i] = item;
-          });
-        }
-        setIntegrations(filled);
+    if (Array.isArray(saved) && saved.length > 0) {
+      const filled = Array(6).fill({ integrated: false, marketplace: null });
+      saved.forEach((item, i) => {
+        if (item && item.marketplace) filled[i] = item;
       });
+      setIntegrations(filled);
+    }
   }, []);
 
   const handleRemove = (index) => {
@@ -60,6 +32,10 @@ export default function Integracoes() {
 
   const handleSaveConfig = (slotIndex, configData) => {
     setShowConfig(false);
+  };
+
+  const handleEscolherMarketplace = (index) => {
+    navigate("/escolher-marketplace", { state: { slotIndex: index } });
   };
 
   const botaoClasse =
@@ -97,13 +73,13 @@ export default function Integracoes() {
                     alt="logo"
                     className="w-16 h-16 mb-3"
                   />
-                  <div className="h-5 mb-2 text-sm text-white text-center font-sans"></div>
+                  <div className="h-5 mb-2 text-sm text-white text-center font-sans">{item.marketplace.nome}</div>
                   <button onClick={() => handleRemove(index)} className={botaoClasse}>
                     Remover
                   </button>
                 </>
               ) : (
-                <button onClick={handleIntegrarML} className={botaoClasse}>
+                <button onClick={() => handleEscolherMarketplace(index)} className={botaoClasse}>
                   Integrar
                 </button>
               )}
