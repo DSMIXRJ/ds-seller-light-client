@@ -6,38 +6,35 @@ export default function AuthCallback() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleCallback = async () => {
+    (async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get("code");
+      if (!code) {
+        navigate("/integracoes");
+        return;
+      }
 
-      if (code) {
-        try {
-          const backendUrl = "https://dsseller-backend-final.onrender.com";
-          await axios.get(`${backendUrl}/api/mercadolivre/exchange-code-get?code=${code}`);
+      try {
+        const backendUrl = "https://dsseller-backend-final.onrender.com";
+        await axios.get(
+          `${backendUrl}/api/mercadolivre/exchange-code-get?code=${code}`
+        );
 
-          const integration = {
-            integrated: true,
-            marketplace: {
-              nome: "Mercado Livre",
-              logo: "/ml-logo.png"
-            }
-          };
+        // salva no localStorage (slot 0 = Mercado Livre)
+        const integrations = Array(6).fill({ integrated: false, marketplace: null });
+        integrations[0] = {
+          integrated: true,
+          marketplace: { nome: "Mercado Livre", logo: "/ml-logo.png" },
+        };
+        localStorage.setItem("ds_integrations", JSON.stringify(integrations));
 
-          const updated = Array(6).fill({ integrated: false, marketplace: null });
-          updated[0] = integration;
-          localStorage.setItem("ds_integrations", JSON.stringify(updated));
-
-          navigate("/integracoes");
-        } catch (error) {
-          console.error("Erro ao integrar:", error);
-          navigate("/integracoes");
-        }
-      } else {
+        // força hook a esperar 2 s e confirmar com backend
+        navigate("/integracoes?ml_integrado=1");
+      } catch (err) {
+        console.error("Erro ao integrar:", err);
         navigate("/integracoes");
       }
-    };
-
-    handleCallback();
+    })();
   }, [navigate]);
 
   return (
