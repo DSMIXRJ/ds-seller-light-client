@@ -3,6 +3,7 @@ import Sidebar from "../../components/Sidebar";
 import ConfigModalML from "./ConfigModalML";
 import { Settings } from "lucide-react";
 import useMLStatus from "./useMLStatus";
+import axios from "axios";
 
 export default function Integracoes() {
   const [integrations, setIntegrations] = useState(
@@ -14,13 +15,40 @@ export default function Integracoes() {
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("ds_integrations") || "[]");
-    if (Array.isArray(saved) && saved.length > 0) {
-      const filled = Array(6).fill({ integrated: false, marketplace: null });
-      saved.forEach((item, i) => {
-        if (item && item.marketplace) filled[i] = item;
+    const filled = Array(6).fill({ integrated: false, marketplace: null });
+
+    // Verifica status real com backend
+    axios.get("https://dsseller-backend-final.onrender.com/api/mercadolivre/status")
+      .then((res) => {
+        if (res.data.integrated) {
+          filled[0] = {
+            integrated: true,
+            marketplace: {
+              nome: "Mercado Livre",
+              logo: "/ml-logo.png"
+            }
+          };
+          setIntegrations(filled);
+          localStorage.setItem("ds_integrations", JSON.stringify(filled));
+        } else {
+          // fallback pro que estava salvo no localStorage
+          if (Array.isArray(saved) && saved.length > 0) {
+            saved.forEach((item, i) => {
+              if (item && item.marketplace) filled[i] = item;
+            });
+            setIntegrations(filled);
+          }
+        }
+      })
+      .catch(() => {
+        // fallback se a API falhar
+        if (Array.isArray(saved) && saved.length > 0) {
+          saved.forEach((item, i) => {
+            if (item && item.marketplace) filled[i] = item;
+          });
+        }
+        setIntegrations(filled);
       });
-      setIntegrations(filled);
-    }
   }, []);
 
   const handleRemove = (index) => {
@@ -31,7 +59,6 @@ export default function Integracoes() {
   };
 
   const handleSaveConfig = (slotIndex, configData) => {
-    console.log("Salvar config para slot", slotIndex, configData);
     setShowConfig(false);
   };
 
@@ -39,7 +66,7 @@ export default function Integracoes() {
     "w-24 h-9 rounded-xl font-sans text-white bg-zinc-800 border border-cyan-500/30 hover:bg-cyan-500/10 transition";
 
   return (
-    <div className="flex min-h-screen text-white content-layer">
+    <div className="flex min-h-screen text-white content-layer bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-800">
       <Sidebar />
       <div className="flex flex-col flex-1 items-center py-16 min-h-[60vh]">
         <h1 className="text-3xl font-sans text-white mb-10 text-center">
