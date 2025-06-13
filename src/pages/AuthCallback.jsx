@@ -1,41 +1,38 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function AuthCallback() {
-  const navigate = useNavigate();
-
   useEffect(() => {
     (async () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get("code");
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
       if (!code) {
-        navigate("/integracoes");
+        window.location.replace("/integracoes");
         return;
       }
 
       try {
-        const backendUrl = "https://dsseller-backend-final.onrender.com";
-        await axios.get(
-          `${backendUrl}/api/mercadolivre/exchange-code-get?code=${code}`
-        );
+        const backend = "https://dsseller-backend-final.onrender.com";
+        await axios.get(`${backend}/api/mercadolivre/exchange-code-get?code=${code}`);
 
-        // salva no localStorage (slot 0 = Mercado Livre)
+        // slot-0 = Mercado Livre integrado
         const integrations = Array(6).fill({ integrated: false, marketplace: null });
         integrations[0] = {
           integrated: true,
           marketplace: { nome: "Mercado Livre", logo: "/ml-logo.png" },
         };
         localStorage.setItem("ds_integrations", JSON.stringify(integrations));
+        localStorage.setItem("mlIntegrado", "true"); // para outros componentes
+        window.dispatchEvent(new Event("mlStatusChange")); // avisa a sidebar
 
-        // força hook a esperar 2 s e confirmar com backend
-        navigate("/integracoes?ml_integrado=1");
+        // recarrega app com flag → hook useMLStatus confirma no backend
+        window.location.replace("/integracoes?ml_integrado=1");
       } catch (err) {
         console.error("Erro ao integrar:", err);
-        navigate("/integracoes");
+        window.location.replace("/integracoes");
       }
     })();
-  }, [navigate]);
+  }, []);
 
   return (
     <div className="flex items-center justify-center min-h-screen text-white">
