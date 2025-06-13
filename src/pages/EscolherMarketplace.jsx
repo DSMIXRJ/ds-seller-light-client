@@ -29,13 +29,11 @@ export default function EscolherMarketplace() {
     updated[slotIndex] = { integrated: true, marketplace };
     localStorage.setItem("ds_integrations", JSON.stringify(updated));
 
-    // Força o sidebar a atualizar e habilitar botão de anúncios
     if (marketplace.nome === "Mercado Livre") {
-      localStorage.setItem("mlIntegrado", "true");
-      window.dispatchEvent(new Event("mlStatusChange"));
+      window.location.href = "https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=911500565972996&redirect_uri=https://dsseller.com.br/auth/callback";
+    } else {
+      navigate("/integracoes");
     }
-
-    navigate("/integracoes");
   };
 
   const marketplaces = [
