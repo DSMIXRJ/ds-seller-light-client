@@ -33,14 +33,11 @@ export default function Integracoes() {
     setShowConfig(false);
   };
 
-  // INTEGRAÇÃO DIRETA — sem escolher-marketplace
   const handleIntegrar = (slotIndex, mpId) => {
-    // slot 0 = Mercado Livre (padrão)
     if (mpId === "ml") {
       window.location.href =
         "https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=911500565972996&redirect_uri=https://dsseller.com.br/auth/callback";
     }
-    // Shopee, Magalu, Amazon — em breve
   };
 
   const botaoClasse =
@@ -53,7 +50,7 @@ export default function Integracoes() {
         <h1 className="text-3xl font-sans text-white mb-10 text-center">
           Integrações de Marketplace
         </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 relative z-10 overflow-visible">
           {integrations.map((item, index) => (
             <div
               key={index}
@@ -105,4 +102,3 @@ export default function Integracoes() {
     </div>
   );
 }
-
