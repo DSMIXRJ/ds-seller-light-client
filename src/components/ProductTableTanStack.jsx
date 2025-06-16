@@ -24,7 +24,7 @@ export default function ProductTableTanStack() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`${backendUrl}/api/mercadolivre/items`);
+        const response = await axios.get(`${backendUrl}/api/anuncios/ml`);
         console.log('Frontend: Dados brutos recebidos do backend:', response.data);
 
         const data = response.data.map((p) => {
@@ -87,7 +87,7 @@ export default function ProductTableTanStack() {
   const handleSavePrecoCusto = async (id, precoCusto) => {
     console.log(`Frontend: Tentando salvar precoCusto para ${id}: ${precoCusto}`);
     try {
-      await axios.post(`${backendUrl}/api/mercadolivre/items/update-cost`, {
+      await axios.post(`${backendUrl}/api/anuncios/ml/update-cost`, {
         id: id,
         precoCusto: precoCusto,
       });

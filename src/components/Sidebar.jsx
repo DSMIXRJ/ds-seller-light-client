@@ -123,7 +123,19 @@ export default function Sidebar({ activePage }) {
               >
                 Anúncios
               </button>
-            </div>
+            
+<button
+  onClick={() => {
+    localStorage.removeItem("mlIntegrado");
+    window.dispatchEvent(new Event("mlStatusChange"));
+    navigate("/integracoes");
+  }}
+  className="mt-2 ml-7 text-xs text-red-400 hover:text-red-600 transition"
+>
+  Remover integração
+</button>
+
+</div>
           )}
         </div>
 
@@ -148,7 +160,19 @@ export default function Sidebar({ activePage }) {
               >
                 Em breve
               </button>
-            </div>
+            
+<button
+  onClick={() => {
+    localStorage.removeItem("mlIntegrado");
+    window.dispatchEvent(new Event("mlStatusChange"));
+    navigate("/integracoes");
+  }}
+  className="mt-2 ml-7 text-xs text-red-400 hover:text-red-600 transition"
+>
+  Remover integração
+</button>
+
+</div>
           )}
         </div>
 
@@ -173,7 +197,19 @@ export default function Sidebar({ activePage }) {
               >
                 Em breve
               </button>
-            </div>
+            
+<button
+  onClick={() => {
+    localStorage.removeItem("mlIntegrado");
+    window.dispatchEvent(new Event("mlStatusChange"));
+    navigate("/integracoes");
+  }}
+  className="mt-2 ml-7 text-xs text-red-400 hover:text-red-600 transition"
+>
+  Remover integração
+</button>
+
+</div>
           )}
         </div>
       </nav>
