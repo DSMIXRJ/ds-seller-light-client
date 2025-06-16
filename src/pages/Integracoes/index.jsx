@@ -29,11 +29,11 @@ export default function Integracoes() {
     localStorage.setItem("ds_integrations", JSON.stringify(updated));
   };
 
-  const handleSaveConfig = (slotIndex, configData) => {
+  const handleSaveConfig = (_slotIndex, _configData) => {
     setShowConfig(false);
   };
 
-  const handleIntegrar = (slotIndex, mpId) => {
+  const handleIntegrar = (_slotIndex, mpId) => {
     if (mpId === "ml") {
       window.location.href =
         "https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=911500565972996&redirect_uri=https://dsseller.com.br/auth/callback";
@@ -52,7 +52,10 @@ export default function Integracoes() {
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 relative z-10 overflow-visible">
           {integrations.map((item, index) => (
-            <div key={index} className="w-44 h-44 transform transition hover:scale-105">
+            <div
+              key={index}
+              className="w-44 h-44 transform transition hover:scale-105"
+            >
               <div className="relative w-full h-full flex flex-col items-center justify-center rounded-2xl bg-zinc-900 ring-1 ring-cyan-500/20 shadow-lg shadow-cyan-500/10 duration-300">
                 {item.integrated && (
                   <button
@@ -65,6 +68,7 @@ export default function Integracoes() {
                     <Settings className="w-5 h-5" />
                   </button>
                 )}
+
                 {item.integrated && item.marketplace ? (
                   <>
                     <img
@@ -94,7 +98,12 @@ export default function Integracoes() {
       </div>
       {showConfig && (
         <ConfigModalML
-          config={{ margemMinima: "", margemMaxima: "", imposto: "", extras: "" }}
+          config={{
+            margemMinima: "",
+            margemMaxima: "",
+            imposto: "",
+            extras: "",
+          }}
           setConfig={() => {}}
           onClose={() => setShowConfig(false)}
           onSave={(data) => handleSaveConfig(activeSlot, data)}
