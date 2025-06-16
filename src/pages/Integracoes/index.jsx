@@ -52,41 +52,42 @@ export default function Integracoes() {
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 relative z-10 overflow-visible">
           {integrations.map((item, index) => (
-            <div
-              key={index}
-              className="relative w-44 h-44 flex flex-col items-center justify-center rounded-2xl transition-all bg-zinc-900
-              ring-1 ring-cyan-500/20 shadow-lg shadow-cyan-500/10 hover:scale-105 duration-300"
-            >
-              {item.integrated && (
-                <button
-                  className="absolute top-2 right-2 text-white font-sans bg-zinc-800/80 rounded-full p-1"
-                  onClick={() => {
-                    setActiveSlot(index);
-                    setShowConfig(true);
-                  }}
-                >
-                  <Settings className="w-5 h-5" />
-                </button>
-              )}
-              {item.integrated && item.marketplace ? (
-                <>
-                  <img
-                    src={item.marketplace.logo}
-                    alt="logo"
-                    className="w-16 h-16 mb-3"
-                  />
-                  <div className="h-5 mb-2 text-sm text-white text-center font-sans">
-                    {item.marketplace.nome}
-                  </div>
-                  <button onClick={() => handleRemove(index)} className={botaoClasse}>
-                    Remover
+            <div key={index} className="w-44 h-44 transform transition hover:scale-105">
+              <div className="relative w-full h-full flex flex-col items-center justify-center rounded-2xl bg-zinc-900 ring-1 ring-cyan-500/20 shadow-lg shadow-cyan-500/10 duration-300">
+                {item.integrated && (
+                  <button
+                    className="absolute top-2 right-2 text-white font-sans bg-zinc-800/80 rounded-full p-1"
+                    onClick={() => {
+                      setActiveSlot(index);
+                      setShowConfig(true);
+                    }}
+                  >
+                    <Settings className="w-5 h-5" />
                   </button>
-                </>
-              ) : (
-                <IntegrarDropdown
-                  onIntegrar={(mpId) => handleIntegrar(index, mpId)}
-                />
-              )}
+                )}
+                {item.integrated && item.marketplace ? (
+                  <>
+                    <img
+                      src={item.marketplace.logo}
+                      alt="logo"
+                      className="w-16 h-16 mb-3"
+                    />
+                    <div className="h-5 mb-2 text-sm text-white text-center font-sans">
+                      {item.marketplace.nome}
+                    </div>
+                    <button
+                      onClick={() => handleRemove(index)}
+                      className={botaoClasse}
+                    >
+                      Remover
+                    </button>
+                  </>
+                ) : (
+                  <IntegrarDropdown
+                    onIntegrar={(mpId) => handleIntegrar(index, mpId)}
+                  />
+                )}
+              </div>
             </div>
           ))}
         </div>
