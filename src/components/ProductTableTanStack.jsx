@@ -10,43 +10,38 @@ import { formatCurrency, parseCurrency, calculateLucro } from '../utils/formatte
 import { createColumns } from '../config/tableColumns.jsx';
 import TableHeader from './TableHeader';
 import TableBody from './TableBody';
-import useMLStatus from '../pages/Integracoes/useMLStatus'; // Importar useMLStatus
+import useMLStatus from '../pages/Integracoes/useMLStatus';
 
 export default function ProductTableTanStack() {
   const [products, setProducts] = useState([]);
+  const [pageIndex, setPageIndex] = useState(0);
   const [error, setError] = useState(null);
   const { integracao } = useParams();
   const [sorting, setSorting] = useState([]);
-  const { mlConfig, loading: mlStatusLoading } = useMLStatus(); // Obter mlConfig e o estado de loading do useMLStatus
-
-  const backendUrl = 'https://dsseller-backend-final.onrender.com'; // Definir backendUrl aqui
+  const { mlConfig, loading: mlStatusLoading } = useMLStatus();
+  const backendUrl = 'https://dsseller-backend-final.onrender.com';
+  const PAGE_SIZE = 50;
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        // Alterado para chamar a rota correta de anúncios
         const response = await axios.get(`${backendUrl}/api/anuncios/ml`);
-        console.log('Frontend: Dados brutos recebidos do backend:', response.data);
-
         const data = response.data.anuncios.map((p) => {
-          console.log(`Frontend: Processando item ${p.id} - precoCusto: ${p.precoCusto}, totalCostML: ${p.totalCostML}`);
-          // Usar p.totalCostML que vem do backend
           const lucroData = calculateLucro(p.precoVenda, p.precoCusto || 0, p.totalCostML || 0, mlConfig);
           return {
             ...p,
-            precoCusto: p.precoCusto || 0, // Garante que precoCusto seja um número
+            precoCusto: p.precoCusto || 0,
             precoVendaMasked: formatCurrency(p.precoVenda),
-            precoCustoMasked: p.precoCusto ? formatCurrency(p.precoCusto) : '', // Inicializa como vazio se 0 ou null
+            precoCustoMasked: p.precoCusto ? formatCurrency(p.precoCusto) : '',
             lucroPercentual: lucroData.lucroPercentual,
             lucroReais: lucroData.lucroReais,
-            totalCostML: p.totalCostML || 0, // Garantir que totalCostML esteja presente
+            totalCostML: p.totalCostML || 0,
           };
         });
         setProducts(data);
-        console.log('Frontend: Produtos processados para exibição:', data);
       } catch (err) {
         setError('Erro ao carregar anúncios.');
-        console.error('Frontend: Erro ao carregar anúncios:', err);
+        console.error('Erro ao carregar anúncios:', err);
       }
     };
 
@@ -70,14 +65,12 @@ export default function ProductTableTanStack() {
           } else if (field === 'precoCusto') {
             updated.precoCusto = numericValue;
             updated.precoCustoMasked = masked;
-            console.log(`Frontend: precoCusto alterado para ${id}: ${numericValue}`);
           }
 
-          // Usar updated.totalCostML para o cálculo de lucro
           const lucroData = calculateLucro(updated.precoVenda, updated.precoCusto, updated.totalCostML || 0, mlConfig);
           updated.lucroReais = lucroData.lucroReais;
           updated.lucroPercentual = lucroData.lucroPercentual;
-          
+
           return updated;
         }
         return p;
@@ -86,42 +79,72 @@ export default function ProductTableTanStack() {
   };
 
   const handleSavePrecoCusto = async (id, precoCusto) => {
-    console.log(`Frontend: Tentando salvar precoCusto para ${id}: ${precoCusto}`);
     try {
       await axios.post(`${backendUrl}/api/mercadolivre/items/update-cost`, {
-        id: id,
-        precoCusto: precoCusto,
+        id,
+        precoCusto,
       });
-      console.log(`Frontend: Preço de custo para ${id} salvo com sucesso.`);
     } catch (saveError) {
-      console.error(`Frontend: Erro ao salvar preço de custo para ${id}:`, saveError);
+      console.error(`Erro ao salvar preço de custo para ${id}:`, saveError);
     }
   };
 
   const columns = useMemo(() => createColumns(handleMaskedChange, handleSavePrecoCusto, parseCurrency), []);
+  const totalPages = Math.ceil(products.length / PAGE_SIZE);
+  const paginatedData = useMemo(() => {
+    const start = pageIndex * PAGE_SIZE;
+    return products.slice(start, start + PAGE_SIZE);
+  }, [products, pageIndex]);
 
   const table = useReactTable({
-    data: products,
+    data: paginatedData,
     columns,
-    state: {
-      sorting,
-    },
+    state: { sorting },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
 
-  if (mlStatusLoading) return (
-    <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-8 text-center">
-      <div className="animate-pulse">Carregando anúncios...</div>
-    </div>
-  );
-  
-  if (error) return (
-    <div className="bg-[#101420] text-red-500 rounded-2xl shadow-xl p-8 text-center">
-      {error}
-    </div>
-  );
+  const renderPagination = () => {
+    const pages = Array.from({ length: totalPages }, (_, i) => i);
+    return (
+      <div className="flex justify-center gap-2 mt-4 text-sm text-gray-300">
+        {pages.map((page) => (
+          <button
+            key={page}
+            className={`px-3 py-1 rounded ${
+              pageIndex === page ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700'
+            }`}
+            onClick={() => setPageIndex(page)}
+          >
+            {page + 1}
+          </button>
+        ))}
+        {pageIndex < totalPages - 1 && (
+          <button
+            className="px-3 py-1 rounded bg-gray-800 hover:bg-gray-700"
+            onClick={() => setPageIndex((prev) => prev + 1)}
+          >
+            Seguinte &gt;
+          </button>
+        )}
+      </div>
+    );
+  };
+
+  if (mlStatusLoading)
+    return (
+      <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-8 text-center">
+        <div className="animate-pulse">Carregando anúncios...</div>
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="bg-[#101420] text-red-500 rounded-2xl shadow-xl p-8 text-center">
+        {error}
+      </div>
+    );
 
   return (
     <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-4 w-full">
@@ -131,14 +154,15 @@ export default function ProductTableTanStack() {
           <TableBody table={table} />
         </table>
       </div>
-      
+
       {products.length > 0 && (
-        <div className="mt-3 text-xs text-gray-400 text-center">
-          Exibindo {products.length} anúncios • Tabela com TanStack React Table • Cabeçalho fixo e ordenação ativa
-        </div>
+        <>
+          {renderPagination()}
+          <div className="mt-3 text-xs text-gray-400 text-center">
+            Exibindo {paginatedData.length} de {products.length} anúncios • Página {pageIndex + 1} de {totalPages}
+          </div>
+        </>
       )}
     </div>
   );
 }
-
-
