@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import ConfigModalML from "./ConfigModalML";
 import { Settings } from "lucide-react";
-import IntegrarDropdown from "../../components/IntegrarDropdown";
 
 export default function Integracoes() {
   const [integrations, setIntegrations] = useState(
@@ -10,6 +10,7 @@ export default function Integracoes() {
   );
   const [showConfig, setShowConfig] = useState(false);
   const [activeSlot, setActiveSlot] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("ds_integrations") || "[]");
@@ -29,15 +30,12 @@ export default function Integracoes() {
     localStorage.setItem("ds_integrations", JSON.stringify(updated));
   };
 
-  const handleSaveConfig = (_slotIndex, _configData) => {
+  const handleSaveConfig = (slotIndex, configData) => {
     setShowConfig(false);
   };
 
-  const handleIntegrar = (_slotIndex, mpId) => {
-    if (mpId === "ml") {
-      window.location.href =
-        "https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=911500565972996&redirect_uri=https://dsseller.com.br/auth/callback";
-    }
+  const handleEscolherMarketplace = (index) => {
+    navigate("/escolher-marketplace", { state: { slotIndex: index } });
   };
 
   const botaoClasse =
@@ -50,60 +48,50 @@ export default function Integracoes() {
         <h1 className="text-3xl font-sans text-white mb-10 text-center">
           Integrações de Marketplace
         </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 relative z-10 overflow-visible">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {integrations.map((item, index) => (
             <div
               key={index}
-              className="w-44 h-44 transform transition hover:scale-105"
+              className="relative w-44 h-44 flex flex-col items-center justify-center rounded-2xl transition-all bg-zinc-900
+              ring-1 ring-cyan-500/20 shadow-lg shadow-cyan-500/10 hover:scale-105 duration-300"
             >
-              <div className="relative w-full h-full flex flex-col items-center justify-center rounded-2xl bg-zinc-900 ring-1 ring-cyan-500/20 shadow-lg shadow-cyan-500/10 duration-300">
-                {item.integrated && (
-                  <button
-                    className="absolute top-2 right-2 text-white font-sans bg-zinc-800/80 rounded-full p-1"
-                    onClick={() => {
-                      setActiveSlot(index);
-                      setShowConfig(true);
-                    }}
-                  >
-                    <Settings className="w-5 h-5" />
-                  </button>
-                )}
-
-                {item.integrated && item.marketplace ? (
-                  <>
-                    <img
-                      src={item.marketplace.logo}
-                      alt="logo"
-                      className="w-16 h-16 mb-3"
-                    />
-                    <div className="h-5 mb-2 text-sm text-white text-center font-sans">
-                      {item.marketplace.nome}
-                    </div>
-                    <button
-                      onClick={() => handleRemove(index)}
-                      className={botaoClasse}
-                    >
-                      Remover
-                    </button>
-                  </>
-                ) : (
-                  <IntegrarDropdown
-                    onIntegrar={(mpId) => handleIntegrar(index, mpId)}
+              {item.integrated && (
+                <button
+                  className="absolute top-2 right-2 text-white font-sans bg-zinc-800/80 rounded-full p-1"
+                  onClick={() => {
+                    setActiveSlot(index);
+                    setShowConfig(true);
+                  }}
+                >
+                  <Settings className="w-5 h-5" />
+                </button>
+              )}
+              {item.integrated && item.marketplace ? (
+                <>
+                  <img
+                    src={item.marketplace.logo}
+                    alt="logo"
+                    className="w-16 h-16 mb-3"
                   />
-                )}
-              </div>
+                  <div className="h-5 mb-2 text-sm text-white text-center font-sans">
+                    {item.marketplace.nome}
+                  </div>
+                  <button onClick={() => handleRemove(index)} className={botaoClasse}>
+                    Remover
+                  </button>
+                </>
+              ) : (
+                <button onClick={() => handleEscolherMarketplace(index)} className={botaoClasse}>
+                  Integrar
+                </button>
+              )}
             </div>
           ))}
         </div>
       </div>
       {showConfig && (
         <ConfigModalML
-          config={{
-            margemMinima: "",
-            margemMaxima: "",
-            imposto: "",
-            extras: "",
-          }}
+          config={{ margemMinima: "", margemMaxima: "", imposto: "", extras: "" }}
           setConfig={() => {}}
           onClose={() => setShowConfig(false)}
           onSave={(data) => handleSaveConfig(activeSlot, data)}
