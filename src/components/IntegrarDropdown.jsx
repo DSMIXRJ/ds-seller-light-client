@@ -23,7 +23,10 @@ export default function IntegrarDropdown({ onIntegrar }) {
         </span>
       </button>
       {open && (
-        <div className="absolute left-0 top-12 w-40 bg-zinc-900 border border-cyan-500 rounded-xl shadow-lg z-50">
+        <div
+          className="absolute left-0 top-12 w-40 bg-zinc-900 border border-cyan-500 rounded-xl shadow-lg"
+          style={{ zIndex: 99 }}
+        >
           {marketplaces.map((mp) => (
             <button
               key={mp.id}
