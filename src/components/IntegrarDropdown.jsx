@@ -10,11 +10,20 @@ const marketplaces = [
 export default function IntegrarDropdown({ onIntegrar }) {
   const [open, setOpen] = useState(false);
 
+  // Para posição correta do dropdown
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+
+  const handleButtonClick = (e) => {
+    const rect = e.target.getBoundingClientRect();
+    setCoords({ x: rect.left, y: rect.bottom });
+    setOpen((v) => !v);
+  };
+
   return (
     <div className="relative">
       <button
         className="px-6 py-2 rounded-xl font-semibold border-2 border-cyan-400 text-cyan-300 bg-zinc-900/80 shadow transition-all flex items-center gap-2"
-        onClick={() => setOpen((v) => !v)}
+        onClick={handleButtonClick}
         tabIndex={0}
       >
         Integrar
@@ -24,8 +33,15 @@ export default function IntegrarDropdown({ onIntegrar }) {
       </button>
       {open && (
         <div
-          className="absolute left-0 top-12 w-40 bg-zinc-900 border border-cyan-500 rounded-xl shadow-lg"
-          style={{ zIndex: 99 }}
+          style={{
+            position: "fixed",
+            top: coords.y + 4,
+            left: coords.x,
+            width: "160px",
+            zIndex: 9999,
+          }}
+          className="bg-zinc-900 border border-cyan-500 rounded-xl shadow-lg"
+          onMouseLeave={() => setOpen(false)}
         >
           {marketplaces.map((mp) => (
             <button
