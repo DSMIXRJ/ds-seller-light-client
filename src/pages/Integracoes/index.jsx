@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import ConfigModalML from "./ConfigModalML";
 import { Settings } from "lucide-react";
+import axios from "axios";
+
+const API_BASE_URL = "https://dsseller-backend-final.onrender.com";
 
 export default function Integracoes() {
   const [integrations, setIntegrations] = useState(
@@ -23,11 +26,26 @@ export default function Integracoes() {
     }
   }, []);
 
-  const handleRemove = (index) => {
-    const updated = [...integrations];
-    updated[index] = { integrated: false, marketplace: null };
-    setIntegrations(updated);
-    localStorage.setItem("ds_integrations", JSON.stringify(updated));
+  const handleRemove = async (index) => {
+    try {
+      // Chama o backend para remover a integração do Mercado Livre
+      await axios.delete(`${API_BASE_URL}/api/mercadolivre/remove`);
+
+      // Atualiza o localStorage e dispara o evento para o Sidebar
+      localStorage.setItem("mlIntegrado", "false");
+      window.dispatchEvent(new Event("mlStatusChange"));
+
+      // Atualiza o estado local para refletir a remoção
+      const updated = [...integrations];
+      updated[index] = { integrated: false, marketplace: null };
+      setIntegrations(updated);
+      localStorage.setItem("ds_integrations", JSON.stringify(updated));
+
+      alert("Integração removida com sucesso!");
+    } catch (error) {
+      console.error("Erro ao remover integração:", error);
+      alert("Erro ao remover integração. Tente novamente.");
+    }
   };
 
   const handleSaveConfig = (slotIndex, configData) => {
@@ -100,3 +118,5 @@ export default function Integracoes() {
     </div>
   );
 }
+
+

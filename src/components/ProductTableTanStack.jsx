@@ -24,10 +24,11 @@ export default function ProductTableTanStack() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        // Alterado para chamar a rota correta de anúncios
         const response = await axios.get(`${backendUrl}/api/anuncios/ml`);
         console.log('Frontend: Dados brutos recebidos do backend:', response.data);
 
-        const data = response.data.map((p) => {
+        const data = response.data.anuncios.map((p) => {
           console.log(`Frontend: Processando item ${p.id} - precoCusto: ${p.precoCusto}, totalCostML: ${p.totalCostML}`);
           // Usar p.totalCostML que vem do backend
           const lucroData = calculateLucro(p.precoVenda, p.precoCusto || 0, p.totalCostML || 0, mlConfig);
@@ -87,7 +88,7 @@ export default function ProductTableTanStack() {
   const handleSavePrecoCusto = async (id, precoCusto) => {
     console.log(`Frontend: Tentando salvar precoCusto para ${id}: ${precoCusto}`);
     try {
-      await axios.post(`${backendUrl}/api/anuncios/ml/update-cost`, {
+      await axios.post(`${backendUrl}/api/mercadolivre/items/update-cost`, {
         id: id,
         precoCusto: precoCusto,
       });
