@@ -16,7 +16,9 @@ export default function Anuncios() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const mlQuery = urlParams.get("ml_integrado");
-    if (mlQuery === "1") {
+    const codeQuery = urlParams.get("code");
+
+    if (mlQuery === "1" || codeQuery) {
       localStorage.setItem("mlIntegrado", "true");
       setMlIntegrado(true);
       window.dispatchEvent(new Event("mlStatusChange"));
