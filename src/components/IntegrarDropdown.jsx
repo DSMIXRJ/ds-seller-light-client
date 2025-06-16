@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 
 const marketplaces = [
   { nome: "Mercado Livre", id: "ml" },
@@ -9,32 +9,12 @@ const marketplaces = [
 
 export default function IntegrarDropdown({ onIntegrar }) {
   const [open, setOpen] = useState(false);
-  const [coords, setCoords] = useState({ x: 0, y: 0 });
-  const btnRef = useRef(null);
-
-  const handleButtonClick = () => {
-    const rect = btnRef.current.getBoundingClientRect();
-    setCoords({ x: rect.left, y: rect.bottom });
-    setOpen((v) => !v);
-  };
-
-  // fecha ao clicar fora
-  useEffect(() => {
-    const onClickOutside = (e) => {
-      if (btnRef.current && !btnRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", onClickOutside);
-    return () => document.removeEventListener("mousedown", onClickOutside);
-  }, []);
 
   return (
-    <div>
+    <div className="relative inline-block">
       <button
-        ref={btnRef}
         className="px-6 py-2 rounded-xl font-semibold border-2 border-cyan-400 text-cyan-300 bg-zinc-900/80 shadow flex items-center gap-2"
-        onClick={handleButtonClick}
+        onClick={() => setOpen((v) => !v)}
       >
         Integrar
         <svg width={18} height={18} viewBox="0 0 20 20" className="ml-2">
@@ -44,14 +24,9 @@ export default function IntegrarDropdown({ onIntegrar }) {
 
       {open && (
         <div
-          style={{
-            position: "fixed",
-            top: coords.y + 4,
-            left: coords.x,
-            zIndex: 9999,
-            width: 160,
-          }}
-          className="bg-zinc-900 border border-cyan-500 rounded-xl shadow-lg"
+          className="absolute left-0 top-full mt-2 w-40 bg-zinc-900 border border-cyan-500 rounded-xl shadow-lg"
+          style={{ zIndex: 1000 }}
+          onMouseLeave={() => setOpen(false)}
         >
           {marketplaces.map((mp) => (
             <button
