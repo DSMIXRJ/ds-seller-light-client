@@ -1,10 +1,9 @@
-// ✅ ARQUIVO: src/pages/Integracoes/MLBox.jsx
-
 import { Settings } from "lucide-react";
 import logoMercadoLivre from "../../assets/mercado-livre.png";
 import { gerarEstiloBox, botaoEstilo } from "./styles";
+import IntegrarDropdown from "../../components/IntegrarDropdown";
 
-export default function MLBox({ integrado, removing, onIntegrar, onRemover, onOpenConfig }) {
+export default function MLBox({ integrado, removing, onRemover, onOpenConfig }) {
   return (
     <div
       className="flex flex-col items-center gap-2 p-6 w-48 h-48 rounded-3xl bg-zinc-900/60 backdrop-blur-md border-2 shadow-xl transition-all duration-500 hover:scale-105 hover:rotate-1 relative"
@@ -42,13 +41,15 @@ export default function MLBox({ integrado, removing, onIntegrar, onRemover, onOp
           {removing ? "Removendo..." : "Remover"}
         </button>
       ) : (
-        <button
-          style={botaoEstilo(false)}
-          onClick={onIntegrar}
-          className="hover:scale-105 active:scale-95"
-        >
-          Integrar
-        </button>
+        <IntegrarDropdown
+          onIntegrar={(mpId) => {
+            if (mpId === "ml") {
+              window.location.href =
+                "https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=911500565972996&redirect_uri=https://dsseller.com.br/auth/callback";
+            }
+            // Shopee, Magalu, Amazon: placeholder (em breve)
+          }}
+        />
       )}
     </div>
   );
