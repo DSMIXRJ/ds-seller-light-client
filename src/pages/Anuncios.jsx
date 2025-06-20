@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import ProductTableTanStack from "../components/ProductTableTanStack";
+import ImportarCustoButton from "../components/ImportarCustoButton";
 import { useParams } from "react-router-dom";
 
 const nomes = {
@@ -35,7 +36,8 @@ export default function Anuncios() {
             Anúncios — {nomes[integracao] || "Integração"}
           </h1>
         </div>
-        <div className="w-full max-w-6xl pt-[120px]">
+        <div className="w-full max-w-6xl pt-[120px] px-4">
+          <ImportarCustoButton />
           <ProductTableTanStack />
         </div>
       </main>
