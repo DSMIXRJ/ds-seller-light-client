@@ -11,15 +11,12 @@ import { createColumns } from '../config/tableColumns.jsx';
 import TableHeader from '../components/TableHeader';
 import TableBody from '../components/TableBody';
 import useMLStatus from './Integracoes/useMLStatus';
-import BulkActionsMenu from '../components/BulkActionsMenu';
-import BulkActionModal from '../components/BulkActionModal';
 
 export default function Anuncios() {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(null);
   const { integracao } = useParams();
   const [sorting, setSorting] = useState([]);
-  const [modalTipo, setModalTipo] = useState(null);
   const { mlConfig, loading: mlStatusLoading } = useMLStatus();
 
   const backendUrl = 'https://dsseller-backend-final.onrender.com';
@@ -39,46 +36,25 @@ export default function Anuncios() {
 
   const columns = useMemo(() => createColumns(products, setProducts), [products]);
 
-  const table = products.length
-    ? useReactTable({
-        data: products,
-        columns,
-        state: { sorting },
-        onSortingChange: setSorting,
-        getCoreRowModel: getCoreRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-      })
-    : null;
-
-  const handleExecutarConfirmado = (dados) => {
-    console.log('Executar ação:', dados);
-    // Aqui entra o backend real depois
-  };
+  const table = useReactTable({
+    data: products,
+    columns,
+    state: { sorting },
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
 
   return (
-    <div className="p-4 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-white">📦 Anúncios</h1>
-        <BulkActionsMenu onAction={(tipo) => setModalTipo(tipo)} />
+    <div className="p-4">
+      {error && <div className="text-red-500 mb-4">{error}</div>}
+
+      <div className="overflow-x-auto bg-zinc-900 rounded-xl p-4 shadow">
+        <table className="min-w-full divide-y divide-zinc-700">
+          <TableHeader headerGroups={table.getHeaderGroups()} />
+          <TableBody rows={table.getRowModel().rows} />
+        </table>
       </div>
-
-      <BulkActionModal
-        isOpen={!!modalTipo}
-        onClose={() => setModalTipo(null)}
-        tipoAcao={modalTipo}
-        onSubmit={handleExecutarConfirmado}
-      />
-
-      {error && <div className="text-red-500">{error}</div>}
-
-      {table && (
-        <div className="overflow-x-auto bg-zinc-900 rounded-xl p-4 shadow">
-          <table className="min-w-full divide-y divide-zinc-700">
-            <TableHeader headerGroups={table.getHeaderGroups()} />
-            <TableBody rows={table.getRowModel().rows} />
-          </table>
-        </div>
-      )}
     </div>
   );
 }
