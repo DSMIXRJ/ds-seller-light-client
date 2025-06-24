@@ -150,7 +150,17 @@ export default function ProductTableTanStack() {
     <div className="bg-[#101420] text-white rounded-2xl shadow-xl p-4 w-full">
       <div className="w-full overflow-auto max-h-[calc(100vh-200px)]">
         <table className="w-full table-fixed border-collapse">
-          <TableHeader table={table} />
+          <thead className="bg-[#101420] text-gray-400 text-sm border-b border-gray-700">
+            <tr className="[&>th]:py-2 [&>th]:px-4 [&>th]:border-r [&>th]:border-gray-700 [&>th:last-child]:border-r-0 [&>th]:underline">
+              {table.getHeaderGroups().map((headerGroup) =>
+                headerGroup.headers.map((header) => (
+                  <th key={header.id}>
+                    {header.isPlaceholder ? null : header.renderHeader?.()}
+                  </th>
+                ))
+              )}
+            </tr>
+          </thead>
           <TableBody table={table} />
         </table>
       </div>
