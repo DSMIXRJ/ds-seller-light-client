@@ -10,13 +10,15 @@ const TableHeader = ({ table }) => {
             <th
               key={header.id}
               colSpan={header.colSpan}
-              className="px-1 py-3 text-center bg-[#181c2f] border-b-2 border-cyan-500/50"
+              className="px-1 py-3 text-center bg-[#181c2f] border-b-2 border-cyan-500/50 underline"
               style={{ width: header.column.columnDef.size }}
             >
               {header.isPlaceholder ? null : (
                 <div
-                  {...{ 
-                    className: header.column.getCanSort() ? 'cursor-pointer select-none flex items-center justify-center gap-1' : 'flex items-center justify-center',
+                  {...{
+                    className: header.column.getCanSort()
+                      ? 'cursor-pointer select-none flex items-center justify-center gap-1'
+                      : 'flex items-center justify-center',
                     onClick: header.column.getToggleSortingHandler(),
                   }}
                 >
@@ -43,4 +45,3 @@ const TableHeader = ({ table }) => {
 };
 
 export default TableHeader;
-
