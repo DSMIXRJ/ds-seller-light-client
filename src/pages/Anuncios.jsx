@@ -39,18 +39,19 @@ export default function Anuncios() {
 
   const columns = useMemo(() => createColumns(products, setProducts), [products]);
 
-  const table = useReactTable({
-    data: products,
-    columns,
-    state: { sorting },
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-  });
+  const table = products.length
+    ? useReactTable({
+        data: products,
+        columns,
+        state: { sorting },
+        onSortingChange: setSorting,
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+      })
+    : null;
 
   const handleExecutarConfirmado = (dados) => {
     console.log('Executar ação:', dados);
-    // Aqui entra a chamada real ao backend
   };
 
   return (
@@ -65,12 +66,14 @@ export default function Anuncios() {
 
       {error && <div className="text-red-500 mb-4">{error}</div>}
 
-      <div className="overflow-x-auto bg-zinc-900 rounded-xl p-4 shadow">
-        <table className="min-w-full divide-y divide-zinc-700">
-          <TableHeader headerGroups={table.getHeaderGroups()} />
-          <TableBody rows={table.getRowModel().rows} />
-        </table>
-      </div>
+      {table && (
+        <div className="overflow-x-auto bg-zinc-900 rounded-xl p-4 shadow">
+          <table className="min-w-full divide-y divide-zinc-700">
+            <TableHeader headerGroups={table.getHeaderGroups()} />
+            <TableBody rows={table.getRowModel().rows} />
+          </table>
+        </div>
+      )}
     </div>
   );
 }
