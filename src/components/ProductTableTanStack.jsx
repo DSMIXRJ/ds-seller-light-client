@@ -25,7 +25,7 @@ export default function ProductTableTanStack() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(${backendUrl}/api/anuncios/ml);
+        const response = await axios.get(`${backendUrl}/api/anuncios/ml`);
         const data = response.data.anuncios.map((p) => {
           const lucroData = calculateLucro(p.precoVenda, p.precoCusto || 0, p.totalCostML || 0, mlConfig);
           return {
@@ -80,12 +80,12 @@ export default function ProductTableTanStack() {
 
   const handleSavePrecoCusto = async (id, precoCusto) => {
     try {
-      await axios.post(${backendUrl}/api/mercadolivre/items/update-cost, {
+      await axios.post(`${backendUrl}/api/mercadolivre/items/update-cost`, {
         id,
         precoCusto,
       });
     } catch (saveError) {
-      console.error(Erro ao salvar preço de custo para ${id}:, saveError);
+      console.error(`Erro ao salvar preço de custo para ${id}:`, saveError);
     }
   };
 
@@ -112,9 +112,9 @@ export default function ProductTableTanStack() {
         {pages.map((page) => (
           <button
             key={page}
-            className={px-3 py-1 rounded ${
+            className={`px-3 py-1 rounded ${
               pageIndex === page ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700'
-            }}
+            }`}
             onClick={() => setPageIndex(page)}
           >
             {page + 1}
