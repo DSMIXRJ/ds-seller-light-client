@@ -1,46 +1,76 @@
-import { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
-import ProductTableTanStack from "../components/ProductTableTanStack";
-import ImportarCustoButton from "../components/ImportarCustoButton";
-import { useParams } from "react-router-dom";
-
-const nomes = {
-  ml: "Mercado Livre",
-  shopee: "Shopee",
-  amazon: "Amazon",
-};
+import { useState, useEffect, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import {
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+} from '@tanstack/react-table';
+import { formatCurrency, parseCurrency, calculateLucro } from '../utils/formatters';
+import { createColumns } from '../config/tableColumns.jsx';
+import TableHeader from '../components/TableHeader';
+import TableBody from '../components/TableBody';
+import useMLStatus from './Integracoes/useMLStatus';
+import BulkActionsMenu from '../components/BulkActionsMenu';
+import BulkActionModal from '../components/BulkActionModal';
 
 export default function Anuncios() {
+  const [products, setProducts] = useState([]);
+  const [error, setError] = useState(null);
   const { integracao } = useParams();
-  const [_, setMlIntegrado] = useState(localStorage.getItem("mlIntegrado") === "true");
+  const [sorting, setSorting] = useState([]);
+  const [modalTipo, setModalTipo] = useState(null);
+  const { mlConfig, loading: mlStatusLoading } = useMLStatus();
+
+  const backendUrl = 'https://dsseller-backend-final.onrender.com';
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const mlQuery = urlParams.get("ml_integrado");
-    const codeQuery = urlParams.get("code");
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(`${backendUrl}/api/anuncios/${integracao}`);
+        setProducts(response.data);
+      } catch (err) {
+        console.error(err);
+        setError('Erro ao carregar anúncios.');
+      }
+    };
+    if (integracao) fetchProducts();
+  }, [integracao]);
 
-    if (mlQuery === "1" || codeQuery) {
-      localStorage.setItem("mlIntegrado", "true");
-      setMlIntegrado(true);
-      window.dispatchEvent(new Event("mlStatusChange"));
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }, []);
+  const columns = useMemo(() => createColumns(products, setProducts), [products]);
+
+  const table = useReactTable({
+    data: products,
+    columns,
+    state: { sorting },
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
+
+  const handleExecutarConfirmado = (dados) => {
+    console.log('Executar ação:', dados);
+    // Aqui entra a chamada real ao backend
+  };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-800 text-zinc-50">
-      <Sidebar activePage="anuncios" />
-      <main className="flex-1 flex flex-col items-center ml-56">
-        <div className="w-full max-w-6xl fixed top-0 left-56 right-0 z-20 bg-zinc-950/95 p-8 border-b border-zinc-800">
-          <h1 className="text-3xl md:text-4xl font-bold text-cyan-400 tracking-widest">
-            Anúncios — {nomes[integracao] || "Integração"}
-          </h1>
-        </div>
-        <div className="w-full max-w-6xl pt-[120px] px-4">
-          <ImportarCustoButton />
-          <ProductTableTanStack />
-        </div>
-      </main>
+    <div className="p-4">
+      <BulkActionsMenu onAction={(tipo) => setModalTipo(tipo)} />
+      <BulkActionModal
+        isOpen={!!modalTipo}
+        onClose={() => setModalTipo(null)}
+        tipoAcao={modalTipo}
+        onSubmit={handleExecutarConfirmado}
+      />
+
+      {error && <div className="text-red-500 mb-4">{error}</div>}
+
+      <div className="overflow-x-auto bg-zinc-900 rounded-xl p-4 shadow">
+        <table className="min-w-full divide-y divide-zinc-700">
+          <TableHeader headerGroups={table.getHeaderGroups()} />
+          <TableBody rows={table.getRowModel().rows} />
+        </table>
+      </div>
     </div>
   );
 }
