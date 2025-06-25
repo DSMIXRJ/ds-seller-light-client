@@ -18,7 +18,7 @@ export default function Anuncios() {
   const { integracao } = useParams();
   const [sorting, setSorting] = useState([]);
 
-  const backendUrl = 'https://dsseller-backend-final.onrender.com';
+  const backendUrl = 'http://localhost:3001';
 
   // Configuração padrão do ML
   const mlConfig = {
@@ -184,3 +184,4 @@ export default function Anuncios() {
     </div>
   );
 }
+
